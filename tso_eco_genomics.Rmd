@@ -1,786 +1,670 @@
-
 ---
-title: "Github Notebook Template"
-
-output: html_document
-editor_options: 
-chunk_output_type: console
+title: "Ecological Genomics Notebook"
+author: "TS O'Leary"
+output:
+  rmarkdown::html_document:
+    theme: lumen
+    number_sections: true
+    toc: true
+    toc_float: true
 ---
 
-## Author:  Thomas O'Leary
-### Affiliation:  UVM
-### E-mail contact: tsoleary@uvm.edu
-
-
-### Start Date: 2020-01-13
-### End Date: 2020-05-08
-### Project Descriptions: Ecological Genomics Notebook
-
-
-
-# Table of Contents:   
-* [Entry 1: 2020-01-13, Monday](#id-section1)
-* [Entry 2: 2020-01-14, Tuesday](#id-section2)
-* [Entry 3: 2020-01-15, Wednesday](#id-section3)
-* [Entry 4: 2020-01-16, Thursday](#id-section4)
-* [Entry 5: 2020-01-17, Friday](#id-section5)
-* [Entry 6: 2020-01-20, Monday](#id-section6)
-* [Entry 7: 2020-01-21, Tuesday](#id-section7)
-* [Entry 8: 2020-01-22, Wednesday](#id-section8)
-* [Entry 9: 2020-01-23, Thursday](#id-section9)
-* [Entry 10: 2020-01-24, Friday](#id-section10)
-* [Entry 11: 2020-01-27, Monday](#id-section11)
-* [Entry 12: 2020-01-28, Tuesday](#id-section12)
-* [Entry 13: 2020-01-29, Wednesday](#id-section13)
-* [Entry 14: 2020-01-30, Thursday](#id-section14)
-* [Entry 15: 2020-01-31, Friday](#id-section15)
-* [Entry 16: 2020-02-03, Monday](#id-section16)
-* [Entry 17: 2020-02-04, Tuesday](#id-section17)
-* [Entry 18: 2020-02-05, Wednesday](#id-section18)
-* [Entry 19: 2020-02-06, Thursday](#id-section19)
-* [Entry 20: 2020-02-07, Friday](#id-section20)
-* [Entry 21: 2020-02-10, Monday](#id-section21)
-* [Entry 22: 2020-02-11, Tuesday](#id-section22)
-* [Entry 23: 2020-02-12, Wednesday](#id-section23)
-* [Entry 24: 2020-02-13, Thursday](#id-section24)
-* [Entry 25: 2020-02-14, Friday](#id-section25)
-* [Entry 26: 2020-02-17, Monday](#id-section26)
-* [Entry 27: 2020-02-18, Tuesday](#id-section27)
-* [Entry 28: 2020-02-19, Wednesday](#id-section28)
-* [Entry 29: 2020-02-20, Thursday](#id-section29)
-* [Entry 30: 2020-02-21, Friday](#id-section30)
-* [Entry 31: 2020-02-24, Monday](#id-section31)
-* [Entry 32: 2020-02-25, Tuesday](#id-section32)
-* [Entry 33: 2020-02-26, Wednesday](#id-section33)
-* [Entry 34: 2020-02-27, Thursday](#id-section34)
-* [Entry 35: 2020-02-28, Friday](#id-section35)
-* [Entry 36: 2020-03-02, Monday](#id-section36)
-* [Entry 37: 2020-03-03, Tuesday](#id-section37)
-* [Entry 38: 2020-03-04, Wednesday](#id-section38)
-* [Entry 39: 2020-03-05, Thursday](#id-section39)
-* [Entry 40: 2020-03-06, Friday](#id-section40)
-* [Entry 41: 2020-03-09, Monday](#id-section41)
-* [Entry 42: 2020-03-10, Tuesday](#id-section42)
-* [Entry 43: 2020-03-11, Wednesday](#id-section43)
-* [Entry 44: 2020-03-12, Thursday](#id-section44)
-* [Entry 45: 2020-03-13, Friday](#id-section45)
-* [Entry 46: 2020-03-16, Monday](#id-section46)
-* [Entry 47: 2020-03-17, Tuesday](#id-section47)
-* [Entry 48: 2020-03-18, Wednesday](#id-section48)
-* [Entry 49: 2020-03-19, Thursday](#id-section49)
-* [Entry 50: 2020-03-20, Friday](#id-section50)
-* [Entry 51: 2020-03-23, Monday](#id-section51)
-* [Entry 52: 2020-03-24, Tuesday](#id-section52)
-* [Entry 53: 2020-03-25, Wednesday](#id-section53)
-* [Entry 54: 2020-03-26, Thursday](#id-section54)
-* [Entry 55: 2020-03-27, Friday](#id-section55)
-* [Entry 56: 2020-03-30, Monday](#id-section56)
-* [Entry 57: 2020-03-31, Tuesday](#id-section57)
-* [Entry 58: 2020-04-01, Wednesday](#id-section58)
-* [Entry 59: 2020-04-02, Thursday](#id-section59)
-* [Entry 60: 2020-04-03, Friday](#id-section60)
-* [Entry 61: 2020-04-06, Monday](#id-section61)
-* [Entry 62: 2020-04-07, Tuesday](#id-section62)
-* [Entry 63: 2020-04-08, Wednesday](#id-section63)
-* [Entry 64: 2020-04-09, Thursday](#id-section64)
-* [Entry 65: 2020-04-10, Friday](#id-section65)
-* [Entry 66: 2020-04-13, Monday](#id-section66)
-* [Entry 67: 2020-04-14, Tuesday](#id-section67)
-* [Entry 68: 2020-04-15, Wednesday](#id-section68)
-* [Entry 69: 2020-04-16, Thursday](#id-section69)
-* [Entry 70: 2020-04-17, Friday](#id-section70)
-* [Entry 71: 2020-04-20, Monday](#id-section71)
-* [Entry 72: 2020-04-21, Tuesday](#id-section72)
-* [Entry 73: 2020-04-22, Wednesday](#id-section73)
-* [Entry 74: 2020-04-23, Thursday](#id-section74)
-* [Entry 75: 2020-04-24, Friday](#id-section75)
-* [Entry 76: 2020-04-27, Monday](#id-section76)
-* [Entry 77: 2020-04-28, Tuesday](#id-section77)
-* [Entry 78: 2020-04-29, Wednesday](#id-section78)
-* [Entry 79: 2020-04-30, Thursday](#id-section79)
-* [Entry 80: 2020-05-01, Friday](#id-section80)
-* [Entry 81: 2020-05-04, Monday](#id-section81)
-* [Entry 82: 2020-05-05, Tuesday](#id-section82)
-* [Entry 83: 2020-05-06, Wednesday](#id-section83)
-* [Entry 84: 2020-05-07, Thursday](#id-section84)
-* [Entry 85: 2020-05-08, Friday](#id-section85)
 
+# Command-line UNIX tutorial - 22JAN2020
 
-------    
-<div id='id-section1'/>   
+## What is the command-line?
 
+Command-line (_aka_ terminal or shell)
+- a way of interacting with your local computer or a remote server 
+- commands or scripts, without using a graphical user interface (GUI).
 
-### Entry 1: 2020-01-13, Monday.   
+## Why do I want to be doing this?
 
+- It's quite easy to copy, move, edit, and search within thousands of files in multiple directories with some simple command-line code. 
+- It would take forever to do this by dragging/dropping with a mouse. 
+- Allows you to work with very large data files without uncompressing them fully, or loading the entire file's contents into memory
 
+## Connect to the server
 
-------    
-<div id='id-section2'/>   
+- The first step is to open a terminal *shell* on your local computer. For MacOS users, this is called "Terminal".
 
+- We'll connect to our remote server running Unix using the secure shell (ssh) protocol. Our server's name is *pbio381* and we can connect to it using our UVM netid username and password (as long as we're on-campus)
 
-### Entry 2: 2020-01-14, Tuesday.   
+```bash
+ip0af52fbf:papers tsoleary$ ssh tsoleary@pbio381.uvm.edu
+tsoleary@pbio381.uvm.edu's password: 
+Last login: Tue Jan 31 10:51:15 2017 from ip040027.uvm.edu
+[tsoleary@pbio381 ~]$ 
+```
 
+- The log-in screen tells us some basic info on when we last logged in, and then gives us our current location in the filesystem (~) followed by the $ prompt, that tells us the computer is ready for our next command. 
+
+  - NOTE: The tilda (~) is short-hand for your home directory in UNIX. This is your own personal little corner of the computer's hard drive space, and is the location that you should use to create folders and input/output/results files that are specific to your own work. No one has access to any files stored in your home directory but you.
 
+- To see the full path to your current directory, use the **pwd** command:
 
-------    
-<div id='id-section3'/>   
+```bash
+[tsoleary@pbio381 ~]$ pwd
+/users/s/r/tsoleary
+[tsoleary@pbio381 ~]$ 
+```
+
+
+- The path shows the full directory address up from the "root" of the file structure, which is the most basal level (appealing to all you phylogeneticists here…). The root is symbolized as "/" and each subdirectory is separated by an additional "/". So, the full path to my working directory on the server is */users/s/r/tsoleary/*
+
+
+- Let's make a new folder (aka, directory) using the **mkdir** command. Let's name this folder "mydata"
+
+```bash
+[tsoleary@pbio381 ~]$ mkdir mydata
+```
+
+- We can then use the **ll** command to show the current contents of any folders and files in our current location:
+
+```bash
+[tsoleary@pbio381 ~]$ ll
+total 0
+drwxr-xr-x. 6 tsoleary users 82 Jan 31 17:21 archive
+drwxr-xr-x. 2 tsoleary users  6 Jan 31 17:21 mydata
+drwxr-xr-x. 2 tsoleary users  6 Jan 31 17:15 scripts
+[tsoleary@pbio381 ~]$ 
+```
+
+- You'll notive that I've got some extra folders in my output from previous work, whereas you will probably only see the "scripts" folder you just made. 
+- NOTE: Each row shows a file or a folder (in this case, these are all folders) diplaying (from right to left) its name, when it was last edited, size, who it belongs to , and who has permission to read (r) write (w) and exectue (x) it. More on permissions later...
+- Try making your own folder named "scripts" and then use the `ll` command to list the folders again 
+- We can change our current location within the directory structure using the `cd` command. Let's use `cd` to move inside the `mydata/` directory and `ll` to list its contents:
+
+```bash
+[tsoleary@pbio381 ~]$ cd mydata/
+[tsoleary@pbio381 mydata]$ ll
+total 0
+[tsoleary@pbio381 mydata]$ 
+```
+
+- Hah — nothing in there yet! Let's go get some data!
+  - We've placed the text file containing all the metadata information on the seastar sampling under a shared space on the server. The path to this shared space is: 
+    - */data/*   Try using **cd** to navigate over to this location. Then **ll** to show its contents. You should see something like this:
+
+```bash
+drwxr-xr-x.  5 root root       73 Jan 31 17:35 archive
+drwxrwxr-x.  2 root pb381adm   40 Nov 30  2015 packages
+drwxrwxr-x. 33 root pb381adm 4096 Nov 30  2015 popgen
+drwxrwxr-x.  3 root pb381adm   42 Jan 30 09:08 project_data
+drwxrwxr-x.  2 root pb381adm    6 Oct  2  2015 scripts
+drwxr-xr-x. 18 root root     4096 Sep  2  2015 users
+[tsoleary@pbio381 data]$ 
+```
+
+- Now, **cd** into the folder called "project_data" and **ll**. Do you see this?
+
+```bash
+[tsoleary@pbio381 data]$ cd project_data/
+[tsoleary@pbio381 project_data]$ ll
+total 8
+drwxr-xr-x. 12 tsoleary users 4096 Jan 30 09:06 archive
+-rw-r--r--.  1 tsoleary users 1255 Jan 30 09:08 ssw_samples.txt
+[tsoleary@pbio381 project_data]$ 
+```
+
+- The file called `ssw_samples.txt` is the one with the seastar metadata. We don't want to open and make changes to this file in the shared space, because we don't want to have our edits affect the rest of the group. So, let's first make a copy of this file over to our home directory and put it inside the "mydata" folder. Use the `cp` command, followed by the filename, and the path to your destination (remember the ~ signals your home directory, and each subdirectory is then separated by a `/`):
+
+```bash
+[tsoleary@pbio381 project_data]$ cp ssw_samples.txt ~/mydata/
+```
+
+- **cd** back to your *~/mydata/* directory and look inside. You should see your file...
+
+```bash
+[tsoleary@pbio381 project_data]$ cd ~/mydata/
+[tsoleary@pbio381 mydata]$ ll
+total 4
+-rw-r--r--. 1 tsoleary users 1255 Jan 31 17:42 ssw_samples.txt
+[tsoleary@pbio381 mydata]$ 
+```
+
+- Let's take a peek at this file with the **head** command, which prints the first 10 lines to screen.
+
+```bash
+[tsoleary@pbio381 mydata]$ head ssw_samples.txt 
+Individual	Trajectory	Location	Day3	Day6	Day9	Day12	Day15
+10	HH	INT	10_5-08_H	10_5-11_H	10_5-14_H	10_5-17_H	10_5-20_H
+24	HH	INT	24_5-08_H	24_5-11_H	24_5-14_H	24_5-17_H	24_5-20_H
+27	HH	INT	27_5-08_H	27_5-11_H	27_5-14_H	27_5-17_H	27_5-20_H
+08	HS	INT	08_5-08_H	08_5-11_S	08_5-14_S	08_5-17_S	08_5-20_S
+09	HS	INT	09_5-08_H		09_5-14_S	09_5-17_S	09_5-20_S
+15	HS	INT	15_5-08_H	15_5-11_H	15_5-14_H	15_5-17_S	15_5-20_S
+19	HS	INT		19_5-11_H	19_5-14_H	19_5-17_H	19_5-20_S
+20	HS	INT	20_5-08_H	20_5-11_H	20_5-14_H	20_5-17_H	20_5-20_S
+03	SS	INT	03_5-08_S	03_5-11_S
+```
+
+- The **tail** command provides similar functionality, but prints just the last lines in the file. These features may not seem a big deal right now, but when you're dealing with files that are 20 Gb compressed, and feature hundreds of millions of lines of data, you and your computer will be happy to have tools to peek inside without having to open the whole file!
+- What if we want to extract just the rows of data that correspond to Healthy (HH) individuals? We can use the search tool **grep** to search for a target query. Any line matching our search string will be printed to screen.
+
+```bash
+[tsoleary@pbio381 mydata]$ grep 'HH' ssw_samples.txt 
+10	HH	INT	10_5-08_H	10_5-11_H	10_5-14_H	10_5-17_H	10_5-20_H
+24	HH	INT	24_5-08_H	24_5-11_H	24_5-14_H	24_5-17_H	24_5-20_H
+27	HH	INT	27_5-08_H	27_5-11_H	27_5-14_H	27_5-17_H	27_5-20_H
+31	HH	SUB	31_6-12_H	31_6-15_H	31_6-18_H	31_6-21_H	31_6-24_H
+32	HH	SUB	32_6-12_H	32_6-15_H	32_6-18_H	32_6-21_H	
+33	HH	SUB	33_6-12_H	33_6-15_H	33_6-18_H	33_6-21_H	33_6-24_H
+34	HH	SUB	34_6-12_H	34_6-15_H	34_6-18_H	34_6-21_H	34_6-24_H
+35	HH	SUB	35_6-12_H	35_6-15_H	35_6-18_H	35_6-21_H	
+[tsoleary@pbio381 mydata]$
+```
+
+- What if instead of printing it to screen, we want to save the output of our search to a new file? This is easy, just use the ">" symbol to redirect the results of any command to an output file with your choice of name.
+
+```bash
+[tsoleary@pbio381 mydata]$ grep 'HH' ssw_samples.txt >ssw_HHonly.txt
+[tsoleary@pbio381 mydata]$ ll
+total 8
+-rw-r--r--. 1 tsoleary users  462 Jan 31 20:46 ssw_HHonly.txt
+-rwxrwxr-x. 1 tsoleary users 1255 Jan 31 17:42 ssw_samples.txt
+[tsoleary@pbio381 mydata]$ 
+```
+
+- We can do the same routine for the "SS" samples. Here's a trick, when you're doing a similar task as a previous command, hit the up arrow on your keyboard at the $ prompt, and it will recall the last command you issued. Then you just have to switch the HH's for SS's.
+
+```bash
+[tsoleary@pbio381 mydata]$ grep 'SS' ssw_samples.txt >ssw_SSonly.txt
+[tsoleary@pbio381 mydata]$ ll
+total 12
+-rw-r--r--. 1 tsoleary users  462 Jan 31 20:46 ssw_HHonly.txt
+-rwxrwxr-x. 1 tsoleary users 1255 Jan 31 17:42 ssw_samples.txt
+-rw-r--r--. 1 tsoleary users  342 Jan 31 20:48 ssw_SSonly.txt
+[tsoleary@pbio381 mydata]$ 
+```
+
+- `grep` is a useful search tool and has many additional features for sorting and output of the results. These kinds of search algorithms are called "regular expressions", or "regexp", and are one of the most powerful tools for wokring with large text files. If you want to learn more about `grep` and its regexp capabilities, you can look at the `man` page or manual. In fact, every UNIX command-line program has a built-in `man` page that you can call up to help you. Just type `man` and then the program name and it will give you the manual (small excerpt shown below).
+
+```bash
+[tsoleary@pbio381 mydata]$ man grep
+
+
+GREP(1)                            General Commands Manual                           GREP(1)
+
+NAME
+       grep, egrep, fgrep - print lines matching a pattern
+
+SYNOPSIS
+       grep [OPTIONS] PATTERN [FILE...]
+       grep [OPTIONS] [-e PATTERN | -f FILE] [FILE...]
+
+DESCRIPTION
+       grep searches the named input FILEs (or standard input if no files are named, or if a
+       single hyphen-minus (-) is given as file name) for lines containing a  match  to  the
+       given PATTERN.  By default, grep prints the matching lines.
+
+       In  addition,  two variant programs egrep and fgrep are available.  egrep is the same
+       as grep -E.  fgrep is the same as grep -F.  Direct  invocation  as  either  egrep  or
+       fgrep  is  deprecated,  but is provided to allow historical applications that rely on
+       them to run unmodified.
+
+OPTIONS
+   Generic Program Information
+       --help Print a usage message briefly summarizing these command-line options  and  the
+              bug-reporting address, then exit.
+
+       -V, --version
+              Print  the version number of grep to the standard output stream.  This version
+              number should be included in all bug reports (see below).
+
+   Matcher Selection
+       -E, --extended-regexp
+              Interpret PATTERN as an extended regular expression (ERE, see below).  (-E  is
+              specified by POSIX.)
+
+       -F, --fixed-strings, --fixed-regexp
+              Interpret  PATTERN  as  a list of fixed strings, separated by newlines, any of
+              which is to be matched.  (-F is  specified  by  POSIX,  --fixed-regexp  is  an
+              obsoleted alias, please do not use it in new scripts.)
+
+       -G, --basic-regexp
+              Interpret PATTERN as a basic regular expression (BRE, see below).  This is the
+              default.
+
+       -P, --perl-regexp
+              Interpret PATTERN as a Perl regular expression.  This is  highly  experimental
+              and grep -P may warn of unimplemented features.
+```
+
+- One of the most useful aspects of UNIX is the ability to take the output from one command and use it as standard input (termed 'stdin') into another command without having to store the intermediate files. Such a workflow is called "piping", and makes use of the pipe character (|) located above the return key to feed data between programs.
+  - Example: Say we wanted to know how many samples come from the Intertidal. We can use `grep` to do the search, and pipe the results to the command `wc` which will tally up the number of lines, words, and characters in the file…voila!
+
+```bash
+[tsoleary@pbio381 mydata]$ grep 'INT' ssw_samples.txt | wc
+     16     106     762
+[tsoleary@pbio381 mydata]$ 
+```
+
+- Looks like 16 INT samples in the original data. See how quick it was to get a line count on this match, without actully opening a file or printing/saving the outputs? 
+- Now, what if we want to move the files we created with just individuals of a particular disease status. There's a way to do this quickly using the wildcard character `*`. With the wildcard, the `*\*` takes the place of any character, and in fact any length of characters.
+
+- Make a new directory called `samples_by_disease/` inside the `mydata/` folder
+- Move all files that contain the word "only" into the new directory using the `mv` command.
+
+```bash
+[tsoleary@pbio381 mydata]$ mkdir sample_by_disease/
+[tsoleary@pbio381 mydata]$ ll
+total 12
+drwxr-xr-x. 2 tsoleary users   10 Jan 31 21:12 sample_by_disease
+-rw-r--r--. 1 tsoleary users  462 Jan 31 20:46 ssw_HHonly.txt
+-rwxrwxr-x. 1 tsoleary users 1255 Jan 31 17:42 ssw_samples.txt
+-rw-r--r--. 1 tsoleary users  342 Jan 31 20:48 ssw_SSonly.txt
+[tsoleary@pbio381 mydata]$ mv *only* sample_by_disease/
+[tsoleary@pbio381 mydata]$ ll
+total 4
+drwxr-xr-x. 2 tsoleary users   60 Jan 31 21:12 sample_by_disease
+-rwxrwxr-x. 1 tsoleary users 1255 Jan 31 17:42 ssw_samples.txt
+[tsoleary@pbio381 mydata]$ cd sample_by_disease/
+[tsoleary@pbio381 sample_by_disease]$ ll
+total 8
+-rw-r--r--. 1 tsoleary users 462 Jan 31 20:46 ssw_HHonly.txt
+-rw-r--r--. 1 tsoleary users 342 Jan 31 20:48 ssw_SSonly.txt
+[tsoleary@pbio381 sample_by_disease]$ 
+```
+
+- OK, what about when we have files we don't want anymore? How do we clean up our workspace? You can remove files and folders with the `rm` command. However, in its default mode, UNIX will not ask if you really mean it before getting rid of it forever(!), so this can be dangerous if you're not paying attention. 
+- As an example, let's use our `grep` command to pull out he seastar samples that started healthy and then became sick. But perhaps we later decide we're not going to work with those samples, so we use `rm` to delete that file:
+
+```bash
+[tsoleary@pbio381 mydata]$ ll
+total 8
+drwxr-xr-x. 2 tsoleary users   60 Jan 31 21:12 sample_by_disease
+-rw-r--r--. 1 tsoleary users  282 Feb  1 05:35 ssw_HSonly.txt
+-rwxrwxr-x. 1 tsoleary users 1255 Jan 31 17:42 ssw_samples.txt
+[tsoleary@pbio381 mydata]$ rm ssw_HSonly.txt 
+[tsoleary@pbio381 mydata]$ ll
+total 4
+drwxr-xr-x. 2 tsoleary users   60 Jan 31 21:12 sample_by_disease
+-rwxrwxr-x. 1 tsoleary users 1255 Jan 31 17:42 ssw_samples.txt
+[tsoleary@pbio381 mydata]$
+```
+
+
+- Gone! Forever! If that worries you, you can change your personal settings so that the server asks you to confirm deletion before it acts. To do this, we'll need to follow a couple of new steps:
+
+## Confirm deletion after rm
+
+1.    `cd` to your home directory (~/)
+2. list all the files, including "hidden" ones that aren't usually shown. To do this, use `ll -a`.
+3. Look for a file called ".bashrc" — this contains your settings for how you interact with the server when you log in.
+4. We're going to open this file and edit it to add a setting to request that `rm` confirms deletion with us. To edit text files on the fly in UNIX, you can use the built-in text editor, "vim": `vim .bashrc`
+5. You should see something that looks like this:
+
+```bash
+# .bashrc
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+# User specific aliases and functions
+
+```
+
+6.   Use your arrow key to move your cursor down to the last line, below ""# User specific aliases and functions" — this is where we're going to insert our new function.
+
+7.   By defauly, vim is in read-only mode when it opens files. To go into edit mode, press your "i" key (for "insert"). You are now able to make changes to the file.
+
+8.   Add the following text on a new line directly below the "# User specific…" line:
+
+       `alias rm='rm -i'`
+
+9.   Your file should now look like this:
+
+```bash
+# .bashrc
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+# User specific aliases and functions
+
+alias rm='rm -i'
+```
+
+10. You're now ready to get out of edit mode (hit the `escape key`), save your changes (type `:w`), and exit vim (type `:q`).
+
+11. These changes won't take effect until you log out (type `exit` to log out of the server). But from now on, every time you log in, the server will remember that you want a reminder before deleting any of your work.
+
+## Review what we've learned so far
+
+- Logging in to the server: `ssh netid@pbio381.uvm.edu`
+- Finding what directory you're in: `pwd`
+- Listing files in your current directory, or changing to a new directory: `ll`, `cd`
+- Making a new folder: `mkdir foldername`
+- Location of shared space, data, and programs on our class server:
+
+```
+[tsoleary@pbio381 ~]$ cd /data/
+[tsoleary@pbio381 data]$ ll
+total 8
+drwxr-xr-x.  5 root root       73 Jan 31 17:35 archive
+drwxrwxr-x.  2 root pb381adm   40 Nov 30  2015 packages
+drwxrwxr-x. 33 root pb381adm 4096 Nov 30  2015 popgen
+drwxrwxr-x.  3 root pb381adm   42 Jan 30 09:08 project_data
+drwxrwxr-x.  2 root pb381adm    6 Oct  2  2015 scripts
+drwxr-xr-x. 18 root root     4096 Sep  2  2015 users
+[tsoleary@pbio381 data]$ 
+```
+
+- Copying or moving files from one location to another: `cp filename destinationpath/` or `mv filename destinationpath/` 
+- Peeking into the first or last few lines of a file: `head filename`, `tail filename`
+- Searching within a file for a match: `grep 'search string' filename`
+- Outputing the results of a command to a new file: `grep 'search string' filename >outputfilename`
+- Using wildcards to work on multiple files at the same time: `mv *.txt ~/newfolder`
+-  Using the "pipe" to send the output of one command to the input of another: `grep 'INT' filename | wc `
+- Removing files or folders: `rm`
+- Editing text files on the server: `vim filename`       
+
+## Useful links
+
+- Handy [UNIX cheat sheet](https://files.fosswire.com/2007/08/fwunixref.pdf) for helping to remember some of these commonly used commands (and others)
+
+- Here's another useful [UNIX cheatsheet](http://cheatsheetworld.com/programming/unix-linux-cheat-sheet/)
+
+
+# Fastqc, trimming, & mapping
+
+## Learning objectives
+- To get background on the ecology of Red spruce (_Picea rubens_), and the experimental design of the exome capture data
+- To understand the general work flow or “pipeline” for processing and analyzing the exome capture sequence data
+- To visualize and interpret Illumina data quality (what is a fastq file; what are Phred scores?).
+- To learn how to make/write a bash script, and how to use bash commands to process files in batches
+- To trim the reads based on base quality scores
+- To start mapping (a.k.a. aligning) each set of cleaned reads to a reference genome
+
+## Red spruce, _Picea rubens_
+ 
+- Red spruce is a coniferous tree that plays a prominent role in montane communities throughout the Appalachians. 
+
+- Thrives in the cool, moist climates of the high elevation mountains of the Apppalachians and northward along the coastal areas of Atlantic Canada.
+
+One region where populations are particular vulnerable to climate change is in the low-latitude trailing edge of the range, from Maryland to Tennessee, where 
+- populations are highly fragmented and isolated on mountaintops. 
+- These “island” populations are remnants of spruce forests that covered the southern U.S. glaciers extended as far south as Long Island, NY. 
+- As the climate warmed at the end of the Pleistocene (~20K years ago), red spruce retreated upward in elevation to these mountaintop refugia, where they are now highlty isolated from other such stands and from the core of the range further north.
+
+
+With funding from the National Science Foundation, the Keller Lab is studying the genetic basis of climate adaptation across the distribution of P. rubens. 
+
+Our main goals are to:
+
+1. characterize the genetic diversity and population structure across the range
+
+2. identify regions of the genome that show evidence of positive selection in response to climate gradients
+
+3. map the genetic basis of climate adaptive phenotypes
+
+
+We hope to use this information to inform areas of the range most likely to experience climate maladaptation, and to help guide mitigation strategies.
+
+## Experimental Design
+
+In 2017, we collected seeds and needle tissue from 340 mother trees at 65 populations spread throughout the range. 
+- Extracted whole genomic DNA from needles to use for exome capture sequencing.
+    - Sample size in the edge region = 110 mother trees from 23 populations.
+- Exome capture was designed based on transcriptomes from multiple tissues and developmental stages in the related species, white spruce (_P. glauca_).
+Bait design used 2 transcriptomes previously assembled by Rigault et al. (2011) and Yeaman et al. (2014).
+- A total of 80,000 120bp probes were designed, including 75,732 probes within or overlapping exomic regions, and an additional 4,268 probes in intergenic regions.
+- Each probe was required to represent a single blast hit to the P. glauca reference genome of at least 90bp long and 85% identity, covering 38,570 unigenes.
+- Libraries were made by random mechanical shearing of DNA (250 ng -1ug) to an average size of 400 bp followed by end-repair reaction, ligation of an adenine residue to the 3’-end of the blunt-end fragments to allow the ligation of barcoded adapters, and PCR-amplification of the library. SureSelect probes (Agilent Technologies: Santa Clara, CA) were used for solution-based targeted enrichment of pools of 16 libraries, following the SureSelectxt Target Enrichment System for Illumina Paired-End Multiplexed Sequencing Library protocol.
+- Libraries were sequenced on a single run of a Illumina HiSeq X to generate paired-end 150-bp reads.
 
+## The _pipeline_
 
-### Entry 3: 2020-01-15, Wednesday.   
+- Visualize, Clean, Visualize
+    - Visualize the quality of raw data (Program: FastQC)
+    - Clean raw data (Program: Trimmomatic)
+    - Visualize the quality of cleaned data (Program: FastQC)
+
+- Calculate #’s of cleaned, high quality reads going into mapping
+- Map (a.k.a. Align) cleaned reads from each sample to the reference assembly to generate sequence alignment files (Program: bwa, Input: .fastq, Output: .sam).
+- Remove PCR duplicates identified during mapping, and calculate alignment statistics (% of reads mapping succesully, mapping quality scores, average depth of coverage per individual)
+- We’ll then use the results of our mapping next week to start estimating diversity and population structure.
+- Visualize, Clean, and Visualize again
 
+Whenever you get a new batch of NGS data, the first step is to look at the data quality of coming off the sequencer and see if we notice any problems with base quality, sequence length, PCR duplicates, or adapter contamination.
 
+### `.fastq` files
+A fastq file is the standard sequence data format for NGS. It contains the sequence of the read itself, the corresponding quality scores for each base, and some meta-data about the read.
 
-------    
-<div id='id-section4'/>   
+The files are big (typically many Gb compressed), so we can’t open them completely. Instead, we can peek inside the file using head. But size these files are compressed (note the `.gz` ending in the filenames), and we want them to stay compressed while we peek. Bash has a solution to that called `zcat`. This lets us look at the `.gz` file without uncompressing it all the way.
 
+The fastq files are in this path: `/data/project_data/RS_ExomeSeq/fastq/edge_fastq`
 
-### Entry 4: 2020-01-16, Thursday.   
+```bash
+cd /data/project_data/RS_ExomeSeq/fastq/edge_fastq
+zcat AB_05_R1_fastq.gz | head -n 4
+
+@GWNJ-0842:368:GW1809211440:2:1101:17168:1907 1:N:0:NGAAGAGA+NTTCGCCT
+GATGGGATTAGAGCCCCTGAAGGCTGATAGAACTTGAGTTTCACAGGCTCATTGCATTGAAGTGGCATTTGTGTGAATGCAGAGGAGGTACATAGGTCCTCGAGAATAAAAGAGATGTTGCTCCTCACCAAAATCAGTACAGATTATTTT
++
+A<A-F<AFJFJFJA7FJJJJFFJJJJJJ<AJ-FJJ7-A-FJAJJ-JJJA7A7AFJ<FF--<FF7-AJJFJFJA-<A-FAJ<AJJ<JJF--<A-7F-777-FA77---7AJ-JF-FJF-A--AJF-7FJFF77F-A--7<-F--77<JFF<
+```
 
+Note: `zcat` lets us open a `.gz` (gzipped) file; we then “pipe” | this output from zcat to the head command and print just the top 4 lines `-n4`.
+
+The `.fastq` file format** has 4 lines for each read:
 
+Line	Description
+1. Always begins with ‘@’ and then information about the read
+2. The actual DNA sequence
+3. Always begins with a ‘+’ and sometimes the same info in line 1
+4. A string of characters which represent the quality scores; always has same number of characters as line 2
+
+Here’s a useful reference for understanding Quality (Phred) scores. If P is the probability that a base call is an error, then:
 
-------    
-<div id='id-section5'/>   
+$$P = 10^(–Q/10)$$
+
+$$ Q = –10 log10(P)$$
+
+## Visualize using FastQC
+We’re going to use the program FastQC (already installed on our server). FastQC looks at the quality collectively across all reads in a sample.
+
+First, let’s make a new dir within myresults to hold the outputs
+
+```bash
+mkdir ~/<myrepo>/myresults/fastqc
+```
+
+Then, the basic FastQC command is like this:
+
+```bash
+fastqc FILENAME.fastq.gz -o outputdirectory/
+```
+
+This will generate an .html output file for each input file you’ve run.
+
+But, we want to be clever and process multiple files (i.e., ALL files from our population) without having to manually submit each one. We can do this by writing a bash script that contains a loop.
+
+The basic syntax of a bash loops is like this:
+```bash
+for file in myfiles
+do
+  command 1 -options ${file}
+  command 2 -options ${file}
+done
+```
+
+Note the use of variable assignment using `${}`. We define the word file in the for loop as the variable of interest, and then call the iterations of it using `${file}`. For example, we could use the wildcard character (*) in a loop to call all files that include the population code “AB” and then pass those filenames in a loop to fastqc. Something like:
+
+```bash
+for file in AB*fastq.gz
+
+do
+
+ fastqc ${file} -o ~/<myrepo>/myresults/fastqc
+
+done
+```
+
+Let’s write the above into a script using the Vim text editor at the command line. Type vim to get into the editor, then type “i” to enter INSERT mode. You can then type your script (remember to make necessary changes to the population code and output path). Lastly, to save the file and quit Vim, hit the ESCAPE key to get out of INSERT mode, followed by `:wq fastqc.sh`
+
+Back at the command line, you should be able to ll and see your new script!
+
+You may find that you need to change the permission on your script to make it executable. Do this using chmod u+x, which changes the permissions to give the user (you) permission to execute (x). Then give it a run!
+
+```bash
+chmod u+x fastqc.sh    # makes the script "executable" by the "user"
+./fastqc.sh            # executes the script
+```
 
+It’ll take just a couple of minutes per fastq file. Once you’ve got results, let’s look at them by pushing your html files up to your Github. Remember,
 
-### Entry 5: 2020-01-17, Friday.   
+```bash
+git pull
+git add --all .
+git commit -m "note"
+git push
+```
 
+Once synced to Github, use Github desktop to pull them down to your laptop where you can open them with a browser.
+
+How does the quality look?
+
+## Clean using Trimmomatic
+We’ll use the Trimmomatic program to clean the reads for each file. The program is already installed on our server.
 
+We’ve provided an example script in the `/data/scripts/` directory this time because the program is a java based program and thus a bit more particular in its call.
 
-------    
-<div id='id-section6'/>   
+Copy the bash script over to your `~/myrepo/myscripts` directory
+Open and edit the bash script using the program vim.
+Edit the file so that you’re trimming the fastq files for the population assigned to you
+Change the permissions on your script to make it executable, then run it! (examples below)
+```bash
+cp /data/scripts/trim_loop.sh  ~/myrepo/myscripts/ # copies the script to your home scripts dir
+vim trim_loop.sh    # open the script with vim to edit
+```
 
 
-### Entry 6: 2020-01-20, Monday.   
+This time we use the variable coding to call the name of the R1 read pair, define the name for the second read in the pair (R2), and create a basename that only contains the “pop_ind” part of the name, i.e. AB_05
+```bash
+R2=${R1/_R1_fastq.gz/_R2_fastq.gz}   # defines the name for the second read in the pair (R2) based on knowing the R1 name (the file names are identifcal except for the R1 vs. R2 designation)
+f=${R1/_R1_fastq.gz/}   # creates a new variable from R1 that has the "_R1_fastq.gz" stripped off
+name=`basename ${f}`   # calls the handy "basename" function to define a new variable containing only the very last part of the filename while stripping off all the path information.  This gets us the "AB_05" bit we want.
+```    
+Here’s how it should look (replace AB with your population name):
 
+```
+#!/bin/bash   
+ 
+cd /data/project_data/RS_ExomeSeq/fastq/edge_fastq  
 
+for R1 in AB*R1_fastq.gz  
 
-------    
-<div id='id-section7'/>   
+do 
+ 
+    R2=${R1/_R1_fastq.gz/_R2_fastq.gz}
+    f=${R1/_R1_fastq.gz/}
+    name=`basename ${f}`
 
+    java -classpath /data/popgen/Trimmomatic-0.33/trimmomatic-0.33.jar org.usadellab.trimmomatic.TrimmomaticPE \
+        -threads 1 \
+        -phred33 \
+         "$R1" \
+         "$R2" \
+         /data/project_data/RS_ExomeSeq/fastq/edge_fastq/pairedcleanreads/${name}_R1.cl.pd.fq \
+         /data/project_data/RS_ExomeSeq/fastq/edge_fastq/unpairedcleanreads/${name}_R1.cl.un.fq \
+         /data/project_data/RS_ExomeSeq/fastq/edge_fastq/pairedcleanreads/${name}_R2.cl.pd.fq \
+         /data/project_data/RS_ExomeSeq/fastq/edge_fastq/unpairedcleanreads/${name}_R2.cl.un.fq \
+        ILLUMINACLIP:/data/popgen/Trimmomatic-0.33/adapters/TruSeq3-PE.fa:2:30:10 \
+        LEADING:20 \
+        TRAILING:20 \
+        SLIDINGWINDOW:6:20 \
+        MINLEN:35 
+ 
+done 
+```
 
-### Entry 7: 2020-01-21, Tuesday.   
+Trimmomatic performs the cleaning steps in the order they are presented. It’s recommended to clip adapter early in the process and clean for length at the end.
 
+The steps and options are from the Trimmomatic website:
 
+ILLUMINACLIP: Cut adapter and other illumina-specific sequences from the read.
+LEADING: Cut bases off the start of a read, if below a threshold quality
+TRAILING: Cut bases off the end of a read, if below a threshold quality
+SLIDINGWINDOW: Perform a sliding window trimming, cutting once the average quality within the window falls below a threshold.
+MINLEN: Drop the read if it is below a specified length
 
-------    
-<div id='id-section8'/>   
+## Visualize again using FastQC
+- Check the quality of one of your cleaned files using fastqc again
+- Redo the same general vizualization steps on the cleaned files
 
+## Mapping against the reference genome
 
-### Entry 8: 2020-01-22, Wednesday.   
+Now that we have cleaned and trimmed read pairs, we’re ready to map them against the reference genome.
 
+### Obtain reference genome
 
+We’ll be using a reduced reference genome based on selecting only those scaffolds of the full genome reference that contain at least one bait. We’ve placed it on our server here:
+`/data/project_data/RS_ExomeSeq/ReferenceGenomes/Pabies1.0-genome_reduced.fa`
 
-------    
-<div id='id-section9'/>   
+The reference genome is based on Norway spruce (P. abies) and is available from congenie.org.
 
+### bwa for mapping reads
 
-### Entry 9: 2020-01-23, Thursday.   
+We’ll use the program bwa, which is a very efficient and very well vetted read mapper. Lots of others exist and can be useful to explore for future datasets. We tried several, and for our exome data, bwa seems to be the best
 
+We are going to write a bash script together that calls the R1 and R2 reads for each individual in our population, and uses the bwa-mem algorithm to map reads to the reference genome. The resulting output will be a `.sam` file alignment. The basic `bwa` command we’ll use is:
 
+```bash
+bwa mem -t 1 -M -a ${ref} ${forward} ${reverse} > ${output}/BWA/${name}.sam
 
-------    
-<div id='id-section10'/>   
+# where:
 
+-t # the number of threads, or computer cpus to use (in this case, just 1)
+-M # labels a read with a special flag if its mapping is split across >1 contig
+-a # keeps alignments involving unpaired reads
+${ref} # specifies the path and filename for the reference genome
+${forward} # specifies the path and filename for the cleaned and trimmed R1 reads 
+${reverse} # specifies the path and filename for the cleaned and trimmed R2 reads 
+>${output}/BWA/${name}.sam  # directs the .sam file to be saved into a directory called BWA
+# Other bwa options detailed here: bwa manual page
+```
 
-### Entry 10: 2020-01-24, Friday.   
+### samtools and sambamba 
 
+Our last steps (with basic syntax) are to: 
 
+1. Convert our `.sam` files to the more efficient binary version .`bam` and sort them `sambamba-0.7.1-linux-static view -S --format=bam file.sam -o file.bam`
 
-------    
-<div id='id-section11'/>   
+2. Get rid of any PCR duplicate sequences (why are these a problem?) and re-sort after removing duplicates.
 
+- `sambamba-0.7.1-linux-static markdup -r -t 1 file.bam file.rmdup.bam`
+- `samtools sort file.rmdup.bam -o file.sorted.rmdup.bam`
 
-### Entry 11: 2020-01-27, Monday.   
 
+3. Get some stats on how well the mapping worked
+- `samtools flagstat file.sorted.rmdup.bam | awk 'NR>=5&&NR<=13 {print $1}' | column -x`
+- `samtools depth file.sorted.rmdup.bam | awk '{sum+=$3} END {print sum/NR}`
 
+For this, we’ll use a combination of two new programs: samtools and sambamba. Samtools was writtend by Heng Li, the same person who wrote bwa, and is a powerful tool for manipulating sam/bam files. Sambamba is derived from samtools, and has been re-coded to increase efficiency (speed). We’ll use them both at different steps.
 
-------    
-<div id='id-section12'/>   
+**I’ve put a bash script with the commands to run steps 1-3 above.** It’s located here:
 
+`/data/scripts/process_bam.sh`
 
-### Entry 12: 2020-01-28, Tuesday.   
+- Make a copy of this over to your home directory 
+- Use vim to edit the paths and population
+- Save and quit vim, type :wq
 
+### Create a wrapper
 
+Last step, we’re going to put these scripts altogether into a “wrapper” that will exectue each of them one after the other, and work for us while we’re off getting a coffee or sleeping. :) I’ll show you how to code this together in class.
 
-------    
-<div id='id-section13'/>   
+### Using **screen**
 
+Once your wrapper script is ready, you’re going to want to start a **screen**. The screen command initiates a new shell window that won’t interupt or stop your work if you close your computer, log off the server, or leave the UVM network. **Anytime you’re running long jobs, you definiteily want to use screen.**
 
-### Entry 13: 2020-01-29, Wednesday.   
+Using it is easy. Just type screen followed by . It will take you to a new empyt terminal. You can then start your wrapper bash script and see that it starts running. Once everything looks good, you have to detach from the screen by typing `Ctrl-A + Ctrl-D`. If you don’t do this, you’ll lose your work!
 
-
-
-------    
-<div id='id-section14'/>   
-
-
-### Entry 14: 2020-01-30, Thursday.   
-
-
-
-------    
-<div id='id-section15'/>   
-
-
-### Entry 15: 2020-01-31, Friday.   
-
-
-
-------    
-<div id='id-section16'/>   
-
-
-### Entry 16: 2020-02-03, Monday.   
-
-
-
-------    
-<div id='id-section17'/>   
-
-
-### Entry 17: 2020-02-04, Tuesday.   
-
-
-
-------    
-<div id='id-section18'/>   
-
-
-### Entry 18: 2020-02-05, Wednesday.   
-
-
-
-------    
-<div id='id-section19'/>   
-
-
-### Entry 19: 2020-02-06, Thursday.   
-
-
-
-------    
-<div id='id-section20'/>   
-
-
-### Entry 20: 2020-02-07, Friday.   
-
-
-
-------    
-<div id='id-section21'/>   
-
-
-### Entry 21: 2020-02-10, Monday.   
-
-
-
-------    
-<div id='id-section22'/>   
-
-
-### Entry 22: 2020-02-11, Tuesday.   
-
-
-
-------    
-<div id='id-section23'/>   
-
-
-### Entry 23: 2020-02-12, Wednesday.   
-
-
-
-------    
-<div id='id-section24'/>   
-
-
-### Entry 24: 2020-02-13, Thursday.   
-
-
-
-------    
-<div id='id-section25'/>   
-
-
-### Entry 25: 2020-02-14, Friday.   
-
-
-
-------    
-<div id='id-section26'/>   
-
-
-### Entry 26: 2020-02-17, Monday.   
-
-
-
-------    
-<div id='id-section27'/>   
-
-
-### Entry 27: 2020-02-18, Tuesday.   
-
-
-
-------    
-<div id='id-section28'/>   
-
-
-### Entry 28: 2020-02-19, Wednesday.   
-
-
-
-------    
-<div id='id-section29'/>   
-
-
-### Entry 29: 2020-02-20, Thursday.   
-
-
-
-------    
-<div id='id-section30'/>   
-
-
-### Entry 30: 2020-02-21, Friday.   
-
-
-
-------    
-<div id='id-section31'/>   
-
-
-### Entry 31: 2020-02-24, Monday.   
-
-
-
-------    
-<div id='id-section32'/>   
-
-
-### Entry 32: 2020-02-25, Tuesday.   
-
-
-
-------    
-<div id='id-section33'/>   
-
-
-### Entry 33: 2020-02-26, Wednesday.   
-
-
-
-------    
-<div id='id-section34'/>   
-
-
-### Entry 34: 2020-02-27, Thursday.   
-
-
-
-------    
-<div id='id-section35'/>   
-
-
-### Entry 35: 2020-02-28, Friday.   
-
-
-
-------    
-<div id='id-section36'/>   
-
-
-### Entry 36: 2020-03-02, Monday.   
-
-
-
-------    
-<div id='id-section37'/>   
-
-
-### Entry 37: 2020-03-03, Tuesday.   
-
-
-
-------    
-<div id='id-section38'/>   
-
-
-### Entry 38: 2020-03-04, Wednesday.   
-
-
-
-------    
-<div id='id-section39'/>   
-
-
-### Entry 39: 2020-03-05, Thursday.   
-
-
-
-------    
-<div id='id-section40'/>   
-
-
-### Entry 40: 2020-03-06, Friday.   
-
-
-
-------    
-<div id='id-section41'/>   
-
-
-### Entry 41: 2020-03-09, Monday.   
-
-
-
-------    
-<div id='id-section42'/>   
-
-
-### Entry 42: 2020-03-10, Tuesday.   
-
-
-
-------    
-<div id='id-section43'/>   
-
-
-### Entry 43: 2020-03-11, Wednesday.   
-
-
-
-------    
-<div id='id-section44'/>   
-
-
-### Entry 44: 2020-03-12, Thursday.   
-
-
-
-------    
-<div id='id-section45'/>   
-
-
-### Entry 45: 2020-03-13, Friday.   
-
-
-
-------    
-<div id='id-section46'/>   
-
-
-### Entry 46: 2020-03-16, Monday.   
-
-
-
-------    
-<div id='id-section47'/>   
-
-
-### Entry 47: 2020-03-17, Tuesday.   
-
-
-
-------    
-<div id='id-section48'/>   
-
-
-### Entry 48: 2020-03-18, Wednesday.   
-
-
-
-------    
-<div id='id-section49'/>   
-
-
-### Entry 49: 2020-03-19, Thursday.   
-
-
-
-------    
-<div id='id-section50'/>   
-
-
-### Entry 50: 2020-03-20, Friday.   
-
-
-
-------    
-<div id='id-section51'/>   
-
-
-### Entry 51: 2020-03-23, Monday.   
-
-
-
-------    
-<div id='id-section52'/>   
-
-
-### Entry 52: 2020-03-24, Tuesday.   
-
-
-
-------    
-<div id='id-section53'/>   
-
-
-### Entry 53: 2020-03-25, Wednesday.   
-
-
-
-------    
-<div id='id-section54'/>   
-
-
-### Entry 54: 2020-03-26, Thursday.   
-
-
-
-------    
-<div id='id-section55'/>   
-
-
-### Entry 55: 2020-03-27, Friday.   
-
-
-
-------    
-<div id='id-section56'/>   
-
-
-### Entry 56: 2020-03-30, Monday.   
-
-
-
-------    
-<div id='id-section57'/>   
-
-
-### Entry 57: 2020-03-31, Tuesday.   
-
-
-
-------    
-<div id='id-section58'/>   
-
-
-### Entry 58: 2020-04-01, Wednesday.   
-
-
-
-------    
-<div id='id-section59'/>   
-
-
-### Entry 59: 2020-04-02, Thursday.   
-
-
-
-------    
-<div id='id-section60'/>   
-
-
-### Entry 60: 2020-04-03, Friday.   
-
-
-
-------    
-<div id='id-section61'/>   
-
-
-### Entry 61: 2020-04-06, Monday.   
-
-
-
-------    
-<div id='id-section62'/>   
-
-
-### Entry 62: 2020-04-07, Tuesday.   
-
-
-
-------    
-<div id='id-section63'/>   
-
-
-### Entry 63: 2020-04-08, Wednesday.   
-
-
-
-------    
-<div id='id-section64'/>   
-
-
-### Entry 64: 2020-04-09, Thursday.   
-
-
-
-------    
-<div id='id-section65'/>   
-
-
-### Entry 65: 2020-04-10, Friday.   
-
-
-
-------    
-<div id='id-section66'/>   
-
-
-### Entry 66: 2020-04-13, Monday.   
-
-
-
-------    
-<div id='id-section67'/>   
-
-
-### Entry 67: 2020-04-14, Tuesday.   
-
-
-
-------    
-<div id='id-section68'/>   
-
-
-### Entry 68: 2020-04-15, Wednesday.   
-
-
-
-------    
-<div id='id-section69'/>   
-
-
-### Entry 69: 2020-04-16, Thursday.   
-
-
-
-------    
-<div id='id-section70'/>   
-
-
-### Entry 70: 2020-04-17, Friday.   
-
-
-
-------    
-<div id='id-section71'/>   
-
-
-### Entry 71: 2020-04-20, Monday.   
-
-
-
-------    
-<div id='id-section72'/>   
-
-
-### Entry 72: 2020-04-21, Tuesday.   
-
-
-
-------    
-<div id='id-section73'/>   
-
-
-### Entry 73: 2020-04-22, Wednesday.   
-
-
-
-------    
-<div id='id-section74'/>   
-
-
-### Entry 74: 2020-04-23, Thursday.   
-
-
-
-------    
-<div id='id-section75'/>   
-
-
-### Entry 75: 2020-04-24, Friday.   
-
-
-
-------    
-<div id='id-section76'/>   
-
-
-### Entry 76: 2020-04-27, Monday.   
-
-
-
-------    
-<div id='id-section77'/>   
-
-
-### Entry 77: 2020-04-28, Tuesday.   
-
-
-
-------    
-<div id='id-section78'/>   
-
-
-### Entry 78: 2020-04-29, Wednesday.   
-
-
-
-------    
-<div id='id-section79'/>   
-
-
-### Entry 79: 2020-04-30, Thursday.   
-
-
-
-------    
-<div id='id-section80'/>   
-
-
-### Entry 80: 2020-05-01, Friday.   
-
-
-
-------    
-<div id='id-section81'/>   
-
-
-### Entry 81: 2020-05-04, Monday.   
-
-
-
-------    
-<div id='id-section82'/>   
-
-
-### Entry 82: 2020-05-05, Tuesday.   
-
-
-
-------    
-<div id='id-section83'/>   
-
-
-### Entry 83: 2020-05-06, Wednesday.   
-
-
-
-------    
-<div id='id-section84'/>   
-
-
-### Entry 84: 2020-05-07, Thursday.   
-
-
-
-------    
-<div id='id-section85'/>   
-
-
-### Entry 85: 2020-05-08, Friday.   
+When you’re ready to check back on the progress of your program, you can recover your screen by typing `screen -r`. That’ll re-attach you back to your program!
 
