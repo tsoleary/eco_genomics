@@ -1,20 +1,17 @@
 #! /bin/bash/
 
-# script to visualize the quality of the trimmed reads
-
 # make these results in myresults directory
 cd ~/eco_genomics/myresults/
 
 # make a new fastqc directory
-mkdir trim_fastqc
+mkdir fastqc
 
 # run a for loop to do the fastqc on all the files within the populations
-for file in /data/project_data/RS_ExomeSeq/fastq/edge_fastq/pairedcleanreads/BFA*cl.pd.fq
+for file in /data/project_data/RS_ExomeSeq/fastq/edge_fastq/BFA*fastq.gz
 
-do 
+do
 
-fastqc ${file} -o trim_fastqc/
+  fastqc ${file} -o fastqc/
 
 # close the for loop
 done
-
