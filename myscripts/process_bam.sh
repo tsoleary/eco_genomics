@@ -29,7 +29,7 @@ do
   # -r removes all dups except for one
   # no dash o -o needed for the output
   # just calling the command on the server without any of the options gives you the help information
-  sambamba-0.7.1-linux-static markdup -r -t 1 ${file} ${f}.sorted.rmdup.dup.bam
+  sambamba-0.7.1-linux-static markdup -r -t 1 ${file} ${f}.sorted.rmdup.bam
 
 done
 
