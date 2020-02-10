@@ -10,7 +10,7 @@ for file in ${output}/BWA/*.sorted.rmdup.dup.bam
 
 do
   f=${file/.sorted.rmdup.dup.bam/.sorted.rmdup.bam}
-  mv ${file} ${output}/BWA/${f}
+  mv ${file} ${f}
 done
 
 # rename the .sorted.rmdup.dup.bam.bai files to .sorted.rmdup.bam.bai
@@ -18,5 +18,5 @@ for file in ${output}/BWA/*.sorted.rmdup.dup.bam.bai
 
 do
   f=${file/.sorted.rmdup.dup.bam.bai/.sorted.rmdup.bam.bai}
-  mv ${file} ${output}/BWA/${f}
+  mv ${file} ${f}
 done
