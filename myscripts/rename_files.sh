@@ -4,8 +4,6 @@
 # path to the folder that they are in
 output="/data/project_data/RS_ExomeSeq/mapping"
 
-cd ${output}
-
 # rename the .sorted.rmdup.dup.bam files to .sorted.rmdup.bam
 
 for file in ${output}/BWA/*.sorted.rmdup.dup.bam
