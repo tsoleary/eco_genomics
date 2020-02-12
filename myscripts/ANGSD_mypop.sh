@@ -39,3 +39,15 @@ ANGSD -b ${output}/${mypop}_bam.list \
 -doSaf 1 \
 -doHWE 1 \
 # -SNP_pval 1e-6
+
+# the -SNP line keeps the monomorphic sites but if you wanted only polymorphic sites then you would 
+# -C downgrades reads that have really poor quality
+# -baq is a base quality score, when you have an indel you are morelikely to have snps because of misalignment so this discounts snps near indels
+# -minQ individual bases have to have a certain
+# minumum depth, minimum individuals
+# minumum depth within an individual and a maximum
+# set a maximum
+# paralogs are a difficult issue, often there are more than one copy of the gene and if they are all mapping in the same spot than that could make sites that look polymorphic but really aren't cause they are really from two different spots
+# skipTriallelic makes it so there are only dimorphic sites, it is likely that there are only two alternative alleles at each site
+# identifies doMajorMinor major and minor alleles for the SNPS it is ofen the case that the major allele is the ancestral allele and the minor allele is the derived alleles
+# doHWE estimates HW Equilibruim
