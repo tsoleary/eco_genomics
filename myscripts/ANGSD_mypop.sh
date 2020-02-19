@@ -81,11 +81,11 @@ ANGSD -b ${output}/${mypop}_bam.list \
 
 
 # get a rough first estimate of the SFS and then use as a
-realSFS ${output}/${mypop}_folded_allsites.saf.idx
+realSFS ${output}/${mypop}_folded_allsites.saf.idx \
 -maxiter 1000 -tole 1e-6 -P 1 \
 >${output}/${mypop}_outFold.sfs
 
-
+# now use that rough estimate of the SFS to get a more refined SFS and estimate of theta
 ANGSD -b ${output}/${mypop}_bam.list \
 -ref ${REF} -anc ${REF} \
 -out ${output}/${mypop}_folded_allsites \
@@ -105,7 +105,7 @@ ANGSD -b ${output}/${mypop}_bam.list \
 -doMajorMinor 1 \
 -doMaf 1 \
 -doSaf 1 \
--fold 1
+-fold 1 \
 -pest ${output}/${mypop}_outFold.sfs \
 -doThetas 1
 # use the Theta output to estimate nuceotide diversity
