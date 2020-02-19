@@ -107,7 +107,7 @@ ANGSD -b ${output}/${mypop}_bam.list \
 -doSaf 1 \
 -fold 1
 -pest ${output}/${mypop}_outFold.sfs \
--doTheta 1
+-doThetas 1
 # use the Theta output to estimate nuceotide diversity
 
 thetaStat do_stat ${output}/${mypop}_folded_allsites.thetas.idx
