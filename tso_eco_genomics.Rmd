@@ -10,7 +10,7 @@ output:
 ---
 
 
-# Command-line UNIX tutorial - 22JAN2020
+# Command-line UNIX tutorial
 
 ## What is the command-line?
 
@@ -667,4 +667,295 @@ Once your wrapper script is ready, you’re going to want to start a **screen**.
 Using it is easy. Just type screen followed by . It will take you to a new empyt terminal. You can then start your wrapper bash script and see that it starts running. Once everything looks good, you have to detach from the screen by typing `Ctrl-A + Ctrl-D`. If you don’t do this, you’ll lose your work!
 
 When you’re ready to check back on the progress of your program, you can recover your screen by typing `screen -r`. That’ll re-attach you back to your program!
+
+
+# Mapping the ExomeSeq data
+
+- Review our progress on mapping
+- Calculate mapping statistics to assess quality of the result
+- Visualize sequence alignment files
+- Introduce use of genotype-likelihoods for analyzing diversity in low coverage sequences
+- Use the ‘ANGSD’ progranm to calculate diversity stats, Fsts, and PCA
+
+## Sequence AlignMent (SAM) files
+```bash
+/data/project_data/RS_ExomeSeq/mapping/BWA/
+```
+
+- First, try looking at a SAM file using head and tail.
+```bash
+tail -n 100 FILENAME.sam
+```
+
+A SAM file is a tab delimited text file that stores information about the alignment of reads in a FASTQ file to a reference genome or transcriptome. For each read in a FASTQ file, there’s a line in the SAM file that includes
+
+- the read, aka. query, name,
+- a FLAG (number with information about mapping success and orientation and whether the read is the left or right read),
+- the reference sequence name to which the read mapped
+- the leftmost position in the reference where the read mapped
+- the mapping quality (Phred-scaled)
+- a CIGAR string that gives alignment information (how many bases Match (M), where there’s an Insertion (I) or Deletion (D))
+- an ‘=’, mate position, inferred insert size (columns 7,8,9),
+- the query sequence and Phred-scaled quality from the FASTQ file (columns 10 and 11),
+- then Lots of good information in TAGS at the end, if the read mapped, including whether it is a unique read (XT:A:U), the number of best hits (X0:i:1), the number of suboptimal hits (X1:i:0).
+
+
+The left (R1) and right (R2) reads alternate through the file. SAM files usually have a header section with general information where each line starts with the ‘@’ symbol. SAM and BAM files contain the same information; SAM is human readable and BAM is in binary code and therefore has a smaller file size.
+
+Find the official Sequence AlignMent file documentation can be found [here](https://en.wikipedia.org/wiki/SAM_(file_format) or [more officially](https://samtools.github.io/hts-specs/SAMtags.pdf).
+
+- Here’s a [SAM FLAG decoder by the Broad Institute](https://broadinstitute.github.io/picard/explain-flags.html). Use this to decode the second column of numbers
+
+## How well reads mapped to the reference
+- We can use the program samtools Written by Heng Li, the same person who wrote bwa. It is a powerful tool for manipulating sam/bam files.
+
+- The command `flagstat` gets us some basic info on how well the mapping worked:
+
+- `samtools flagstat FILENAME.sam`
+
+### `bam_stats.sh.`
+
+- We’ll also use the `awk` tool to help format the output.
+
+We’ll use the samtools `flagstat` command to get read counts after mapping, and the depth command to get perhaps the most important statistic in read mapping: the depth of coverage, or how many reads cover each mapped position, on average.
+
+**Put the following into a loop for each individual for which you’ve generated a .sorted.rmdup.bam file:**
+
+- `samtools flagstat file.sorted.rmdup.bam | awk 'NR>=6&&NR<=13 {print $1}' | column -x`
+- `>> ${myrepo}/myresults/${mypop}.flagstats.txt`
+
+- `samtools depth file.sorted.rmdup.bam | awk '{sum+=$3} END {print sum/NR}`
+- `>> ${myrepo}/myresults/${mypop}.coverage.txt`
+
+While that’s running, we can take a look at one of our alignment files (sam or bam) using an integrated viewed in samtools called tview. To use it, simply call the program and command, followed by the sam/bam file you want to view and the path to the reference genome. For example:
+```
+samtools tview /data/project_data/RS_ExomeSeq/mapping/BWA/AB_05.sorted.rmdup.bam /data/project_data/RS_ExomeSeq/ReferenceGenomes/Pabies1.0-genome_reduced.fa
+```
+
+## Calling Genotypes
+
+Inference of population genetics from the aligned sequence data. Should we call genotypes?
+
+Many of the papers you’ll read that do popgen on NGS data have a SNP calling step that results in a specific gneotype being called for each SNP site for each individual. For example,
+
+|SNP|	Ind1|	Ind 2|
+|---|-----|------|
+|1	|CC|	CT|
+|2	|AG|	AA|
+|3	|GT|	TT|
+
+
+But how do we know that Ind1 is homoozygous at SNP-1 (CC) – couldn’t it be CT and we just didn’t have enough coverage to observe the second allele?
+
+The basic problem is that read data are counts that produce a binomial (actually multinomial) distribution of allele calls at a given site, and if you have few reads, you might by chance not observe the true genotype. So, what’s the right thing to do?
+
+As with almost anything in statistics, the right thing to do is not throw away that uncertainty, but instead incorporate it into your analysis. That’s what we’re going to do…
+
+Genotype-free population genetics using genotype likelihoods
+A growing movement in popgen analysis of NGS data is embracing the use of genotype likelihoods to calculate stats based on each individual having a likelihood (probability) of being each genotype.
+
+A genotype likelihood (GL) is essentially the probability of observing the sequencing data (reads containing a particular base), given the genotype of the individual at that site.
+
+These probabilities are modeled explicitly in the calculation of population diversty stats like pi, Tajima’s D, Fst, PCA, etc…; thus not throwing out any precious data, but also making fewer assumptions about the true (unknown) genotype at each locus
+
+We’re going to use this approach with the program ‘ANGSD’, which stands for ‘Analysis of Next Generation Sequence Data’
+
+This approach was pioneered by Rasmus Nielsen, published originally in Korneliussen et al. 2014.
+
+ANGSD has a [user’s manual (it’s a work in progress…)](http://www.popgen.dk/angsd/index.php/ANGSD)
+
+The basic work flow of ANGSD looks like this:
+
+Create a list of bam files for the samples you want to analyze
+Estimate genotype likelihoods (GL’s) and allele frequencies after filtering to minimize noise
+Use GL’s to:
+- estimate the site frequency spectrum (SFS)
+- estimate nucleotide diversities (Watterson’s theta, pi, Tajima’s D, …)
+- estimate Fst between all populations, or pairwise between sets of populations
+- perform a genetic PCA based on estimation of the genetic covariance matrix (this is done on the entire set of Edge ind’s)
+
+
+## ANGSD_mypop.sh
+
+```bash
+myrepo="/users/s/r/srkeller/Ecological_Genomics/Spring_2020"
+
+mkdir ${myrepo}/myresults/ANGSD
+
+output="${myrepo}/myresults/ANGSD"
+
+mypop="AB"
+
+ls /data/project_data/RS_ExomeSeq/mapping/BWA/${mypop}_*sorted.rm*.bam >${output}/${mypop}_bam.list
+```
+
+Check your output bamlist to see it was made properly.
+
+2. Estimate your GL’s and allele freqs after filtering for depth, base and mapping quality, etc.
+REF="/data/project_data/RS_ExomeSeq/ReferenceGenomes/Pabies1.0-genome_reduced.fa"
+
+## Estimating GL's and allele freqs
+
+Estimating GL's and allele frequencies for all sites with ANGSD
+
+```bash
+ANGSD -b ${output}/${mypop}_bam.list \
+-ref ${REF} -anc ${REF} \
+-out ${output}/${mypop}_allsites \
+-nThreads 1 \
+-remove_bads 1 \
+-C 50 \
+-baq 1 \
+-minMapQ 20 \
+-minQ 20 \
+-setMinDepth 3 \
+-minInd 2 \
+-setMinDepthInd 1 \
+-setMaxDepthInd 17 \
+-skipTriallelic 1 \
+-GL 1 \
+-doCounts 1 \
+-doMajorMinor 1 \
+-doMaf 1 \
+-doSaf 1 \
+-doHWE 1 \
+# -SNP_pval 1e-6
+```
+
+What do all these options mean?
+
+```bash
+-nThreads 1	# how many cpus to use – be conservative
+-remove_bads 1	# remove reads flagged as ‘bad’ by samtools
+-C 50	# enforce downgrading of map quality if contains excessive mismatches
+-baq 1	# estimates base alignment qualities for bases around indels
+-minMapQ 20	# threshold for minimum read mapping quality (Phred)
+-minQ 20	# threshold for minimum base quality (Phred)
+-setMinDepth 3	# min read depth across ALL individual to keep a site
+-minInd 2	# min number of individuals to keep a site
+-setMinDepthInd 1	# min read depth for an individual to keep a site
+-setMaxDepthInd 17	# max read depth for an individual to keep a site
+-skipTriallelic 1	# don’t use sites with >2 alleles
+-GL 1	# estimate GL’s using the Samtools formula
+-doCounts 1	# output allele counts for each site
+-doMajorMinor 1	# fix major and minor alleles the same across all samples
+-doMaf 1 # calculate minor allele frequency
+-doSaf 1 # output allele frequencies for each site
+-doHWE 1 # calculate obs. v. exp. heterozygosity
+-SNP_pval 1e-6 # Keep only site highly likely to be polymorphic (SNPs)
+NOTES
+```
+
+If you want to restrict the estimation of the genotype likelihoods to a particular set of sites you’re interested in, add the option -sites ./selected_sites.txt (tab delimited file with the position of the site in column 1 and the chromosome in column 2) or use -rf ./selected_chromosome.chrs (if listing just the unique “chromosomes” or contigs you want to anlayze)
+Some popgen stats you want to estimate only the polymorphic sites; for this you should include the -SNP_pval 1e-6 option to elininate monomorphic sites when calculating your GL’s
+There are good reasons to do it BOTH ways, with and without the -SNP_pval 1e-6 option. Keeping the monomorphic sites in is essential for getting proper estimates of nucleotide diversity and Tajima’s D. But other analyses such as PCA or GWAS want only the SNPs.
+3a. Estimate the SFS for your pop
+
+```bash
+realSFS {$output}/${mypop}_allsites.saf.idx -maxIter 1000 -tole 1e-6 -P 1 > ${output}/${mypop}_allsites.sfs
+```
+
+3b. Once you have the SFS, you can estimate the theta diversity stats:
+
+
+## Estimating thetas
+
+Estimating thetas for all sites, using the SFS from above as a prior to estimate the GL's
+
+```bash
+ANGSD -b ${output}/${mypop}_bam.list \
+-ref ${REF} -anc ${REF} \
+-out ${output}/${mypop} \
+-nThreads 1 \
+-remove_bads 1 \
+-C 50 \
+-baq 1 \
+-minMapQ 20 \
+-minQ 20 \
+-minInd 2 \
+-setMinDepthInd 1 \
+-setMaxDepthInd 17 \
+-setMinDepth 3 \
+-skipTriallelic 1 \
+-GL 1 \
+-doCounts 1 \
+-doMajorMinor 1 \
+-pest ${output}/${mypop}_allsites.sfs \
+-doSaf 1 \
+-doThetas 1
+
+thetaStat do_stat ${output}/${mypop}_allsites.thetas.idx
+```
+
+The first column of the results file (${mypop}.thetas.idx.pestPG) is formatted a bit funny and we don’t really need it. We can use the cut command to get rid of it:
+
+cut -f2- ${mypop}.thetas.idx.pestPG > ${mypop}.thetas
+This is now ready to bring into R to look at the mean and variability in nucleotide diversity for our pop. How does it compare to others?
+
+3c. We can calculate Fst between any pair of populations by comparing their SFS to each other. For this, we’ll need to estimate the SFS for pairs of populations; we can each contribute to the overall analysis by looking at how our focal pop is divergent from the others in the edge region
+We first want to get a list of the unique population codes that doesn’t include our focal population (it doesn’t make sense to calculate an Fst of a population with itself…)
+cat /data/project_data/RS_ExomeSeq/metadata/RS_Exome_metadata.txt | grep -w "E" | cut -f1 | uniq | grep -v ${mypop} > ~/yourrepo/mydata/edgepops_no${mypop}.txt
+
+
+Next set up a loop to calculate Fst your population and each other pop (coded in the loop as variable “POP2”:
+
+```
+for POP2 in `cat ${myrepo}/mydata/edgepops_no${mypop}.txt`
+do
+    realSFS ${output}/${mypop}_allsites.saf.idx ${output}/${POP2}_allsites.saf.idx -P 1 > ${output}/${mypop}_${POP2}_allsites.sfs
+    realSFS fst index ${output}/${mypop}_allsites.saf.idx ${output}/${POP2}_allsites.saf.idx -sfs ${output}/${mypop}_${POP2}_allsites.sfs -fstout ${output}/${mypop}_${POP2}_allsites -whichFst 1
+    realSFS fst print ${output}/${mypop}_${POP2}_allsites.fst.idx > ${output}/${mypop}_${POP2}_allsites.fst
+done
+```
+
+## Ancestory relationships
+
+3d. If we have time (and the previous analysis I started yesterday finally finishes running!), we can look at the ancestry relatioships among all the edge individuals using a genetic Principal Component Analysis. ANGSD has a routine for that too – PCAngsd. First, we estimate the GL’s for the entire sample, keeping just the polymorphic sites, and outputing the GL’s in “Beagle” format (file.beagle.gz)
+
+Make a list of all the sorted and PCR dup removed bam files:
+
+ls /data/project_data/RS_ExomeSeq/mapping/BWA/*sorted.rm*bam >${myrepo}/myresults/EDGE_bam.list
+
+## Run ANGSD to estimate the GL's
+
+```bash
+ANGSD -b ${myrepo}/myresults/EDGE_bam.list \
+-ref ${REF} -anc ${REF} -out ${myrepo}/myresults/EDGE_poly \
+-nThreads 10 \
+-remove_bads 1 \
+-C 50 \
+-baq 1 \
+-minMapQ 20 \
+-minQ 20 \
+-setMinDepth 3 \
+-minInd 2 \
+-setMinDepthInd 1 \
+-setMaxDepthInd 17 \
+-skipTriallelic 1 \
+-GL 1 \
+-doCounts 1 \
+-doMajorMinor 1 \
+-doMaf 1 \
+-doGlf 2 \
+-SNP_pval 1e-6
+```
+
+The resulting GL file EDGE_poly.beagle.gz can be used as input to PCAngsd to estimate the covariance matrix:
+
+## PCA - Estimating the covariance matrix with pcangsd
+```bash
+python /data/popgen/pcangsd/pcangsd.py -beagle ${myrepo}/myresults/EDGE_poly.beagle.gz -o ${myrepo}/myresults/EDGE_poly_covmatrix -threads 1
+```
+
+Once you have that, you’ll want to send all your outputs up to Github and then back down to your local machine. We can use R to find the eigenvectors of the genetic covariance matrix and plot it:
+
+## Vizualizing in R
+
+```r
+setwd("path to your repo")
+covmat <- read.table("myresults/myresults/EDGE_poly_covmatrix")
+
+PCA <- eigen(covmat)
+plot(PCA[,1],PCA[,2])
+```
 
