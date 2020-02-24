@@ -1,35 +1,130 @@
 ---
-title: "Population Genomics"
+title: Population genomics of _Picea rubens_
 author: \emph{Thomas O'Leary}
 date: \emph{February 25, 2020}
 output:
   pdf_document:
 header-includes:
   - \usepackage[cmintegrals,cmbraces]{newtxmath}
-  - \usepackage{ebgaramond-maths}
+  - \usepackage{ebgaramond}
   - \usepackage[T1]{fontenc}
+  # - \usepackage{fancyhdr}
+  # - \pagestyle{fancy}
+  # - \fancyhead[RO,RE]{O'Leary}
 bibliography: tso_refs.bib
 bioliostyle: mla
+fontsize: 12pt
+
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+require(tidyverse)
 ```
 
 # Background
-###### test
-test [@Love2014]
-	
+
+## _Picea rubens_ Ecology
+
+In the context of a rapidly changing climate many organisms will be forced to either adapt, migrate, or go extinct. In the case of _Picea rubens_, a red spruce that thrives in cool and moist climates, this may lead to futher range contraction or eventual extinction if the species is unable to adapt in time. As glaciers began to melt approximately 20,000 years ago, _Picea rubens_ was forced to retreat to isolated populations along the mountain tops of the Appalacian range. As a result, these populations along the mid-Atlantic United States are highly fragmented and completely isolated from the northen core of the range in Northern New England and Canada. 
+
+As the climate continues to warm, these isolated populations may pop out of existence due to the increased environmental stress. However, because evolution can only act on standing genetic variation these isolated populations may represent an important genetic resource for the species at large, and may help inform conservation efforts. The ultimate aims of this study are to (i) describe the population structure and genetic diversiy of _Picea rubens_ along its current range, (ii) identify loci that show signs of positive selection and (iii) map the genetic basis of these adaptive phenotypes. In this write up, I will only begin to address the first aim.
+
+
+## Sample collection, library preparation, and sequencing
+
+Whole genomic DNA was extracted from needle tissue that was collected from a total of 340 mother trees in 65 populations, of which 110 trees were from 23 edge populations. Probes were designed (80,000 120bp) for exome capture based on the multiple developmental and tissue type transcriptomes from the related white spruce _Picea glauca_ [@Rigault2011;@Yeaman2014]. Approximately 95% of the probes were designed within exomic regions with the remaining 5% in intergenic regions, covering a total of 38,570 unigenes. The probes were blasted against the _P. glauca_ reference genome to ensure at least 90bp of 85% identity. 250ng to 1 $\mu$g of genomic DNA was mechanically sheared to an average length of 400 bp, exome fragments were enriched using designed probes and following barcode adaptation the libraries were pooled and paired-end 150 bp sequenced on an Illumina HiSeq X.
 	
 # Bioinformatics Pipeline
 
+The reads were mapped to the Norway spruce reference genome _Picea abies_ @Nystedt2013
+
 # Results
+
+The 
+
+```{r}
+# setwd
+setwd(here::here("myresults/ANGSD"))
+
+# load the _outFold.sfs file
+SFS <- scan("BFA_outFold.sfs")
+
+# this is the 
+sumSFS <- sum(SFS)
+
+# the first column of the site frequency spectrum is the monomorphic sites
+pctPoly <- 100*(1 - (SFS[1]/sumSFS))
+
+
+# read in the pestPG table -------
+div <- read.table("BFA_folded_allsites.thetas.idx.pestPG")
+
+colnames(div) <- c("window", "chrname", "wincenter", 
+                   "tW", "tP", "tF", "tH", "tL", "tajD",
+                   "fulif", "fuliD", "fayH", "zengsE", "numSites")
+# tW is thetaW or waterson's theta
+# tP is thetaPi or theta pi
+
+
+
+# tW / numSites # tP / numSites
+div <- div %>%
+  mutate(tWperSite = tW / numSites) %>%
+  mutate(tPperSite = tP / numSites)
+
+# take the mean for the tWperSite, tPperSite, and tajD
+# or just get it from the mean in the specific column using summary(div) 
+div %>%
+  summarize(avgtWperSite = mean(tWperSite),
+            avgtPperSite = mean(tPperSite),
+            avgtajD = mean(tajD))
+
+
+# visualize the distribution of values across the sites
+# ggplot(SFS) +
+#   geom_bar(aes(x = SFS))
+
+barplot(SFS[-1]) # remove the monomorphic site to visualize
+```
+
+```{r, fig.width = 4, fig.height = 3}
+# plot the tWperSite distribution
+p1 <- ggplot(div) +
+  geom_histogram(aes(x = tWperSite), color = "grey", alpha = 0.75) +
+  theme_classic()
+
+# plot the tPperSite distribution
+p2 <- ggplot(div) +
+  geom_histogram(aes(x = tPperSite), color = "grey", alpha = 0.75) +
+  theme_classic()
+
+# combine these plots together
+p_1_2 <- cowplot::plot_grid(p1, p2, nrow = 1, labels = "AUTO")
+
+# plot the tajD distribution
+p3 <- ggplot(div) +
+  geom_histogram(aes(x = tajD), color = "grey", alpha = 0.75) +
+  theme_classic()
+
+# combine all plots in one view
+cowplot::plot_grid(p_1_2, p3, nrow = 2, rel_widths = c(1,2), labels = c("", "C"))
+```
+
+
+$\theta = 4N_{e}\mu$
+
+$D = \frac{\pi}{S}$
 
 Table 1:
 Figure 1:
 Figure 2:
 
 # Conclusion
+
+
+
+\pagebreak
 
 # References
 
