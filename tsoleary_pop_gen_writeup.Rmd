@@ -1,0 +1,35 @@
+---
+title: "Population Genomics"
+author: \emph{Thomas O'Leary}
+date: \emph{February 25, 2020}
+output:
+  pdf_document:
+header-includes:
+  - \usepackage[cmintegrals,cmbraces]{newtxmath}
+  - \usepackage{ebgaramond-maths}
+  - \usepackage[T1]{fontenc}
+bibliography: tso_refs.bib
+bioliostyle: mla
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Background
+###### test
+test [@Love2014]
+	
+	
+# Bioinformatics Pipeline
+
+# Results
+
+Table 1:
+Figure 1:
+Figure 2:
+
+# Conclusion
+
+# References
+
