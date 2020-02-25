@@ -1,3 +1,5 @@
+# population genetics pipline
+# refer to writeup.Rmd for more metrics and complete analysis
 
 require(tidyverse)
 
