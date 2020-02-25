@@ -4,99 +4,119 @@ author: \emph{Thomas O'Leary}
 date: \emph{February 25, 2020}
 output:
   pdf_document:
+    keep_tex: true
 header-includes:
   - \usepackage[cmintegrals,cmbraces]{newtxmath}
   - \usepackage{ebgaramond}
   - \usepackage[T1]{fontenc}
+  - \usepackage{graphicx}
+  - \usepackage{float}
+  - \usepackage{wrapfig}
   # - \usepackage{fancyhdr}
   # - \pagestyle{fancy}
   # - \fancyhead[RO,RE]{O'Leary}
 bibliography: tso_refs.bib
 bioliostyle: mla
 fontsize: 12pt
-
+geometry: "left=1.5cm,right=1.5cm,top=1cm,bottom=1cm"
 ---
 
 ```{r setup, include = FALSE}
+# defOut <- knitr::knit_hooks$get("plot")  # save the default plot hook 
+# knitr::knit_hooks$set(plot = function(x, options) {  # set new plot hook ...
+#   x <- defOut(x, options)  # first apply the default hook
+#   if(!is.null(options$wrapfigure)) {  # then, if option wrapfigure is given ...
+#     # create the new opening string for the wrapfigure environment ...
+#     wf <- sprintf("\\begin{wrapfigure}{%s}{%g\\textwidth}", options$wrapfigure[[1]], options$wrapfigure[[2]])
+#     x  <- gsub("\\begin{figure}", wf, x, fixed = T)  # and replace the default one with it.
+#     x  <- gsub("{figure}", "{wrapfigure}", x, fixed = T)  # also replace the environment ending
+#   }
+#   return(x)
+# })
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 require(tidyverse)
+
+# site frequency spectrum data -------------------------------------------------
+setwd(here::here("myresults/ANGSD"))
+
+# load the _outFold.sfs file
+SFS <- scan("BFA_outFold.sfs")
+
+# this is the total number of loci sequenced
+sumSFS <- sum(SFS)
+
+# the first column of the site frequency spectrum is the monomorphic sites
+pctPoly <- 100*(1 - (SFS[1]/sumSFS))
+
+df <- data.frame(site=0:(length(SFS)-1), SFS = SFS)
+
+# read the pestPG table --------------------------------------------------------
+div <- read.table("BFA_folded_allsites.thetas.idx.pestPG")
+
+# tW is thetaW or waterson's theta
+# tP is thetaPi or theta pi
+colnames(div) <- c("window", "chrname", "wincenter", 
+                   "tW", "tP", "tF", "tH", "tL", "tajD",
+                   "fulif", "fuliD", "fayH", "zengsE", "numSites")
+# calculate the values persite -- tW / numSites & tP / numSites
+div <- div %>%
+  mutate(tWperSite = tW / numSites) %>%
+  mutate(tPperSite = tP / numSites)
+
+# take the mean for the tWperSite, tPperSite, and tajD
+div_avg <- div %>%
+  summarize(avgtWperSite = mean(tWperSite),
+            avgtPperSite = mean(tPperSite),
+            avgtajD = mean(tajD))
+
+# other summary calculations ---------------------------------------------------
+
+# effective population size ----
+
+# mutation rate of Picea ssp
+u <- 2.2*10^-9
 ```
 
 # Background
 
 ## _Picea rubens_ Ecology
 
-In the context of a rapidly changing climate many organisms will be forced to either adapt, migrate, or go extinct. In the case of _Picea rubens_, a red spruce that thrives in cool and moist climates, this may lead to futher range contraction or eventual extinction if the species is unable to adapt in time. As glaciers began to melt approximately 20,000 years ago, _Picea rubens_ was forced to retreat to isolated populations along the mountain tops of the Appalacian range. As a result, these populations along the mid-Atlantic United States are highly fragmented and completely isolated from the northen core of the range in Northern New England and Canada. 
-
-As the climate continues to warm, these isolated populations may pop out of existence due to the increased environmental stress. However, because evolution can only act on standing genetic variation these isolated populations may represent an important genetic resource for the species at large, and may help inform conservation efforts. The ultimate aims of this study are to (i) describe the population structure and genetic diversiy of _Picea rubens_ along its current range, (ii) identify loci that show signs of positive selection and (iii) map the genetic basis of these adaptive phenotypes. In this write up, I will only begin to address the first aim.
+In the context of a rapidly changing climate many organisms will be forced to either adapt, migrate, or go extinct. In the case of _Picea rubens_, a red spruce that thrives in cool and moist climates, this may lead to futher range contraction or eventual extinction if the species is unable to adapt in time (CITATION). As glaciers began to melt approximately 20,000 years ago, _Picea rubens_ was forced to retreat to isolated populations along the mountain tops of the Appalacian range, isolated from the northen core of red spruce (CITATION). As the climate continues to warm, these isolated populations may pop out of existence due to the increased environmental stress. However, because evolution can only act on standing genetic variation these isolated populations may represent an important genetic resource for the species at large, and may help inform conservation efforts. The ultimate aims of this study are to (i) describe the population structure and genetic diversiy of _Picea rubens_ along its current range, (ii) identify loci that show signs of positive selection and (iii) map the genetic basis of these adaptive phenotypes. In this write up, I will only begin to address the first aim using a few genetic diversity metrics including nucleotide diversity ($\pi$), Wattserson's estimator ($\theta$), and Tajima's $D$ [@Nei1979; @Watterson1975; @Tajima1989].
 
 
 ## Sample collection, library preparation, and sequencing
 
-Whole genomic DNA was extracted from needle tissue that was collected from a total of 340 mother trees in 65 populations, of which 110 trees were from 23 edge populations. Probes were designed (80,000 120bp) for exome capture based on the multiple developmental and tissue type transcriptomes from the related white spruce _Picea glauca_ [@Rigault2011;@Yeaman2014]. Approximately 95% of the probes were designed within exomic regions with the remaining 5% in intergenic regions, covering a total of 38,570 unigenes. The probes were blasted against the _P. glauca_ reference genome to ensure at least 90bp of 85% identity. 250ng to 1 $\mu$g of genomic DNA was mechanically sheared to an average length of 400 bp, exome fragments were enriched using designed probes and following barcode adaptation the libraries were pooled and paired-end 150 bp sequenced on an Illumina HiSeq X.
+Whole genomic DNA was extracted from needle tissue that was collected from a total of 340 mother trees in 65 populations, of which 110 trees were from 23 edge populations. 80,000 120 bp probes were designed for exome capture based on the multiple developmental and tissue type transcriptomes from the related white spruce _Picea glauca_ [@Rigault2011;@Yeaman2014]. Approximately 95% of the probes were designed within exomic regions with the remaining 5% in intergenic regions, covering a total of 38,570 unigenes. The probes were blasted against the _P. glauca_ reference genome to ensure at least 90bp of 85% identity. 250ng to 1 $\mu$g of genomic DNA was mechanically sheared to an average length of 400 bp, exome fragments were enriched using designed probes and following barcode adaptation the libraries were pooled and paired-end 150 bp sequenced on an Illumina HiSeq X.
+
+
 	
 # Bioinformatics Pipeline
 
-The reads were mapped to the Norway spruce reference genome _Picea abies_ @Nystedt2013
+The quality of the raw reads were accessed using FastQC VERSION (Fastqc citation). To remove low quality sequence data the raw fastq files were trimmed using Trimmomatic VERSION [@Bolger2014] and the cleaned reads were vizualized again with FastQC. The cleaned reads were mapped to a reduced verion of the Norway spruce _Picea abies_ reference genome [@Nystedt2013] using bwa VERSION [@Li2009]. A reduced _Picea abies_ reference genome was used because there is no available _Picea rubens_ genome and the exome capture technique meant that only a small fraction of the genome near the designed probes would be sequenced.
 
 # Results
 
 The 
 
-```{r}
-# setwd
-setwd(here::here("myresults/ANGSD"))
-
-# load the _outFold.sfs file
-SFS <- scan("BFA_outFold.sfs")
-
-# this is the 
-sumSFS <- sum(SFS)
-
-# the first column of the site frequency spectrum is the monomorphic sites
-pctPoly <- 100*(1 - (SFS[1]/sumSFS))
-
-
-# read in the pestPG table -------
-div <- read.table("BFA_folded_allsites.thetas.idx.pestPG")
-
-colnames(div) <- c("window", "chrname", "wincenter", 
-                   "tW", "tP", "tF", "tH", "tL", "tajD",
-                   "fulif", "fuliD", "fayH", "zengsE", "numSites")
-# tW is thetaW or waterson's theta
-# tP is thetaPi or theta pi
-
-
-
-# tW / numSites # tP / numSites
-div <- div %>%
-  mutate(tWperSite = tW / numSites) %>%
-  mutate(tPperSite = tP / numSites)
-
-# take the mean for the tWperSite, tPperSite, and tajD
-# or just get it from the mean in the specific column using summary(div) 
-div %>%
-  summarize(avgtWperSite = mean(tWperSite),
-            avgtPperSite = mean(tPperSite),
-            avgtajD = mean(tajD))
-
-
-# visualize the distribution of values across the sites
-# ggplot(SFS) +
-#   geom_bar(aes(x = SFS))
-
-barplot(SFS[-1]) # remove the monomorphic site to visualize
+```{r, fig.width = 3, fig.height = 2}
+#, out.width = ".7\\textwidth", fig.cap = "My Flowchart", fig.align="right", wrapfigure = list("R", .7)
+ggplot(df[-1,], aes(x = site, y = SFS)) +
+  geom_bar(stat = "identity", color = "grey", alpha = 0.75) +
+  labs(x = "Allele frequency", y = "Number of SNPs") + 
+  theme_classic()
 ```
 
-```{r, fig.width = 4, fig.height = 3}
+```{r, fig.width = 5, fig.height = 4, fig.cap = "Figure caption goes here!!!!!"}
 # plot the tWperSite distribution
 p1 <- ggplot(div) +
   geom_histogram(aes(x = tWperSite), color = "grey", alpha = 0.75) +
+  xlab(expression(theta~~site^-1)) +
   theme_classic()
 
 # plot the tPperSite distribution
 p2 <- ggplot(div) +
   geom_histogram(aes(x = tPperSite), color = "grey", alpha = 0.75) +
+  xlab(expression(pi~~site^-1)) +
   theme_classic()
 
 # combine these plots together
@@ -105,6 +125,7 @@ p_1_2 <- cowplot::plot_grid(p1, p2, nrow = 1, labels = "AUTO")
 # plot the tajD distribution
 p3 <- ggplot(div) +
   geom_histogram(aes(x = tajD), color = "grey", alpha = 0.75) +
+  xlab("Tajima's D") +
   theme_classic()
 
 # combine all plots in one view
@@ -114,11 +135,9 @@ cowplot::plot_grid(p_1_2, p3, nrow = 2, rel_widths = c(1,2), labels = c("", "C")
 
 $\theta = 4N_{e}\mu$
 
-$D = \frac{\pi}{S}$
+Given that $\theta$ is the .... and the effective population size ($N_{e}$). The estimated per base per year mutation rate of _Picea_ is $2.2$x$10^{-9}$ [@Nystedt2013].
 
-Table 1:
-Figure 1:
-Figure 2:
+$D = \frac{\pi}{S}$
 
 # Conclusion
 
