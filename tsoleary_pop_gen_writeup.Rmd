@@ -1,7 +1,7 @@
 ---
 title: Population genomics of _Picea rubens_
 author: \emph{Thomas O'Leary}
-date: \emph{February 25, 2020}
+#date: \emph{February 25, 2020}
 output:
   pdf_document:
     keep_tex: true
@@ -35,6 +35,7 @@ geometry: "left=1.5cm,right=1.5cm,top=1cm,bottom=1cm"
 # })
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 require(tidyverse)
+require(kableExtra)
 
 # site frequency spectrum data -------------------------------------------------
 setwd(here::here("myresults/ANGSD"))
@@ -69,6 +70,19 @@ div_avg <- div %>%
             avgtPperSite = mean(tPperSite),
             avgtajD = mean(tajD))
 
+# load sequencing coverage flagstats info --------------------------------------
+setwd(here::here("myresults"))
+names <- read.table("BFA.names.txt")
+cov <- read.table("BFA.coverage.txt")
+flag <- read.table("BFA.flagstats.txt", header = TRUE)
+
+seq_stat <- data.frame(names, cov, flag)
+colnames(seq_stat)[1:2] <- c("ind", "depth")
+
+avg_depth <- mean(seq_stat$depth)
+avg_num_reads <- mean(seq_stat$Num.reads)
+avg_pct_paired <- mean((seq_stat$MateMapped/seq_stat$Num.reads)*100)
+
 # other summary calculations ---------------------------------------------------
 
 # effective population size ----
@@ -81,32 +95,45 @@ u <- 2.2*10^-9
 
 ## _Picea rubens_ Ecology
 
-In the context of a rapidly changing climate many organisms will be forced to either adapt, migrate, or go extinct. In the case of _Picea rubens_, a red spruce that thrives in cool and moist climates, this may lead to futher range contraction or eventual extinction if the species is unable to adapt in time (CITATION). As glaciers began to melt approximately 20,000 years ago, _Picea rubens_ was forced to retreat to isolated populations along the mountain tops of the Appalacian range, isolated from the northen core of red spruce (CITATION). As the climate continues to warm, these isolated populations may pop out of existence due to the increased environmental stress. However, because evolution can only act on standing genetic variation these isolated populations may represent an important genetic resource for the species at large, and may help inform conservation efforts. The ultimate aims of this study are to (i) describe the population structure and genetic diversiy of _Picea rubens_ along its current range, (ii) identify loci that show signs of positive selection and (iii) map the genetic basis of these adaptive phenotypes. In this write up, I will only begin to address the first aim using a few genetic diversity metrics including nucleotide diversity ($\pi$), Wattserson's estimator ($\theta$), and Tajima's $D$ [@Nei1979; @Watterson1975; @Tajima1989].
+In the context of a rapidly changing climate many organisms will be forced to either adapt, migrate, or go extinct. In the case of _Picea rubens_, a red spruce that thrives in cool and moist climates, this may lead to futher range contraction or eventual extinction if the species is unable to adapt in time [@Siccama1982]. As glaciers began to melt approximately 20,000 years ago, _Picea rubens_ was forced to retreat to isolated populations along the mountain tops of the Appalacian range, isolated from the northen core of red spruce [@McLaughlin1987]. As the climate continues to warm, these isolated populations may pop out of existence due to the increased environmental stress. However, because evolution can only act on standing genetic variation these isolated populations may represent an important genetic resource for the species at large, and may help inform conservation efforts. The ultimate aims of this study are to (i) describe the population structure and genetic diversiy of _Picea rubens_ along its current range, (ii) identify loci that show signs of positive selection and (iii) map the genetic basis of these adaptive phenotypes. In this write up, I will only begin to address the first aim in the context of only one population (BFA) with five sequenced individuals using a few genetic diversity metrics including nucleotide diversity ($\pi$), Wattserson's estimator ($\theta$), and Tajima's $D$ [@Nei1979; @Watterson1975; @Tajima1989].
 
 
 ## Sample collection, library preparation, and sequencing
 
 Whole genomic DNA was extracted from needle tissue that was collected from a total of 340 mother trees in 65 populations, of which 110 trees were from 23 edge populations. 80,000 120 bp probes were designed for exome capture based on the multiple developmental and tissue type transcriptomes from the related white spruce _Picea glauca_ [@Rigault2011;@Yeaman2014]. Approximately 95% of the probes were designed within exomic regions with the remaining 5% in intergenic regions, covering a total of 38,570 unigenes. The probes were blasted against the _P. glauca_ reference genome to ensure at least 90bp of 85% identity. 250ng to 1 $\mu$g of genomic DNA was mechanically sheared to an average length of 400 bp, exome fragments were enriched using designed probes and following barcode adaptation the libraries were pooled and paired-end 150 bp sequenced on an Illumina HiSeq X.
-
-
 	
 # Bioinformatics Pipeline
 
-The quality of the raw reads were accessed using FastQC VERSION (Fastqc citation). To remove low quality sequence data the raw fastq files were trimmed using Trimmomatic VERSION [@Bolger2014] and the cleaned reads were vizualized again with FastQC. The cleaned reads were mapped to a reduced verion of the Norway spruce _Picea abies_ reference genome [@Nystedt2013] using bwa VERSION [@Li2009]. A reduced _Picea abies_ reference genome was used because there is no available _Picea rubens_ genome and the exome capture technique meant that only a small fraction of the genome near the designed probes would be sequenced.
+The quality of the raw reads were accessed using FastQC v$0.11.3$ [@andrews2012]. To remove low quality sequence data the raw fastq files were trimmed and paired using Trimmomatic v$0.33$ [@Bolger2014] and the cleaned reads were vizualized again with FastQC. The paired-cleaned reads were mapped to a reduced verion of the Norway spruce _Picea abies_ reference genome [@Nystedt2013] using bwa v$0.7.12-r1039$ [@Li2009]. A reduced _Picea abies_ reference genome was used because there is no available _Picea rubens_ genome and the exome capture technique meant that only a small fraction of the genome near the designed probes would be sequenced.
+
+The sequence aligned reads (sam files) were then converted to binary (bam) and the PCR duplicates were removed and the files were sorted using samtools v$1.4$ and sambamba v$0.7.1$ [@Tarasov2015;@Li2009a]. The effects of the lack of sequencing depth were compensated by calculating genotype likelihoods using ANGSD v$0.931-14$-gb9c8ddd [@Korneliussen2014]. This was done because there is some probability individuals are still heterozygous at loci where only one allele was sequenced due to the random chance of the other allele not appearing in the data. The genotype likelihoods were used to estimate the site frequency spectrums (SFS) and estimate genetic diversity metrics including nucleotide diversity ($\pi$), Wattserson's estimator ($\theta$), and Tajima's $D$ using ANGSD. SFS and distributions and means of per site $\pi$ and $\theta$ were calculated and visualized in R v$3.6.1$ [@rcore] using ggplot and dplyr v$1.2.1$ [@tidyverse].
 
 # Results
 
-The 
+Among the five individuals in the BFA population, the mean per site sequence depth was `r signif(avg_depth, 3)` the average number of mapped reads was `r signif(avg_num_reads, 3)` and the mean percentage of paired reads was `r signif(avg_pct_paired, 3)`% (Table 1).
 
-```{r, fig.width = 3, fig.height = 2}
-#, out.width = ".7\\textwidth", fig.cap = "My Flowchart", fig.align="right", wrapfigure = list("R", .7)
-ggplot(df[-1,], aes(x = site, y = SFS)) +
-  geom_bar(stat = "identity", color = "grey", alpha = 0.75) +
-  labs(x = "Allele frequency", y = "Number of SNPs") + 
-  theme_classic()
+```{r}
+seq_stat %>%
+  mutate(depth = signif(depth,3)) %>%
+  select(ind, depth, Num.reads, Paired) %>%
+  rename(Individual = ind, 
+         `Sequencing depth` = depth, 
+         `Number of reads` = Num.reads,
+         `Paired reads` = Paired) %>%
+  kable("latex", booktabs = T, caption = "Table Caption!!!!!!!") # %>%
+#   kable_styling(latex_options = "striped")
 ```
 
 ```{r, fig.width = 5, fig.height = 4, fig.cap = "Figure caption goes here!!!!!"}
+#, out.width = ".7\\textwidth", fig.cap = "My Flowchart", fig.align="right", wrapfigure = list("R", .7)
+
+
+# site frequency spectrum
+p <- ggplot(df[-1,], aes(x = site, y = SFS)) +
+  geom_bar(stat = "identity", color = "grey", alpha = 0.75) +
+  labs(x = "Allele frequency", y = "Number of SNPs") + 
+  theme_classic()
+
 # plot the tWperSite distribution
 p1 <- ggplot(div) +
   geom_histogram(aes(x = tWperSite), color = "grey", alpha = 0.75) +
@@ -120,7 +147,7 @@ p2 <- ggplot(div) +
   theme_classic()
 
 # combine these plots together
-p_1_2 <- cowplot::plot_grid(p1, p2, nrow = 1, labels = "AUTO")
+#p_1_2 <- cowplot::plot_grid(p1, p2, nrow = 1, labels = "AUTO")
 
 # plot the tajD distribution
 p3 <- ggplot(div) +
@@ -129,7 +156,10 @@ p3 <- ggplot(div) +
   theme_classic()
 
 # combine all plots in one view
-cowplot::plot_grid(p_1_2, p3, nrow = 2, rel_widths = c(1,2), labels = c("", "C"))
+#cowplot::plot_grid(p_1_2, p3, nrow = 2, rel_widths = c(1,2), labels = c("", "C"))
+
+# combine all plots in one view
+cowplot::plot_grid(p, p1, p2, p3, nrow = 2, labels = "AUTO")
 ```
 
 
