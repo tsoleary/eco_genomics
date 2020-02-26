@@ -4,6 +4,7 @@ author: \emph{Thomas O'Leary}
 #date: \emph{February 25, 2020}
 output:
   pdf_document:
+#    latex_engine: xelatex
     keep_tex: true
 header-includes:
   - \usepackage[cmintegrals,cmbraces]{newtxmath}
@@ -12,27 +13,17 @@ header-includes:
   - \usepackage{graphicx}
   - \usepackage{float}
   - \usepackage{wrapfig}
+  - \usepackage[font={footnotesize}]{caption}
   # - \usepackage{fancyhdr}
   # - \pagestyle{fancy}
   # - \fancyhead[RO,RE]{O'Leary}
 bibliography: tso_refs.bib
-bioliostyle: mla
+csl: mla.csl
 fontsize: 12pt
-geometry: "left=1.5cm,right=1.5cm,top=1cm,bottom=1cm"
+geometry: "left=1cm,right=1cm,top=1cm,bottom=1cm"
 ---
 
 ```{r setup, include = FALSE}
-# defOut <- knitr::knit_hooks$get("plot")  # save the default plot hook 
-# knitr::knit_hooks$set(plot = function(x, options) {  # set new plot hook ...
-#   x <- defOut(x, options)  # first apply the default hook
-#   if(!is.null(options$wrapfigure)) {  # then, if option wrapfigure is given ...
-#     # create the new opening string for the wrapfigure environment ...
-#     wf <- sprintf("\\begin{wrapfigure}{%s}{%g\\textwidth}", options$wrapfigure[[1]], options$wrapfigure[[2]])
-#     x  <- gsub("\\begin{figure}", wf, x, fixed = T)  # and replace the default one with it.
-#     x  <- gsub("{figure}", "{wrapfigure}", x, fixed = T)  # also replace the environment ending
-#   }
-#   return(x)
-# })
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 require(tidyverse)
 require(kableExtra)
@@ -49,7 +40,7 @@ sumSFS <- sum(SFS)
 # the first column of the site frequency spectrum is the monomorphic sites
 pctPoly <- 100*(1 - (SFS[1]/sumSFS))
 
-df <- data.frame(site=0:(length(SFS)-1), SFS = SFS)
+df <- data.frame(site=1:(length(SFS)), SFS = SFS)
 
 # read the pestPG table --------------------------------------------------------
 div <- read.table("BFA_folded_allsites.thetas.idx.pestPG")
@@ -82,69 +73,74 @@ colnames(seq_stat)[1:2] <- c("ind", "depth")
 avg_depth <- mean(seq_stat$depth)
 avg_num_reads <- mean(seq_stat$Num.reads)
 avg_pct_paired <- mean((seq_stat$MateMapped/seq_stat$Num.reads)*100)
+pct_snps <- (sum(df$SFS[df$site != 1])/df$SFS[df$site == 1])*100
 
-# other summary calculations ---------------------------------------------------
+# other calculations -----------------------------------------------------------
+
+# mutation rate of Picea ssp ----
+u <- 2.2*10^-9
+u_per_gen <- u/20
 
 # effective population size ----
-
-# mutation rate of Picea ssp
-u <- 2.2*10^-9
+Ne <- (div_avg$avgtWperSite)/(4*u_per_gen)
 ```
 
 # Background
 
-## _Picea rubens_ Ecology
+### _Picea rubens_ Ecology
 
-In the context of a rapidly changing climate many organisms will be forced to either adapt, migrate, or go extinct. In the case of _Picea rubens_, a red spruce that thrives in cool and moist climates, this may lead to futher range contraction or eventual extinction if the species is unable to adapt in time [@Siccama1982]. As glaciers began to melt approximately 20,000 years ago, _Picea rubens_ was forced to retreat to isolated populations along the mountain tops of the Appalacian range, isolated from the northen core of red spruce [@McLaughlin1987]. As the climate continues to warm, these isolated populations may pop out of existence due to the increased environmental stress. However, because evolution can only act on standing genetic variation these isolated populations may represent an important genetic resource for the species at large, and may help inform conservation efforts. The ultimate aims of this study are to (i) describe the population structure and genetic diversiy of _Picea rubens_ along its current range, (ii) identify loci that show signs of positive selection and (iii) map the genetic basis of these adaptive phenotypes. In this write up, I will only begin to address the first aim in the context of only one population (BFA) with five sequenced individuals using a few genetic diversity metrics including nucleotide diversity ($\pi$), Wattserson's estimator ($\theta$), and Tajima's $D$ [@Nei1979; @Watterson1975; @Tajima1989].
+In the context of a rapidly changing climate many organisms will be forced to either adapt, migrate, or go extinct. For _Picea rubens_, a red spruce that thrives in cool and moist climates, this may lead to futher range contraction or eventual extinction if the species is unable to adapt in time [@Siccama1982]. After the last glacial maxima, _P. rubens_ was forced to retreat to isolated populations along the mountain tops of the Appalacian range, isolated from the northen core of red spruce [@McLaughlin1987]. As the climate continues to warm, these isolated populations may pop out of existence due to the increased environmental stress. However, because evolution can only act on standing genetic variation these isolated populations may represent an important genetic resource for the species at large, and may help inform conservation efforts. The ultimate aims of this study are to (i) describe the population structure and genetic diversiy of _P. rubens_, (ii) identify loci that show signs of positive selection and (iii) map the genetic basis of these adaptive phenotypes. In this write up, I will only begin to address the first aim in the context of one population (BFA), with five sequenced individuals, using a few genetic diversity metrics including nucleotide diversity ($\pi$), Wattserson's estimator ($\theta$), and Tajima's $D$ [@Nei1979; @Watterson1975; @Tajima1989].
 
 
-## Sample collection, library preparation, and sequencing
+### Sample collection, library preparation, and sequencing
 
-Whole genomic DNA was extracted from needle tissue that was collected from a total of 340 mother trees in 65 populations, of which 110 trees were from 23 edge populations. 80,000 120 bp probes were designed for exome capture based on the multiple developmental and tissue type transcriptomes from the related white spruce _Picea glauca_ [@Rigault2011;@Yeaman2014]. Approximately 95% of the probes were designed within exomic regions with the remaining 5% in intergenic regions, covering a total of 38,570 unigenes. The probes were blasted against the _P. glauca_ reference genome to ensure at least 90bp of 85% identity. 250ng to 1 $\mu$g of genomic DNA was mechanically sheared to an average length of 400 bp, exome fragments were enriched using designed probes and following barcode adaptation the libraries were pooled and paired-end 150 bp sequenced on an Illumina HiSeq X.
+Whole genomic DNA was extracted from needle tissue that was collected from a total of 340 mother _P. rubens_ in 65 populations, of which 110 trees were from 23 edge populations. 80,000 120 bp probes were designed for exome capture based on multiple developmental and tissue type transcriptomes from a related white spruce _Picea glauca_ [@Rigault2011;@Yeaman2014]. Approximately 95% of the probes were designed within exomic regions with the remaining 5% in intergenic regions, covering a total of 38,570 unigenes. The probes were blasted against the _P. glauca_ reference genome to ensure at least 90 bp of 85% identity. 250 ng to 1 $\mu$g of genomic DNA was mechanically sheared to an average length of 400 bp, exome fragments were enriched using the designed probes, and following barcode adaptation, the libraries were pooled and paired-end 150 bp sequenced on an Illumina HiSeq X.
 	
 # Bioinformatics Pipeline
 
-The quality of the raw reads were accessed using FastQC v$0.11.3$ [@andrews2012]. To remove low quality sequence data the raw fastq files were trimmed and paired using Trimmomatic v$0.33$ [@Bolger2014] and the cleaned reads were vizualized again with FastQC. The paired-cleaned reads were mapped to a reduced verion of the Norway spruce _Picea abies_ reference genome [@Nystedt2013] using bwa v$0.7.12-r1039$ [@Li2009]. A reduced _Picea abies_ reference genome was used because there is no available _Picea rubens_ genome and the exome capture technique meant that only a small fraction of the genome near the designed probes would be sequenced.
+The quality of the raw reads were accessed using FastQC v$0.11.3$ [@andrews2012]. To remove low quality sequence data the raw fastq files were trimmed and paired using Trimmomatic v$0.33$ [@Bolger2014] and the cleaned reads were vizualized again with FastQC. The paired-cleaned reads were mapped to a reduced verion of the Norway spruce _Picea abies_ reference genome [@Nystedt2013] using bwa v$0.7.12-r1039$ [@Li2009]. A reduced _P. abies_ reference genome was used because there is no available _P. rubens_ genome and the exome capture technique meant that only a small fraction of the genome near the designed probes would be sequenced.
 
-The sequence aligned reads (sam files) were then converted to binary (bam) and the PCR duplicates were removed and the files were sorted using samtools v$1.4$ and sambamba v$0.7.1$ [@Tarasov2015;@Li2009a]. The effects of the lack of sequencing depth were compensated by calculating genotype likelihoods using ANGSD v$0.931-14$-gb9c8ddd [@Korneliussen2014]. This was done because there is some probability individuals are still heterozygous at loci where only one allele was sequenced due to the random chance of the other allele not appearing in the data. The genotype likelihoods were used to estimate the site frequency spectrums (SFS) and estimate genetic diversity metrics including nucleotide diversity ($\pi$), Wattserson's estimator ($\theta$), and Tajima's $D$ using ANGSD. SFS and distributions and means of per site $\pi$ and $\theta$ were calculated and visualized in R v$3.6.1$ [@rcore] using ggplot and dplyr v$1.2.1$ [@tidyverse].
+The sequence aligned reads (sam files) were then converted to binary (bam) and the PCR duplicates were removed and files were sorted using samtools v$1.4$ and sambamba v$0.7.1$ [@Tarasov2015;@Li2009a]. The effects of the low sequencing depth were compensated by estimating genotype likelihoods using ANGSD v$0.931-14$-gb9c8ddd [@Korneliussen2014]. This was done because there is some probability individuals are truly heterozygous at loci where only one allele was sequenced due to the random chance. The genotype likelihoods were used to estimate the site frequency spectrums (SFS) and genetic diversity metrics including nucleotide diversity ($\pi$), Wattserson's $\theta$, and Tajima's $D$ using ANGSD. A folded SFS was used because the reference genome for _P. abies_ many not represent the true ancestral state at all loci so the minor allele frequency is being used to as a proxy for the derived allele. SFS, distributions and means of per site $\pi$ and $\theta$ were calculated and visualized in R v$3.6.1$ [@rcore] using ggplot2 and dplyr v$1.2.1$ [@tidyverse].
 
 # Results
 
-Among the five individuals in the BFA population, the mean per site sequence depth was `r signif(avg_depth, 3)` the average number of mapped reads was `r signif(avg_num_reads, 3)` and the mean percentage of paired reads was `r signif(avg_pct_paired, 3)`% (Table 1).
-
-```{r}
+```{r, fig.width = 3, fig.height = 2, fig.align = "left"}
 seq_stat %>%
-  mutate(depth = signif(depth,3)) %>%
+  mutate(depth = signif(depth,3),
+         Num.reads = formatC(seq_stat$Num.reads, big.mark = ","),
+         Paired = formatC(seq_stat$Paired, big.mark = ",")) %>%
   select(ind, depth, Num.reads, Paired) %>%
   rename(Individual = ind, 
          `Sequencing depth` = depth, 
          `Number of reads` = Num.reads,
          `Paired reads` = Paired) %>%
-  kable("latex", booktabs = T, caption = "Table Caption!!!!!!!") # %>%
+  kable("latex", booktabs = T, 
+        align = c('l', 'c', 'c', 'c'), 
+        caption = "Sequencing statistics for individuals in the BFA population.") %>%
+  kable_styling(font_size = 10)
+# %>%
 #   kable_styling(latex_options = "striped")
 ```
 
-```{r, fig.width = 5, fig.height = 4, fig.cap = "Figure caption goes here!!!!!"}
-#, out.width = ".7\\textwidth", fig.cap = "My Flowchart", fig.align="right", wrapfigure = list("R", .7)
-
-
+```{r, fig.width = 5, fig.height = 2, fig.cap = paste0("\\textit{Genomic diversity statistics for the BFA population.} \\textbf{A}. Site frequency spectrum of only the polymorphic alleles. \\textbf{B}. Frequency distribution of Tajima's D.")}
+#paste0("\\textit{Genomic diversity statistics for the BFA population.} \\textbf{A}. Site frequency spectrum without the monomorphic alleles. \\textbf{B}. Frequency distribution of the per site Watterson's ", expression(theta), " values. \\textbf{C}. Frequency distribution of the per site nucleotide diversity (", expression(pi), "). \\textbf{D}. Frequency distribution of Tajima's D.")
 # site frequency spectrum
 p <- ggplot(df[-1,], aes(x = site, y = SFS)) +
   geom_bar(stat = "identity", color = "grey", alpha = 0.75) +
-  labs(x = "Allele frequency", y = "Number of SNPs") + 
-  theme_classic()
+  labs(x = "Allele frequency", y = "Number of SNPs", title = "Site Frequency Spectrum") + 
+  theme_classic(base_size = 7)
 
 # plot the tWperSite distribution
 p1 <- ggplot(div) +
   geom_histogram(aes(x = tWperSite), color = "grey", alpha = 0.75) +
-  xlab(expression(theta~~site^-1)) +
-  theme_classic()
+  labs(x = expression(theta~~site^-1), y = "Number of SNPs", title = "Watterson's estimator") +
+  theme_classic(base_size = 7)
 
 # plot the tPperSite distribution
 p2 <- ggplot(div) +
   geom_histogram(aes(x = tPperSite), color = "grey", alpha = 0.75) +
-  xlab(expression(pi~~site^-1)) +
-  theme_classic()
+  labs(x = expression(pi~~site^-1), y = "Number of SNPs", title = "Nucleotide diversity") +
+  theme_classic(base_size = 7)
 
 # combine these plots together
 #p_1_2 <- cowplot::plot_grid(p1, p2, nrow = 1, labels = "AUTO")
@@ -152,28 +148,30 @@ p2 <- ggplot(div) +
 # plot the tajD distribution
 p3 <- ggplot(div) +
   geom_histogram(aes(x = tajD), color = "grey", alpha = 0.75) +
-  xlab("Tajima's D") +
-  theme_classic()
+  labs(x = "Tajima's D", y = "Number of SNPs", title = "Tajima's D") +
+  theme_classic(base_size = 7)
 
 # combine all plots in one view
 #cowplot::plot_grid(p_1_2, p3, nrow = 2, rel_widths = c(1,2), labels = c("", "C"))
 
 # combine all plots in one view
-cowplot::plot_grid(p, p1, p2, p3, nrow = 2, labels = "AUTO")
+#cowplot::plot_grid(p, p1, p2, p3, nrow = 2, labels = "AUTO", label_size = 10)
+cowplot::plot_grid(p, p3, nrow = 1, labels = "AUTO", label_size = 10)
 ```
 
+The sequencing statistics indicate that among the five individuals in the BFA population, the mean per site sequence depth was $`r signif(avg_depth, 3)`$ and the mean number of mapped reads was $`r signif(avg_num_reads, 3)`$. The average percentage of paired reads was $`r signif(avg_pct_paired, 3)`$% (Table 1). The percent of single nucleotide polymorphisms across the geneome is $`r signif(pct_snps, 2)`$%. The genetic diverity metrics calculated by ANGSD show a mean Watterson's $\theta$ of $`r signif(div_avg$avgtWperSite, 3)`$ and the mean per site nucleotide diversity $\pi$ of $`r signif(div_avg$avgtPperSite, 3)`$. The mean of Tajima's D was calculated to be $`r signif(div_avg$avgtajD, 3)`$ (Figure 1: B). Given our calculated $\theta$, the effective population size ($N_{e}$) can be calculated using the equation: $\theta = 4N_{e}\mu$, and the estimated _Picea spp._ mutation rate[^1] of `r signif(u_per_gen, 3)` base$^{-1}$ gen$^{-1}$ [@Nystedt2013]. This calculation estimates an  $N_{e}$ of $`r formatC(Ne, digits = 1, format = "fg", big.mark = ",")`$ for the BFA population.
 
-$\theta = 4N_{e}\mu$
-
-Given that $\theta$ is the .... and the effective population size ($N_{e}$). The estimated per base per year mutation rate of _Picea_ is $2.2$x$10^{-9}$ [@Nystedt2013].
-
-$D = \frac{\pi}{S}$
+[^1]: This estimate is based on the mutation rate of `r signif(u, 3)` base$^{-1}$ year$^{-1}$ reported in @Nystedt2013 and assuming a generation time of 20 years --- which is a wild guess, but it likely gets us at least within an order of magnitude of the true per generation mutation rate.
 
 # Conclusion
 
+The conservation of _Picea rubens_ along the eastern United States may depend on identifying vulnerable populations and their potential genetic resources in an effort to maintain genetic diverity, conserve, and restore the species. A quick look at the site frequency spectrum in Figure 1: A indicates a loss of rare alleles, with the rare dimorphic alleles being less frequent than other polymorphic alleles. Loss of rare alleles can happen during bottlenecking events as genetic drift begins to have a greater effect on small populations. Likewise, the positive mean ($\bar{D} = `r signif(div_avg$avgtajD, 3)`$) and distribution of Tajima's D (Figure 1: B) indicates that the BFA population is likely losing genetic diversity and undergoing a bottleneck event as the edge population continues to shrink. Although these numbers seem to agree that there is a genetic bottlenecking pattern within the BFA population, we must proceed with caution when making claims about the genetic diversity of all other edge populations and the species as a whole.
 
+Future directions for this study must involve: incorporating the other sequenced populations and comparing genetic diversity across regions, as well as characterizing the population structure. This will help identify populations of particular concern. Incorporating phenotypic data, perhaps some metric of growth rate, would allow us to mine these data for loci that are associated with phenotypes of interest by means of a GWAS. Identifying loci under postive selection and begining to map theses adaptive phenotypes will help to understand the sort of adaptive challenges this species is facing.
 
 \pagebreak
 
-# References
+# References [^2]
+
+[^2]: This does not exactly follow the MLA citation example you gave, but it was the best `.csl` I could find in time.
 
