@@ -7,7 +7,7 @@ cd ~/eco_genomics/myresults/fastqc/
 mkdir RNASeq_trim
 
 # run a for loop to do the fastqc on all the files for my CAM pop
-for file in /data/project_data/RS_RNASeq/fastq/CAM_02_H_*.cl.fq
+for file in /data/project_data/RS_RNASeq/fastq/cleanreads/CAM_02_H_*.cl.fq
 
 do
 
