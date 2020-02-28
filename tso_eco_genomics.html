@@ -2325,6 +2325,122 @@ PCA &lt;- eigen(covmat)
 plot(PCA[,1],PCA[,2])</code></pre>
 </div>
 </div>
+<div id="diversity-phenotypegenotype-associations" class="section level1">
+<h1><span class="header-section-number">4</span> Diversity &amp; Phenotype~Genotype associations</h1>
+<div id="learning-objectives-for-021920" class="section level2">
+<h2><span class="header-section-number">4.1</span> Learning Objectives for 02/19/20</h2>
+<ul>
+<li>Appreciate the difference between the unfolded and the folded SFS (which should we use?)</li>
+<li>Calculate diversity stats for our focal pops (SFS, Num sites, Frequency of SNPs, theta-W, pi, Tajima’s D)</li>
+<li>Visualize results in R and share to google drive</li>
+<li>Introduce Genome-Wide Association Studies (GWAS) in ANGSD using genotype probabilities</li>
+<li>Do GWAS on seedling heights</li>
+<li>The unfolded vs. folded SFS</li>
+<li>The big difference here is whether we are confident in the ancestral state of each variable site (SNP) in our dataset</li>
+</ul>
+<p>If we know the anestral state, then the best info is contained in the unfolded spectrum, which shows the frequency histogram of how many derived loci are rare vs. common bins in the unfolded spectra go from 0 to 2N – why? When you don’t know the ancestral state confidently, you can make the SFS based on the minor allele (the less frequent allele; always &lt; 0.5 in the population) bins in the folded spectra go from 0 to 1N – why? Essentially, the folded spectra wraps the SFS around such that high frequency “derived” alleles are put in the small bins (low minor allele freq).</p>
+</div>
+<div id="calculate-sfs-and-diversity-stats" class="section level2">
+<h2><span class="header-section-number">4.2</span> Calculate SFS and diversity stats</h2>
+<p>In your myscripts folder, let’s revise the script ANGSD_mypop.sh to work on the folded SFS</p>
+<p>The first part will be identical as last time, except: 1. Let’s change the <code>-out</code> name to <code>-out ${output}/${mypop}_outFold</code> 2. Take out the HWE test (not necessary to run again) and replace it with fold 1</p>
+<p>For info on using the folded spectrum, see the ANGSD manual page for Theta stats under “folded”.</p>
+<p>The above command generated the site allele frequencies, which we can now use to estimate the folded SFS for your pop realSFS <span class="math inline">\({output}/\)</span>{mypop}_outFold.saf.idx -maxIter 1000 -tole 1e-6 -P 1 &gt; <span class="math inline">\({output}/\)</span>{mypop}_outFold.sfs Once you have the SFS, you can estimate the theta diversity stats: We do this by running ANGSD again, as above, but this time we include the -pest flag which uses the SFS we estimated previously as a prior on the allele frequency estimation. We also include the doThetas flag, and of course the fold 1 to tell ANGSD we want the diversities based on the folded SFS</p>
+<p>So, we’re copying our previous set of ANGSD commands to make a new entry and adding:</p>
+<pre class="bash"><code>-pest ${output}/${mypop}_outFold.sfs \
+-doSaf 1 \
+-doThetas 1 \
+-fold 1
+
+thetaStat do_stat ${output}/${mypop}_outFold.thetas.idx</code></pre>
+<p>The first column of the results file (<code>${mypop}.thetas.idx.pestPG</code>) is formatted a bit funny and we don’t really need it. We can use the cut command to get rid of it if we want to, or just ignore it.</p>
+<pre class="bash"><code>cut -f2- ${mypop}.thetas.idx.pestPG &gt; ${mypop}.thetas</code></pre>
+<p>This is now ready to bring into R (transfer via git) to look at the mean per-site nucleotide diversity for your focal population. How does it compare to other populations? Also bring in your SFS for plotting, and to calculate the SNP frequency in your population.</p>
+<ul>
+<li><p>Share you population specific stats with the group</p></li>
+<li><p>Share your population stats on by pasting your values into this <a href="https://docs.google.com/spreadsheets/d/1Q8yLVPTki3i3wy8PcFKeYyRUJxp5qNhL29Ytqqky768/edit#gid=0">googledoc</a>.</p></li>
+</ul>
+</div>
+<div id="genome-wide-association-studies-gwas" class="section level2">
+<h2><span class="header-section-number">4.3</span> Genome-Wide Association Studies (GWAS)</h2>
+<p>The last type of analysis we’ll look at is GWAS. Recall that the purpose of GWAS is to ‘scan’ the genome SNP by SNP and test for an association between the genotypes at that locus (e.g., AA, AC, CC) and some response variable of interest. Often this is a phenotypic trait that has been carefully measured so as to reduce the amount of environmental (non-genetic) contribution.</p>
+<p>We’ll use GWAS to map seedling height growth data in common gardens that my group planted in April-May of 2019 at three sites: Burlington VT, Frostburg MD, and Bent Creek, NC</p>
+<p>Each family is represented by 5 seedlings per site, randomized within each block</p>
+<p>Let’s start with a GWAS that maps phenotype~genotype associations in the MD garden, since that is close to the “local” climate environment for many of these edge populations. I’ve generated best linear unbiased predictors (BLUPs) for each family at the MD site based on an initial ANOVA that removed effects of block and initial height at planting. The values are here:</p>
+<pre class="bash"><code>/data/project_data/RS_ExomeSeq/ANGSD/blups/Ht_EDGE_MD.blups</code></pre>
+<p>The ANGSD command we’ll use is called doAsso and there’s some good guidance on the manual page for the different implementations of this amnalysis. We’ll use the hybrid approach doAsso 5 which tests every SNP for association, but then follows up with only the significant SNPs to estimate the effect size (slope of the phenotype~genotype relationship)</p>
+<p>The statistical approach is a generalized linear model of the form:</p>
+<pre><code>y ~ u + beta*SNP + covariates + error</code></pre>
+<p>where,</p>
+<ul>
+<li>y = the reponse variable (in this case the BLUPs for height, 1 for each family)</li>
+<li>u = the intercept</li>
+<li>beta = the coefficient (or slope) relating the change in the response variable to the SNP genotype</li>
+<li>SNP = an individual SNP locus, as a factor with 3 levels (e.g., AA, AC, CC)</li>
+<li>covariates are 1 or more variables that are needed to help control the type 1 error rate (false positives) Typically one uses PC axes or Admixture ancestry coefficients for this (remember the Norway spruce paper?). We can use the 1st two PC scores from our PCA, even though the structure seemed very minimal. You can find the scores here:</li>
+</ul>
+<pre class="bash"><code>[srkeller@pbio381 PCA]$ pwd
+/data/project_data/RS_ExomeSeq/ANGSD/PCA
+[srkeller@pbio381 PCA]$ ll EDGE_PC*
+-rw-r--r--. 1 srkeller users 4342 Feb 18 21:01 EDGE_PC12.txt
+-rw-r--r--. 1 srkeller users 2193 Feb 18 18:10 EDGE_PC1.txt
+-rw-r--r--. 1 srkeller users 2149 Feb 18 18:10 EDGE_PC2.txt
+error = the error variance</code></pre>
+<p>ANGSD uses genotype probabilities as input and tests each SNP for association with a Likelihood Ratio Test (LRT) which tests the likelihood of there being an association / likelihood of NO association. The LRT is ~ chisq distributed with 1 d.f.</p>
+<p>The basic set up is:</p>
+<ul>
+<li>Call ANGSD with a list of all the bam files and apply the normal filtering as above to reduce noise (poor mapping or read coverage)</li>
+<li>Ask ANGSD to estimate genotype probabilities to pass to doAsso</li>
+<li>Tell ANGSD the name of your trait file and covariates file if you are using one.</li>
+<li>Other options as needed to minimze type 1 error rates – see guidance at bottom of ANGSD manual page</li>
+<li>Bring results into R for plotting and outlier detection</li>
+<li>Let’s define our directories first, then layer in the main body of the script</li>
+</ul>
+<pre class="bash"><code>blups=&quot;/data/project_data/RS_ExomeSeq/ANGSD/blups&quot;
+
+OUT=&quot;/data/project_data/RS_ExomeSeq/ANGSD&quot;</code></pre>
+<p>To speed things up in class a bit, we’re going to break the total number of contigs into 20 equal size chunks of 1280. That way, each student runs their GWAS on a set of 1280 contigs, and then we pool our result together at the end. No need to do this if you’re working on your own in the future…this is just a convenience for class time.</p>
+<pre class="bash"><code>contigs=&quot;/data/project_data/RS_ExomeSeq/ANGSD/contig_splits&quot;
+
+mycontigs=&quot;xaa&quot;</code></pre>
+<p>And then the main script:</p>
+<pre><code>ANGSD -b ${OUT}/EDGE_bam.list \
+-ref ${REF} 
+-out ${OUT}/GWAS/Ht_EDGE_MD_PC12_${mycontigs} \
+-remove_bads 1 \
+-C 50 \
+-baq 1 \
+-minMapQ 20 \
+-minQ 20 \
+-setMinDepth 3 \
+-minInd 2 \
+-setMinDepthInd 1 \
+-setMaxDepthInd 17 \
+-skipTriallelic 1 \
+-GL 1 \
+-doPost 1 \
+-doCounts 1 \
+-doMajorMinor 1 \
+-doMaf 1 \
+-SNP_pval 1e-6 \
+-yQuant ${blups}/Ht_EDGE_MD.blups \
+-doAsso 5 \
+-rf ${contigs}/${mycontigs} \
+-cov ${OUT}/PCA/EDGE_PC12.txt</code></pre>
+<p>Couple of new options here:</p>
+<p>-yQuant ${blups}/Ht_EDGE_MD.blups – this is your response variable; no header -doAsso 5 – this is the model you’re choosing to run. See ANGSD manual under doAsso -rf contigs/{mycontigs} – this means you want the GWAS to run just on a set of regions (r) defined in an external file (f) -cov ${OUT}/PCA/EDGE_PC12.txt – these are the covariates; as many columns as you like; no header</p>
+<p>Give it some time to run (should take 20 min or so), then we’ll bring the results into R to plot and summarize.</p>
+<p>Is there evidence for genetic associations with early seedling height growth? What do the beta estimates suggest about the direction of the effect (more often increasing, decreasing)? Are SNPs that have a positive effect on height in the MD garden the same as those in NC? For the SNPs that have the strongest effect on height, are they polymorphic in your focal pop? NOTE: You can do the same analysis replacing climate data for heigh as the response variable. This is known as Gene-Environment Association (GEA), and is a common way to test for regions of the genome that confer local adaptation to climate (or other aspects of the environment). I’ve placed two relevant climate vareiables for red spruce in the blups directory:</p>
+<pre class="bash"><code>[srkeller@pbio381 blups]$ pwd
+/data/project_data/RS_ExomeSeq/ANGSD/blups
+[srkeller@pbio381 blups]$ ll
+total 20
+-rw-r--r--. 1 srkeller users  432 Feb 18 20:41 bio18.blups
+-rw-r--r--. 1 srkeller users  432 Feb 18 20:37 bio5.blups</code></pre>
+<p>These variables are derived from the bioclim climatic variables available here.</p>
+<p>Bio5 = 10<em>(Max temp of the warmest month) Bio18 = 10</em>(Precip of the warmest quarter)</p>
+</div>
+</div>
 
 
 
