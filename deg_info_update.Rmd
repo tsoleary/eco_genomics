@@ -68,11 +68,7 @@ I won't go into the details here but I will refer you back to your notes from th
 
 # Normalization
 
-So what we have at the end here is something that looks a bit like this
-
-A data matrix or gene count table, where each row is a specfic gene and each column is a sample.
-
-
+So what we have at the end here is something that looks a bit like a data matrix or gene count table, where each row is a specfic gene and each column is a sample
 
 ## Why normalize?
 
@@ -83,7 +79,7 @@ There are two main problems that normalization is trying to address
 
 The differences in library sizes basically is just a question of sequencing depth. If there are twice as many raw counts counts for  
 
-```{r}
+```{r, eval=FALSE}
 df <- tibble(gene = c("Act5C", "Hsp70a", "lola", "Rab4"),
              samp_1 = c(120, 50, 75, 0),
              samp_2 = c(60, 25, 37, 0),
@@ -134,42 +130,45 @@ There are many procedures out there:
 - edgeR - sequencing depth, composition, and gene length
 - DESeq2 - sequencing depth and RNA composition (for differential expression between samples only - not for within sample comparisons)
 
-** The number of reads can be affected by the gene length and GC content. But if you are only interested in differential expression among different samples or groups. Then you so not have to normalize for this. Only if you were doing within sample comparisons.
+* The number of reads can be affected by the gene length and GC content. But if you are only interested in differential expression among different samples or groups. Then you do not have to normalize for this. Only if you were doing within sample comparisons.
 
 I will just spend some time going into some detail on DESeq2's normalization method because:
 
 - DESeq2 is one of the more popular packages out there
-- it also happens to be what we will use with our data on Wednesday,
-- and it was also used in the paper you all read for today
-
-## FPKM
-
-
+- it also happens to be what we will use with our data on Wednesday
 
 ## DESeq2 normalization
 
+[Helpful video](https://www.youtube.com/watch?v=UFB993xufUU)
 
+  1. Log transformation (DESeq2 uses the natural log as it is the default in R)
+  2. Gene average across samples
+  3. Genes with `-Inf` are filtered out (_i.e._ raw count = 0)
+  4. Subtract log-transfomed counts from gene average (creates a ratio because it is subtraction of logs)
+  5. Get per sample median of those log-ratios across all genes
+  6. Raise base e to that median value -> that is your scaling factor
+  7. Divide the original 
 
 # Differential Expression!
 
 ## Multiple testing problem.
 
-False positives and false negatives.
+Helpful related videos
 
-## How differential expression is called
+- [False Discovery Rates](https://www.youtube.com/watch?v=K8LQSvtjcEo)
 
-## Statistical Models
+- [Independent Filtering](https://www.youtube.com/watch?v=Gi0JdrxRq5s)
+
+- [Statistical Models](https://www.youtube.com/watch?v=yQhTtdq_y9M)
 
 
 # Visualization
 
 ## Sequencing summary statistics
 
-### Total read count
+[SARTools](https://github.com/PF2-pasteur-fr/SARTools) is a useful tool [@Varet2016].
 
-### Null read count
-
-### Normalized read count
+[This is what the output looks like!](https://tsoleary.github.io/rna_seq/cahan/results/whole_body_heat_cold_shock_report.html#4_normalization)
 
 ## Summary plots
 
@@ -255,9 +254,6 @@ Semi-automated method of curating protein family information to help annotate ge
 ### Gene set enrichment analysis (GSEA)
 
 ![](https://s3-eu-west-1.amazonaws.com/ppreviews-plos-725668748/2186474/preview.jpg)
-
-
-
 
 
 
