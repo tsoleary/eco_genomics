@@ -4,7 +4,9 @@
 
 # salmon quant -i transcripts_index -l <LIBTYPE> -r reads.fq --validateMappings -o transcripts_quant
 
-for file in /data/project_data/RS_RNASeq/fastq/cleanreads/CAM_02_H_*.cl.fq
+cd /data/project_data/RS_RNASeq/fastq/cleanreads/
+
+for file in CAM_02_H_*.cl.fq
 
 do
 
