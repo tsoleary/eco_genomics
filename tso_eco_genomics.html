@@ -1539,8 +1539,8 @@ div.tocify {
 </div>
 
 
-<div id="command-line-unix-tutorial" class="section level1">
-<h1><span class="header-section-number">1</span> Command-line UNIX tutorial</h1>
+<div id="unix-tutorial" class="section level1">
+<h1><span class="header-section-number">1</span> <strong>UNIX tutorial</strong></h1>
 <div id="what-is-the-command-line" class="section level2">
 <h2><span class="header-section-number">1.1</span> What is the command-line?</h2>
 <p>Command-line (<em>aka</em> terminal or shell) - a way of interacting with your local computer or a remote server - commands or scripts, without using a graphical user interface (GUI).</p>
@@ -1862,10 +1862,10 @@ drwxr-xr-x. 18 root root     4096 Sep  2  2015 users
 </ul>
 </div>
 </div>
-<div id="fastqc-trimming-mapping" class="section level1">
-<h1><span class="header-section-number">2</span> Fastqc, trimming, &amp; mapping</h1>
+<div id="fastqc" class="section level1">
+<h1><span class="header-section-number">2</span> <strong>FastQC</strong></h1>
 <div id="learning-objectives" class="section level2">
-<h2><span class="header-section-number">2.1</span> Learning objectives</h2>
+<h2><span class="header-section-number">2.1</span> Learning Objectives</h2>
 <ul>
 <li>To get background on the ecology of Red spruce (<em>Picea rubens</em>), and the experimental design of the exome capture data</li>
 <li>To understand the general work flow or “pipeline” for processing and analyzing the exome capture sequence data</li>
@@ -1967,8 +1967,9 @@ git push</code></pre>
 <p>Once synced to Github, use Github desktop to pull them down to your laptop where you can open them with a browser.</p>
 <p>How does the quality look?</p>
 </div>
-<div id="clean-using-trimmomatic" class="section level2">
-<h2><span class="header-section-number">2.6</span> Clean using Trimmomatic</h2>
+</div>
+<div id="trimmomatic" class="section level1">
+<h1><span class="header-section-number">3</span> <strong>Trimmomatic</strong></h1>
 <p>We’ll use the Trimmomatic program to clean the reads for each file. The program is already installed on our server.</p>
 <p>We’ve provided an example script in the <code>/data/scripts/</code> directory this time because the program is a java based program and thus a bit more particular in its call.</p>
 <p>Copy the bash script over to your <code>~/myrepo/myscripts</code> directory Open and edit the bash script using the program vim. Edit the file so that you’re trimming the fastq files for the population assigned to you Change the permissions on your script to make it executable, then run it! (examples below)</p>
@@ -1979,6 +1980,9 @@ vim trim_loop.sh    # open the script with vim to edit</code></pre>
 f=${R1/_R1_fastq.gz/}   # creates a new variable from R1 that has the &quot;_R1_fastq.gz&quot; stripped off
 name=`basename ${f}`   # calls the handy &quot;basename&quot; function to define a new variable containing only the very last part of the filename while stripping off all the path information.  This gets us the &quot;AB_05&quot; bit we want.</code></pre>
 <p>Here’s how it should look (replace AB with your population name):</p>
+<div id="trim.sh" class="section level2">
+<h2><span class="header-section-number">3.1</span> <code>trim.sh</code></h2>
+<p><a href="https://raw.githubusercontent.com/tsoleary/eco_genomics/master/myscripts/trim_loop.sh"><code>trim.sh</code></a></p>
 <pre><code>#!/bin/bash   
  
 cd /data/project_data/RS_ExomeSeq/fastq/edge_fastq  
@@ -2012,22 +2016,23 @@ done </code></pre>
 <p>ILLUMINACLIP: Cut adapter and other illumina-specific sequences from the read. LEADING: Cut bases off the start of a read, if below a threshold quality TRAILING: Cut bases off the end of a read, if below a threshold quality SLIDINGWINDOW: Perform a sliding window trimming, cutting once the average quality within the window falls below a threshold. MINLEN: Drop the read if it is below a specified length</p>
 </div>
 <div id="visualize-again-using-fastqc" class="section level2">
-<h2><span class="header-section-number">2.7</span> Visualize again using FastQC</h2>
+<h2><span class="header-section-number">3.2</span> Visualize again using FastQC</h2>
 <ul>
 <li>Check the quality of one of your cleaned files using fastqc again</li>
 <li>Redo the same general vizualization steps on the cleaned files</li>
 </ul>
 </div>
-<div id="mapping-against-the-reference-genome" class="section level2">
-<h2><span class="header-section-number">2.8</span> Mapping against the reference genome</h2>
+</div>
+<div id="mapping" class="section level1">
+<h1><span class="header-section-number">4</span> <strong>Mapping</strong></h1>
 <p>Now that we have cleaned and trimmed read pairs, we’re ready to map them against the reference genome.</p>
-<div id="obtain-reference-genome" class="section level3">
-<h3><span class="header-section-number">2.8.1</span> Obtain reference genome</h3>
+<div id="obtain-reference-genome" class="section level2">
+<h2><span class="header-section-number">4.1</span> Obtain reference genome</h2>
 <p>We’ll be using a reduced reference genome based on selecting only those scaffolds of the full genome reference that contain at least one bait. We’ve placed it on our server here: <code>/data/project_data/RS_ExomeSeq/ReferenceGenomes/Pabies1.0-genome_reduced.fa</code></p>
 <p>The reference genome is based on Norway spruce (P. abies) and is available from congenie.org.</p>
 </div>
-<div id="bwa-for-mapping-reads" class="section level3">
-<h3><span class="header-section-number">2.8.2</span> bwa for mapping reads</h3>
+<div id="bwa-for-mapping-reads" class="section level2">
+<h2><span class="header-section-number">4.2</span> bwa for mapping reads</h2>
 <p>We’ll use the program bwa, which is a very efficient and very well vetted read mapper. Lots of others exist and can be useful to explore for future datasets. We tried several, and for our exome data, bwa seems to be the best</p>
 <p>We are going to write a bash script together that calls the R1 and R2 reads for each individual in our population, and uses the bwa-mem algorithm to map reads to the reference genome. The resulting output will be a <code>.sam</code> file alignment. The basic <code>bwa</code> command we’ll use is:</p>
 <pre class="bash"><code>bwa mem -t 1 -M -a ${ref} ${forward} ${reverse} &gt; ${output}/BWA/${name}.sam
@@ -2042,9 +2047,45 @@ ${forward} # specifies the path and filename for the cleaned and trimmed R1 read
 ${reverse} # specifies the path and filename for the cleaned and trimmed R2 reads 
 &gt;${output}/BWA/${name}.sam  # directs the .sam file to be saved into a directory called BWA
 # Other bwa options detailed here: bwa manual page</code></pre>
+<div id="mapping.sh" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> <a href="https://raw.githubusercontent.com/tsoleary/eco_genomics/master/myscripts/mapping.sh"><code>mapping.sh</code></a></h3>
+<pre class="bash"><code>#! /bin/bash
+
+# this script is to run the read mapping using the bwa program
+
+# -t 1 is that we are using only one thread
+# -M is a special flag if its mapping is split across more than one contig
+# this just allows it to map across contigs
+# ${ref} variable ref that we will define as the reference genome
+# then it will redirect the output file .sam to the output dir we made
+# &gt; redirects the output to save it to a file, otherwise bash would just vomit
+# the words on the screen
+
+ref=&quot;/data/project_data/RS_ExomeSeq/ReferenceGenomes/Pabies1.0-genome_reduced.fa&quot;
+
+# a loop to map each individual within my population
+# ${input} is the path to the
+
+for forward in ${input}*_R1.cl.pd.fq
+
+do
+  # define the reverse read based on that forward read
+  # then define the forward read as the whole text
+  # and replace it with nothing so that you only have the base part of the name
+  # having the slash inside the {} means basically find and replace... so the
+  # first part of the slash is interpreted as the find and the second part is
+  # what to replace it with
+  reverse=${forward/_R1.cl.pd.fq/_R2.cl.pd.fq}
+  f=${forward/_R1.cl.pd.fq/}
+  # basename is a function in base that creates the basename that will be used
+  # for naming the rest of the files
+  name=`basename ${f}`
+  bwa mem -t 1 -M ${ref} ${forward} ${reverse} &gt; ${output}/BWA/${name}.sam
+done</code></pre>
 </div>
-<div id="samtools-and-sambamba" class="section level3">
-<h3><span class="header-section-number">2.8.3</span> samtools and sambamba</h3>
+</div>
+<div id="samtools-and-sambamba" class="section level2">
+<h2><span class="header-section-number">4.3</span> <code>samtools</code> and <code>sambamba</code></h2>
 <p>Our last steps (with basic syntax) are to:</p>
 <ol style="list-style-type: decimal">
 <li><p>Convert our <code>.sam</code> files to the more efficient binary version .<code>bam</code> and sort them <code>sambamba-0.7.1-linux-static view -S --format=bam file.sam -o file.bam</code></p></li>
@@ -2070,20 +2111,90 @@ ${reverse} # specifies the path and filename for the cleaned and trimmed R2 read
 <li>Save and quit vim, type :wq</li>
 </ul>
 </div>
-<div id="create-a-wrapper" class="section level3">
-<h3><span class="header-section-number">2.8.4</span> Create a wrapper</h3>
-<p>Last step, we’re going to put these scripts altogether into a “wrapper” that will exectue each of them one after the other, and work for us while we’re off getting a coffee or sleeping. :) I’ll show you how to code this together in class.</p>
+<div id="process_bam.sh" class="section level2">
+<h2><span class="header-section-number">4.4</span> <a href="https://raw.githubusercontent.com/tsoleary/eco_genomics/master/myscripts/process_bam.sh"><code>process_bam.sh</code></a></h2>
+<pre class="bash"><code>#! /bin/bash
+# this is where out output sam files are going to get converted into binary
+# format (bam)
+
+# then we are going to sort the bam files, remove PCR duplicates, and index them
+
+# first convert sam to bam and then sort
+
+for f in ${output}/BWA/${mypop}*.sam
+
+do
+
+  out=${f/.sam/}
+  # this converts it to the bam
+  sambamba-0.7.1-linux-static view -S --format=bam ${f} -o ${out}.bam
+  # now we need to sort the bam files so it can quickly find the function
+  samtools sort ${out}.bam -o ${out}.sorted.bam
+
+done
+
+# next remove the pcr duplicates from our bam files
+
+for file in ${output}/BWA/${mypop}*.sorted.bam
+
+do
+
+  f=${file/.sorted.bam/}
+  # this is going to mark duplicates if they have the exact same coordinates, because they are randomly fragmented so if they star
+  # -r removes all dups except for one
+  # no dash o -o needed for the output
+  # just calling the command on the server without any of the options gives you the help information
+  sambamba-0.7.1-linux-static markdup -r -t 1 ${file} ${f}.sorted.rmdup.bam
+
+done
+
+# finish by indexing the files
+
+for file in ${output}/BWA/${mypop}*sorted.rmdup.bam
+
+do
+
+  samtools index ${file}
+
+done</code></pre>
 </div>
-<div id="using-screen" class="section level3">
-<h3><span class="header-section-number">2.8.5</span> Using <strong>screen</strong></h3>
+<div id="create-a-wrapper" class="section level2">
+<h2><span class="header-section-number">4.5</span> Create a wrapper</h2>
+<p>Last step, we’re going to put these scripts altogether into a “wrapper” that will exectue each of them one after the other, and work for us while we’re off getting a coffee or sleeping. :) I’ll show you how to code this together in class.</p>
+<div id="mypipeline.sh" class="section level3">
+<h3><span class="header-section-number">4.5.1</span> <a href="https://raw.githubusercontent.com/tsoleary/eco_genomics/master/myscripts/mypipeline.sh"><code>mypipeline.sh</code></a></h3>
+<pre class="bash"><code>#! /bin/bash
+
+# we will use this as a wrappeer to run our different scripts
+
+# path to my repo on the server
+myrepo=&quot;/users/t/s/tsoleary/eco_genomics&quot;
+
+# define the population
+mypop=&quot;BFA&quot;
+
+# directory to our cleaned and paired paired
+input=&quot;/data/project_data/RS_ExomeSeq/fastq/edge_fastq/pairedcleanreads/${mypop}&quot;
+
+# define an output directory in the common space not your own repo
+output=&quot;/data/project_data/RS_ExomeSeq/mapping&quot;
+
+
+# call the mapping.sh and process_bam.sh files, you could also add the stats but for the sake of time we will do that later
+
+source ./mapping.sh
+
+source ./process_bam.sh</code></pre>
+</div>
+</div>
+<div id="using-screen" class="section level2">
+<h2><span class="header-section-number">4.6</span> Using <strong>screen</strong></h2>
 <p>Once your wrapper script is ready, you’re going to want to start a <strong>screen</strong>. The screen command initiates a new shell window that won’t interupt or stop your work if you close your computer, log off the server, or leave the UVM network. <strong>Anytime you’re running long jobs, you definiteily want to use screen.</strong></p>
 <p>Using it is easy. Just type screen followed by . It will take you to a new empyt terminal. You can then start your wrapper bash script and see that it starts running. Once everything looks good, you have to detach from the screen by typing <code>Ctrl-A + Ctrl-D</code>. If you don’t do this, you’ll lose your work!</p>
 <p>When you’re ready to check back on the progress of your program, you can recover your screen by typing <code>screen -r</code>. That’ll re-attach you back to your program!</p>
 </div>
-</div>
-</div>
-<div id="mapping-the-exomeseq-data" class="section level1">
-<h1><span class="header-section-number">3</span> Mapping the ExomeSeq data</h1>
+<div id="next-day-mapping" class="section level2">
+<h2><span class="header-section-number">4.7</span> Next day mapping</h2>
 <ul>
 <li>Review our progress on mapping</li>
 <li>Calculate mapping statistics to assess quality of the result</li>
@@ -2091,8 +2202,9 @@ ${reverse} # specifies the path and filename for the cleaned and trimmed R2 read
 <li>Introduce use of genotype-likelihoods for analyzing diversity in low coverage sequences</li>
 <li>Use the ‘ANGSD’ progranm to calculate diversity stats, Fsts, and PCA</li>
 </ul>
+</div>
 <div id="sequence-alignment-sam-files" class="section level2">
-<h2><span class="header-section-number">3.1</span> Sequence AlignMent (SAM) files</h2>
+<h2><span class="header-section-number">4.8</span> Sequence AlignMent (SAM) files</h2>
 <pre class="bash"><code>/data/project_data/RS_ExomeSeq/mapping/BWA/</code></pre>
 <ul>
 <li>First, try looking at a SAM file using head and tail.</li>
@@ -2117,14 +2229,43 @@ ${reverse} # specifies the path and filename for the cleaned and trimmed R2 read
 </ul>
 </div>
 <div id="how-well-reads-mapped-to-the-reference" class="section level2">
-<h2><span class="header-section-number">3.2</span> How well reads mapped to the reference</h2>
+<h2><span class="header-section-number">4.9</span> How well reads mapped to the reference</h2>
 <ul>
 <li><p>We can use the program samtools Written by Heng Li, the same person who wrote bwa. It is a powerful tool for manipulating sam/bam files.</p></li>
 <li><p>The command <code>flagstat</code> gets us some basic info on how well the mapping worked:</p></li>
 <li><p><code>samtools flagstat FILENAME.sam</code></p></li>
 </ul>
 <div id="bam_stats.sh." class="section level3">
-<h3><span class="header-section-number">3.2.1</span> <code>bam_stats.sh.</code></h3>
+<h3><span class="header-section-number">4.9.1</span> <code>bam_stats.sh.</code></h3>
+<p><a href="https://raw.githubusercontent.com/tsoleary/eco_genomics/master/myscripts/bamstats.sh"><code>bam_stats.sh.</code></a></p>
+<pre class="bash"><code>#! /bin/bash
+
+# set repo
+
+myrepo=&quot;/users/t/s/tsoleary/eco_genomics&quot;
+
+mypop=&quot;BFA&quot;
+
+output=&quot;/data/project_data/RS_ExomeSeq/mapping&quot;
+
+# this echo is creating a header for the file and saving it on the flagstats.txt files
+echo &quot;Num.reads R1 R2 Paired MateMapped Singletons MateMappedDiffChr&quot; &gt; ${myrepo}/myresults/${mypop}.flagstats.txt
+
+for file in ${output}/BWA/${mypop}*sorted.rmdup.bam
+  do
+    f=${file/.sorted.rmdup.bam/}
+    name=`basename ${f}`
+    # the double &gt;&gt; makes it so that it appends it and doesn't just rewrite the file every time
+    echo ${name} &gt;&gt; ${myrepo}/myresults/${mypop}.names.txt
+    # NR is the number of rows, row 6 through 12 have the meaningful results in them
+    samtools flagstat ${file} | awk 'NR&gt;=6&amp;&amp;NR&lt;=12 {print $1}' | column -x
+  done &gt;&gt; ${myrepo}/myresults/${mypop}.flagstats.txt
+
+# calculate the depth of coverage from our bam files
+for file in ${output}/BWA/${mypop}*sorted.rmdup.bam
+  do
+    samtools depth ${file} | awk '{sum+=$3} END {print sum/NR}'
+  done &gt;&gt; ${myrepo}/myresults/${mypop}.coverage.txt</code></pre>
 <ul>
 <li>We’ll also use the <code>awk</code> tool to help format the output.</li>
 </ul>
@@ -2141,7 +2282,7 @@ ${reverse} # specifies the path and filename for the cleaned and trimmed R2 read
 </div>
 </div>
 <div id="calling-genotypes" class="section level2">
-<h2><span class="header-section-number">3.3</span> Calling Genotypes</h2>
+<h2><span class="header-section-number">4.10</span> Calling Genotypes</h2>
 <p>Inference of population genetics from the aligned sequence data. Should we call genotypes?</p>
 <p>Many of the papers you’ll read that do popgen on NGS data have a SNP calling step that results in a specific gneotype being called for each SNP site for each individual. For example,</p>
 <table>
@@ -2183,7 +2324,7 @@ ${reverse} # specifies the path and filename for the cleaned and trimmed R2 read
 <p>Create a list of bam files for the samples you want to analyze Estimate genotype likelihoods (GL’s) and allele frequencies after filtering to minimize noise Use GL’s to: - estimate the site frequency spectrum (SFS) - estimate nucleotide diversities (Watterson’s theta, pi, Tajima’s D, …) - estimate Fst between all populations, or pairwise between sets of populations - perform a genetic PCA based on estimation of the genetic covariance matrix (this is done on the entire set of Edge ind’s)</p>
 </div>
 <div id="angsd_mypop.sh" class="section level2">
-<h2><span class="header-section-number">3.4</span> ANGSD_mypop.sh</h2>
+<h2><span class="header-section-number">4.11</span> ANGSD_mypop.sh</h2>
 <pre class="bash"><code>myrepo=&quot;/users/s/r/srkeller/Ecological_Genomics/Spring_2020&quot;
 
 mkdir ${myrepo}/myresults/ANGSD
@@ -2199,7 +2340,7 @@ ls /data/project_data/RS_ExomeSeq/mapping/BWA/${mypop}_*sorted.rm*.bam &gt;${out
 </ol>
 </div>
 <div id="estimating-gls-and-allele-freqs" class="section level2">
-<h2><span class="header-section-number">3.5</span> Estimating GL’s and allele freqs</h2>
+<h2><span class="header-section-number">4.12</span> Estimating GL’s and allele freqs</h2>
 <p>Estimating GL’s and allele frequencies for all sites with ANGSD</p>
 <pre class="bash"><code>ANGSD -b ${output}/${mypop}_bam.list \
 -ref ${REF} -anc ${REF} \
@@ -2247,7 +2388,7 @@ NOTES</code></pre>
 <p>3b. Once you have the SFS, you can estimate the theta diversity stats:</p>
 </div>
 <div id="estimating-thetas" class="section level2">
-<h2><span class="header-section-number">3.6</span> Estimating thetas</h2>
+<h2><span class="header-section-number">4.13</span> Estimating thetas</h2>
 <p>Estimating thetas for all sites, using the SFS from above as a prior to estimate the GL’s</p>
 <pre class="bash"><code>ANGSD -b ${output}/${mypop}_bam.list \
 -ref ${REF} -anc ${REF} \
@@ -2283,13 +2424,13 @@ do
 done</code></pre>
 </div>
 <div id="ancestory-relationships" class="section level2">
-<h2><span class="header-section-number">3.7</span> Ancestory relationships</h2>
+<h2><span class="header-section-number">4.14</span> Ancestory relationships</h2>
 <p>3d. If we have time (and the previous analysis I started yesterday finally finishes running!), we can look at the ancestry relatioships among all the edge individuals using a genetic Principal Component Analysis. ANGSD has a routine for that too – PCAngsd. First, we estimate the GL’s for the entire sample, keeping just the polymorphic sites, and outputing the GL’s in “Beagle” format (file.beagle.gz)</p>
 <p>Make a list of all the sorted and PCR dup removed bam files:</p>
 <p>ls /data/project_data/RS_ExomeSeq/mapping/BWA/<em>sorted.rm</em>bam &gt;${myrepo}/myresults/EDGE_bam.list</p>
 </div>
 <div id="run-angsd-to-estimate-the-gls" class="section level2">
-<h2><span class="header-section-number">3.8</span> Run ANGSD to estimate the GL’s</h2>
+<h2><span class="header-section-number">4.15</span> Run ANGSD to estimate the GL’s</h2>
 <pre class="bash"><code>ANGSD -b ${myrepo}/myresults/EDGE_bam.list \
 -ref ${REF} -anc ${REF} -out ${myrepo}/myresults/EDGE_poly \
 -nThreads 10 \
@@ -2312,12 +2453,12 @@ done</code></pre>
 <p>The resulting GL file EDGE_poly.beagle.gz can be used as input to PCAngsd to estimate the covariance matrix:</p>
 </div>
 <div id="pca---estimating-the-covariance-matrix-with-pcangsd" class="section level2">
-<h2><span class="header-section-number">3.9</span> PCA - Estimating the covariance matrix with pcangsd</h2>
+<h2><span class="header-section-number">4.16</span> PCA - Estimating the covariance matrix with pcangsd</h2>
 <pre class="bash"><code>python /data/popgen/pcangsd/pcangsd.py -beagle ${myrepo}/myresults/EDGE_poly.beagle.gz -o ${myrepo}/myresults/EDGE_poly_covmatrix -threads 1</code></pre>
 <p>Once you have that, you’ll want to send all your outputs up to Github and then back down to your local machine. We can use R to find the eigenvectors of the genetic covariance matrix and plot it:</p>
 </div>
 <div id="vizualizing-in-r" class="section level2">
-<h2><span class="header-section-number">3.10</span> Vizualizing in R</h2>
+<h2><span class="header-section-number">4.17</span> Vizualizing in R</h2>
 <pre class="r"><code>setwd(&quot;path to your repo&quot;)
 covmat &lt;- read.table(&quot;myresults/myresults/EDGE_poly_covmatrix&quot;)
 
@@ -2325,10 +2466,10 @@ PCA &lt;- eigen(covmat)
 plot(PCA[,1],PCA[,2])</code></pre>
 </div>
 </div>
-<div id="diversity-phenotypegenotype-associations" class="section level1">
-<h1><span class="header-section-number">4</span> Diversity &amp; Phenotype~Genotype associations</h1>
-<div id="learning-objectives-for-021920" class="section level2">
-<h2><span class="header-section-number">4.1</span> Learning Objectives for 02/19/20</h2>
+<div id="diversity-phenogeno" class="section level1">
+<h1><span class="header-section-number">5</span> <strong>Diversity &amp; Pheno~Geno</strong></h1>
+<div id="learning-objectives-1" class="section level2">
+<h2><span class="header-section-number">5.1</span> Learning Objectives</h2>
 <ul>
 <li>Appreciate the difference between the unfolded and the folded SFS (which should we use?)</li>
 <li>Calculate diversity stats for our focal pops (SFS, Num sites, Frequency of SNPs, theta-W, pi, Tajima’s D)</li>
@@ -2341,7 +2482,7 @@ plot(PCA[,1],PCA[,2])</code></pre>
 <p>If we know the anestral state, then the best info is contained in the unfolded spectrum, which shows the frequency histogram of how many derived loci are rare vs. common bins in the unfolded spectra go from 0 to 2N – why? When you don’t know the ancestral state confidently, you can make the SFS based on the minor allele (the less frequent allele; always &lt; 0.5 in the population) bins in the folded spectra go from 0 to 1N – why? Essentially, the folded spectra wraps the SFS around such that high frequency “derived” alleles are put in the small bins (low minor allele freq).</p>
 </div>
 <div id="calculate-sfs-and-diversity-stats" class="section level2">
-<h2><span class="header-section-number">4.2</span> Calculate SFS and diversity stats</h2>
+<h2><span class="header-section-number">5.2</span> Calculate SFS and diversity stats</h2>
 <p>In your myscripts folder, let’s revise the script ANGSD_mypop.sh to work on the folded SFS</p>
 <p>The first part will be identical as last time, except: 1. Let’s change the <code>-out</code> name to <code>-out ${output}/${mypop}_outFold</code> 2. Take out the HWE test (not necessary to run again) and replace it with fold 1</p>
 <p>For info on using the folded spectrum, see the ANGSD manual page for Theta stats under “folded”.</p>
@@ -2362,7 +2503,7 @@ thetaStat do_stat ${output}/${mypop}_outFold.thetas.idx</code></pre>
 </ul>
 </div>
 <div id="genome-wide-association-studies-gwas" class="section level2">
-<h2><span class="header-section-number">4.3</span> Genome-Wide Association Studies (GWAS)</h2>
+<h2><span class="header-section-number">5.3</span> Genome-Wide Association Studies (GWAS)</h2>
 <p>The last type of analysis we’ll look at is GWAS. Recall that the purpose of GWAS is to ‘scan’ the genome SNP by SNP and test for an association between the genotypes at that locus (e.g., AA, AC, CC) and some response variable of interest. Often this is a phenotypic trait that has been carefully measured so as to reduce the amount of environmental (non-genetic) contribution.</p>
 <p>We’ll use GWAS to map seedling height growth data in common gardens that my group planted in April-May of 2019 at three sites: Burlington VT, Frostburg MD, and Bent Creek, NC</p>
 <p>Each family is represented by 5 seedlings per site, randomized within each block</p>
@@ -2442,9 +2583,9 @@ total 20
 </div>
 </div>
 <div id="transcriptomics" class="section level1">
-<h1><span class="header-section-number">5</span> <strong>Transcriptomics</strong></h1>
-<div id="learning-objectives-for-22620" class="section level2">
-<h2><span class="header-section-number">5.1</span> Learning Objectives for 2/26/20</h2>
+<h1><span class="header-section-number">6</span> <strong>Transcriptomics</strong></h1>
+<div id="learning-objectives-2" class="section level2">
+<h2><span class="header-section-number">6.1</span> Learning Objectives</h2>
 <ul>
 <li>Review Red Spruce ecology and biogeography and the transcriptomics experimental design.</li>
 <li>Articulate the questions we can address and hypotheses we can test with this experimental design.</li>
@@ -2457,11 +2598,11 @@ total 20
 </ul>
 </div>
 <div id="red-spruce-stress-transcriptomics-experiment" class="section level2">
-<h2><span class="header-section-number">5.2</span> Red spruce stress transcriptomics experiment</h2>
+<h2><span class="header-section-number">6.2</span> Red spruce stress transcriptomics experiment</h2>
 <p>Red spruce is a montane coniferous tree that inhabits cool moist habitats in the northeast. Occasionally it also less ideal sites that are warmer and drier, particularly driven by microsite differences in aspect and substrate (rocky scree slopes exposed to direct sun). The purpose of this experiment was to sample red spruce genetic variation from sites that were polarized into cool &amp; wet vs. hot and dry based on historic climate (based on Bio18 (precip of warmest quarter) and Bio5 (temp of warmest month), and to assess the gene expression responses of individuals from these habitats in response to experimental treatments of heat and heat+drought.</p>
 </div>
 <div id="experimental-design-1" class="section level2">
-<h2><span class="header-section-number">5.3</span> Experimental Design:</h2>
+<h2><span class="header-section-number">6.3</span> Experimental Design</h2>
 <ul>
 <li>Ten maternal families total; sample labels are “POP_FAM”
 <ul>
@@ -2608,11 +2749,20 @@ total 20
 </table>
 </div>
 <div id="library-prep-and-sequencing" class="section level2">
-<h2><span class="header-section-number">5.4</span> Library prep and sequencing</h2>
-<p>Samples were quantified for RNA concentration and quality on the Bioanalyzer Samples &gt;1 ng/ul were sent to Cornell for 3’ tag sequencing Library prep followed the LexoGen protocol and sequencing was on 1 lane of a NextSeq500 (1x86 bp reads) Samples were demultiplexed and named according to the convention: POP_FAM_TRT_DAY What questions can we ask/address with this experimental design, with these data?</p>
+<h2><span class="header-section-number">6.4</span> Library prep and sequencing</h2>
+<p>Samples were quantified for RNA concentration and quality on the Bioanalyzer Samples &gt;1 ng/ul were sent to Cornell for 3’ tag sequencing Library prep followed the LexoGen protocol and sequencing was on 1 lane of a NextSeq500 (1x86 bp reads) Samples were demultiplexed and named according to the convention: POP_FAM_TRT_DAY</p>
+<p>What questions can we ask/address with this experimental design, with these data? How do we translate these questions to models in DESeq2?</p>
+<ol style="list-style-type: decimal">
+<li><p>Do families from different source climates differ for their gene expression?</p></li>
+<li><p>Is there a transcriptome wide response to heat stress? Does this change when the additional stress of drought is added?</p></li>
+<li><p>Is there a significant interaction between source climate and stress treatment, such that families from hot/dry climates have a unique expression response to heat or heat+drought compared to families from cool/wet climates?</p></li>
+<li><p>Which specific genes are involved in the above responses, and do they reveal functional enrichment of particular pathways?</p></li>
+<li><p>Do DE genes or pathways show evidence of positive selection (compare DE genes with popgen signatures of sel’n)?</p></li>
+<li><p>Can we use association mapping to identify eQTL associated with DE responses?</p></li>
+</ol>
 </div>
 <div id="data-processing-pipeline" class="section level2">
-<h2><span class="header-section-number">5.5</span> Data Processing Pipeline:</h2>
+<h2><span class="header-section-number">6.5</span> Data Processing Pipeline</h2>
 <p>FastQC on raw reads –&gt; Trimmomatic (done!) –&gt; FastQC on cleaned reads</p>
 <p>Reference transcriptome:</p>
 <pre class="bash"><code>/data/project_data/RS_RNASeq/ReferenceTranscriptome/Pabies1.0-all-cds.fna.gz</code></pre>
@@ -2625,8 +2775,8 @@ total 20
 <li>Ignoring day for the moment, there are 10 PopulationByFamily groups (POP_XX) and three treatment groups (C, H, and D), so 30 groups. If you each take two of these pop by treatment groups to process, we’ll have all the samples covered. cd into the /data/project_data/RS_RNAseq/fastq directory to view the files. Let’s write on the board each of our chosen groups.</li>
 </ul>
 </div>
-<div id="fastqc" class="section level2">
-<h2><span class="header-section-number">5.6</span> FastQC</h2>
+<div id="fastqc-1" class="section level2">
+<h2><span class="header-section-number">6.6</span> <strong>FastQC</strong></h2>
 <ul>
 <li>Remember how… Where do you start</li>
 <li>Clean the reads with Trimmomatic</li>
@@ -2660,38 +2810,113 @@ do
 done </code></pre>
 <p>Run FastQC on the clean reads to confirm improvement What do we look for in this second run?</p>
 </div>
-<div id="salmon-to-quantify-transcript-abundance" class="section level2">
-<h2><span class="header-section-number">5.7</span> Salmon to quantify transcript abundance</h2>
+</div>
+<div id="salmon" class="section level1">
+<h1><span class="header-section-number">7</span> <strong>Salmon</strong></h1>
+<p>Salmon to quantify transcript abundance. Mapping and counting the reads.</p>
 <p>First step: Index the reference transcriptome. This only needs to be done once and has been done already, but here’s the code:</p>
 <pre><code>cd /data/project_data/RS_RNAseq/ReferenceTrancriptome/
 salmon index -t Pabies1.0-all-cds.fna.gz -i Pabies_cds_index --decoys decoys.txt -k 31</code></pre>
+<p>Note that the <code>-k</code> flag sets the minimum acceptable length for a valid match between query (read) and the reference. This is a parameter that the creators of Salmon suggest can be made “slightly smaller” if the mapping rate is lower than expected. We may want to explore reducing <code>-k</code>.</p>
 <p>Second step: Start quantification! Let’s see if we can write a for loop together to start the mapping based on the Salmon tutorial</p>
 <pre><code>salmon quant -i transcripts_index -l &lt;LIBTYPE&gt; -r reads.fq --validateMappings -o transcripts_quant</code></pre>
-<p>Now to import the <code>quant.sf</code> files from their respective directories into R &amp; DESeq2…</p>
-<p>Here’s a tutorial by the creators of the two programs, Salmon and DESeq2. I’m having trouble installing “tximportData” in R. It seems it’s not compatible with the latest version of R that I’m working in on my machine or our class server… Let’s troubleshoot!</p>
+<p>The descriptions of all of the options can be found on the <a href="https://salmon.readthedocs.io/en/latest/salmon.html#description-of-important-options">Salmon github page</a> and by using the command <code>salmon quant -h</code>.</p>
+<div id="salmon.sh" class="section level2">
+<h2><span class="header-section-number">7.1</span> <code>salmon.sh</code></h2>
+<p><a href="https://raw.githubusercontent.com/tsoleary/eco_genomics/master/myscripts/salmon.sh"><code>salmon.sh</code></a></p>
+<pre class="bash"><code>#! /bin/bash/
+
+# run salmon to do the mapping and the counting of the cleanreads
+
+# salmon quant -i transcripts_index -l &lt;LIBTYPE&gt; -r reads.fq --validateMappings -o transcripts_quant
+
+cd /data/project_data/RS_RNASeq/fastq/cleanreads/
+
+for file in CAM_02_H_*.cl.fq
+
+do
+
+  salmon quant \
+  -i /data/project_data/RS_RNASeq/ReferenceTranscriptome/Pabies_cds_index \
+  -l A \
+  -r ${file} \
+  --validateMappings \
+  -p 1 \
+  --seqBias \
+  -o /data/project_data/RS_RNASeq/salmon/allmapping/${file}
+
+done</code></pre>
+</div>
+<div id="explore-mapping-rate" class="section level2">
+<h2><span class="header-section-number">7.2</span> Explore mapping rate</h2>
+<p>For each sample mapped, you now have a directory with several output files including a log of the run. In that log, the mapping rate (% of reads mapped with sufficient quality) is reported. We can view the contents of the file using cat. We can also use grep (i.e., regular expressions) to pull out the mapping rate for all the samples. Though there’s probably a more elegant solution, here is one:</p>
+<pre><code>grep -r --include \*.log -e 'Mapping rate'</code></pre>
+<p>How could we save this output?</p>
+<p>What is our mapping rate? Is this good/enough? What factors could affect mapping rate?</p>
+<p>We ended up using the the index file called <code>Pabies_cds_index</code>, which contains all of the coding sequences for <em>P. abies</em>, not just the high confidence coding sequences. This improved the percent mapping from ~ 4% to ~ 25%.</p>
+</div>
+<div id="r-import" class="section level2">
+<h2><span class="header-section-number">7.3</span> R import!</h2>
+<div id="combine-individual-quant.sf-files" class="section level3">
+<h3><span class="header-section-number">7.3.1</span> Combine individual <code>quant.sf</code> files</h3>
+<p>Combine individual <code>quant.sf</code> files from their respective directories into a counts data matrix with all 76 samples in one table</p>
+<p>To do this, we’ll use the <code>R</code> package <code>tximport</code> on our class server. Here’s a <code>tximport</code> <a href="https://bioconductor.org/packages/release/bioc/vignettes/tximport/inst/doc/tximport.html#salmon">tutorial</a> by the creators of the two programs, Salmon and DESeq2. Unless we decide to use multiple rounds of mapping (changing references, etc), only one person needs to make this compiled matrix.</p>
+<p>Here’s an example of how it can be done. First start <code>R</code> on the server by typing capital <code>R</code> and enter. Exciting! Right? Load the libraries we need (already installed).</p>
+<pre class="r"><code>library(tximportData)
+library(tximport)
+
+#locate the directory containing the files. 
+dir &lt;- &quot;/data/project_data/RS_RNASeq/salmon/&quot;
+list.files(dir)
+
+# read in table with sample ids
+samples &lt;- read.table(&quot;/data/project_data/RS_RNASeq/salmon/RS_samples.txt&quot;, header=TRUE)
+
+# now point to quant files
+all_files &lt;- file.path(dir, samples$sample, &quot;quant.sf&quot;)
+names(all_files) &lt;- samples$sample
+
+# what would be used if linked transcripts to genes
+#txi &lt;- tximport(files, type = &quot;salmon&quot;, tx2gene = tx2gene)
+# to be able to run without tx2gene
+txi &lt;- tximport(all_files, type = &quot;salmon&quot;, txOut=TRUE)  
+names(txi)
+
+head(txi$counts)
+
+countsMatrix &lt;- txi$counts
+dim(countsMatrix)
+#[1] 66069    76
+
+# To write out
+write.table(countsMatrix, file = &quot;RS_countsMatrix.txt&quot;, col.names = T, row.names = T, quote = F)</code></pre>
+</div>
+</div>
+<div id="move-counts-data-matrix-to-local" class="section level2">
+<h2><span class="header-section-number">7.4</span> Move counts data matrix to local</h2>
+<p>Move this counts data matrix to your individual machines using your perferred <code>ftp</code> (<code>fetch</code>, <code>Winscp</code>, <code>scp</code>). Also move the <code>RS_samples.txt</code> file to your machine. This file is a table that associates each of our samples with their conditions (climate, treatment, day, population).</p>
+<p>Note that in the code above, we are using the counts data that are not normalized to length because we are working with 3’ RNAseq data. This is informed by a cautionary note from the creators on working with 3’ tagged RNA-seq: “If you have 3’ tagged RNA-seq data, then correcting the counts for gene length will induce a bias in your analysis, because the counts do not have length bias. Instead of using the default full-transcript-length pipeline, we recommend to use the original counts, e.g. <code>txi$counts</code> as a counts matrix, e.g. providing to DESeqDataSetFromMatrix or to the <code>edgeR</code> or <code>limma</code> functions without calculating an offset and without using countsFromAbundance.”</p>
 <p>Important considerations: How was this transcriptome assembled? Should we collapse transcripts to genes?</p>
 <p>Cautionary note from the creators on working with 3’ tagged RNA-seq: “If you have 3’ tagged RNA-seq data, then correcting the counts for gene length will induce a bias in your analysis, because the counts do not have length bias. Instead of using the default full-transcript-length pipeline, we recommend to use the original counts, e.g. txi$counts as a counts matrix, e.g. providing to DESeqDataSetFromMatrix or to the edgeR or limma functions without calculating an offset and without using countsFromAbundance.”</p>
 <p>To do this: The rownames of the sampleTable RS_samples need to align with the colnames of txi$counts, that is the sample names need to be row names in the sample/factor table and need to be the column names of the data matrix (with rows as genes and columns as samples).</p>
 <pre><code>dds &lt;- DESeqDataSetFromTximport(txi, sampleTable)</code></pre>
 <p>Let’s get R set up for for Transcriptomics, data import and visualization! Here is a list of some of the libraries we will need:</p>
-<pre class="r"><code>library(tximportData)
-library(tximport)
+<pre class="r"><code>setwd(&quot;~/github/2020_Ecological_Genomics&quot;)
+
 library(DESeq2)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(scales)
 library(ggpubr)
-library(readr)</code></pre>
-<p>To install DESeq2:</p>
-<pre class="r"><code>if (!requireNamespace(&quot;BiocManager&quot;, quietly = TRUE))
-    install.packages(&quot;BiocManager&quot;)
+library(wesanderson)
 
-BiocManager::install(&quot;DESeq2&quot;)</code></pre>
-<p>To install tximport and tximportData:</p>
-<pre class="r"><code>BiocManager::install(&quot;tximport&quot;)
-BiocManager::install(&quot;tximportData&quot;)</code></pre>
-<p>For the other packages, you can probably use Tools -&gt; Install Packages in RStudio</p>
+
+countsTable &lt;- read.table(&quot;RS_countsMatrix.txt&quot;, header=TRUE, row.names=1)
+
+conds &lt;- read.delim(&quot;RS_samples.txt&quot;, header=TRUE, stringsAsFactors = TRUE, row.names=1, colClasses=c('factor', 'factor', 'factor', 'factor'))
+
+dds &lt;- DESeqDataSetFromMatrix(countData = countsTableRound, colData = conds, design = ~ day + climate + treatment)</code></pre>
 </div>
 </div>
 

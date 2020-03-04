@@ -10,7 +10,7 @@ output:
 ---
 
 
-# Command-line UNIX tutorial
+# **UNIX tutorial**
 
 ## What is the command-line?
 
@@ -371,9 +371,9 @@ drwxr-xr-x. 18 root root     4096 Sep  2  2015 users
 - Here's another useful [UNIX cheatsheet](http://cheatsheetworld.com/programming/unix-linux-cheat-sheet/)
 
 
-# Fastqc, trimming, & mapping
+# **FastQC**
 
-## Learning objectives
+## Learning Objectives
 - To get background on the ecology of Red spruce (_Picea rubens_), and the experimental design of the exome capture data
 - To understand the general work flow or “pipeline” for processing and analyzing the exome capture sequence data
 - To visualize and interpret Illumina data quality (what is a fastq file; what are Phred scores?).
@@ -530,7 +530,7 @@ Once synced to Github, use Github desktop to pull them down to your laptop where
 
 How does the quality look?
 
-## Clean using Trimmomatic
+# **Trimmomatic**
 We’ll use the Trimmomatic program to clean the reads for each file. The program is already installed on our server.
 
 We’ve provided an example script in the `/data/scripts/` directory this time because the program is a java based program and thus a bit more particular in its call.
@@ -552,6 +552,10 @@ f=${R1/_R1_fastq.gz/}   # creates a new variable from R1 that has the "_R1_fastq
 name=`basename ${f}`   # calls the handy "basename" function to define a new variable containing only the very last part of the filename while stripping off all the path information.  This gets us the "AB_05" bit we want.
 ```    
 Here’s how it should look (replace AB with your population name):
+
+## `trim.sh`
+
+[`trim.sh`](https://raw.githubusercontent.com/tsoleary/eco_genomics/master/myscripts/trim_loop.sh)
 
 ```
 #!/bin/bash   
@@ -598,18 +602,18 @@ MINLEN: Drop the read if it is below a specified length
 - Check the quality of one of your cleaned files using fastqc again
 - Redo the same general vizualization steps on the cleaned files
 
-## Mapping against the reference genome
+# **Mapping** 
 
 Now that we have cleaned and trimmed read pairs, we’re ready to map them against the reference genome.
 
-### Obtain reference genome
+## Obtain reference genome
 
 We’ll be using a reduced reference genome based on selecting only those scaffolds of the full genome reference that contain at least one bait. We’ve placed it on our server here:
 `/data/project_data/RS_ExomeSeq/ReferenceGenomes/Pabies1.0-genome_reduced.fa`
 
 The reference genome is based on Norway spruce (P. abies) and is available from congenie.org.
 
-### bwa for mapping reads
+## bwa for mapping reads
 
 We’ll use the program bwa, which is a very efficient and very well vetted read mapper. Lots of others exist and can be useful to explore for future datasets. We tried several, and for our exome data, bwa seems to be the best
 
@@ -630,7 +634,46 @@ ${reverse} # specifies the path and filename for the cleaned and trimmed R2 read
 # Other bwa options detailed here: bwa manual page
 ```
 
-### samtools and sambamba 
+### [`mapping.sh`](https://raw.githubusercontent.com/tsoleary/eco_genomics/master/myscripts/mapping.sh)
+
+```bash
+#! /bin/bash
+
+# this script is to run the read mapping using the bwa program
+
+# -t 1 is that we are using only one thread
+# -M is a special flag if its mapping is split across more than one contig
+# this just allows it to map across contigs
+# ${ref} variable ref that we will define as the reference genome
+# then it will redirect the output file .sam to the output dir we made
+# > redirects the output to save it to a file, otherwise bash would just vomit
+# the words on the screen
+
+ref="/data/project_data/RS_ExomeSeq/ReferenceGenomes/Pabies1.0-genome_reduced.fa"
+
+# a loop to map each individual within my population
+# ${input} is the path to the
+
+for forward in ${input}*_R1.cl.pd.fq
+
+do
+  # define the reverse read based on that forward read
+  # then define the forward read as the whole text
+  # and replace it with nothing so that you only have the base part of the name
+  # having the slash inside the {} means basically find and replace... so the
+  # first part of the slash is interpreted as the find and the second part is
+  # what to replace it with
+  reverse=${forward/_R1.cl.pd.fq/_R2.cl.pd.fq}
+  f=${forward/_R1.cl.pd.fq/}
+  # basename is a function in base that creates the basename that will be used
+  # for naming the rest of the files
+  name=`basename ${f}`
+  bwa mem -t 1 -M ${ref} ${forward} ${reverse} > ${output}/BWA/${name}.sam
+done
+```
+
+
+## `samtools` and `sambamba`
 
 Our last steps (with basic syntax) are to: 
 
@@ -656,11 +699,88 @@ For this, we’ll use a combination of two new programs: samtools and sambamba. 
 - Use vim to edit the paths and population
 - Save and quit vim, type :wq
 
-### Create a wrapper
+## [`process_bam.sh`](https://raw.githubusercontent.com/tsoleary/eco_genomics/master/myscripts/process_bam.sh)
+
+```bash
+#! /bin/bash
+# this is where out output sam files are going to get converted into binary
+# format (bam)
+
+# then we are going to sort the bam files, remove PCR duplicates, and index them
+
+# first convert sam to bam and then sort
+
+for f in ${output}/BWA/${mypop}*.sam
+
+do
+
+  out=${f/.sam/}
+  # this converts it to the bam
+  sambamba-0.7.1-linux-static view -S --format=bam ${f} -o ${out}.bam
+  # now we need to sort the bam files so it can quickly find the function
+  samtools sort ${out}.bam -o ${out}.sorted.bam
+
+done
+
+# next remove the pcr duplicates from our bam files
+
+for file in ${output}/BWA/${mypop}*.sorted.bam
+
+do
+
+  f=${file/.sorted.bam/}
+  # this is going to mark duplicates if they have the exact same coordinates, because they are randomly fragmented so if they star
+  # -r removes all dups except for one
+  # no dash o -o needed for the output
+  # just calling the command on the server without any of the options gives you the help information
+  sambamba-0.7.1-linux-static markdup -r -t 1 ${file} ${f}.sorted.rmdup.bam
+
+done
+
+# finish by indexing the files
+
+for file in ${output}/BWA/${mypop}*sorted.rmdup.bam
+
+do
+
+  samtools index ${file}
+
+done
+```
+
+## Create a wrapper
 
 Last step, we’re going to put these scripts altogether into a “wrapper” that will exectue each of them one after the other, and work for us while we’re off getting a coffee or sleeping. :) I’ll show you how to code this together in class.
 
-### Using **screen**
+### [`mypipeline.sh`](https://raw.githubusercontent.com/tsoleary/eco_genomics/master/myscripts/mypipeline.sh)
+
+```bash
+#! /bin/bash
+
+# we will use this as a wrappeer to run our different scripts
+
+# path to my repo on the server
+myrepo="/users/t/s/tsoleary/eco_genomics"
+
+# define the population
+mypop="BFA"
+
+# directory to our cleaned and paired paired
+input="/data/project_data/RS_ExomeSeq/fastq/edge_fastq/pairedcleanreads/${mypop}"
+
+# define an output directory in the common space not your own repo
+output="/data/project_data/RS_ExomeSeq/mapping"
+
+
+# call the mapping.sh and process_bam.sh files, you could also add the stats but for the sake of time we will do that later
+
+source ./mapping.sh
+
+source ./process_bam.sh
+```
+
+
+## Using **screen**
 
 Once your wrapper script is ready, you’re going to want to start a **screen**. The screen command initiates a new shell window that won’t interupt or stop your work if you close your computer, log off the server, or leave the UVM network. **Anytime you’re running long jobs, you definiteily want to use screen.**
 
@@ -669,7 +789,7 @@ Using it is easy. Just type screen followed by . It will take you to a new empyt
 When you’re ready to check back on the progress of your program, you can recover your screen by typing `screen -r`. That’ll re-attach you back to your program!
 
 
-# Mapping the ExomeSeq data
+## Next day mapping
 
 - Review our progress on mapping
 - Calculate mapping statistics to assess quality of the result
@@ -715,6 +835,39 @@ Find the official Sequence AlignMent file documentation can be found [here](http
 
 ### `bam_stats.sh.`
 
+[`bam_stats.sh.`](https://raw.githubusercontent.com/tsoleary/eco_genomics/master/myscripts/bamstats.sh)
+
+```bash
+#! /bin/bash
+
+# set repo
+
+myrepo="/users/t/s/tsoleary/eco_genomics"
+
+mypop="BFA"
+
+output="/data/project_data/RS_ExomeSeq/mapping"
+
+# this echo is creating a header for the file and saving it on the flagstats.txt files
+echo "Num.reads R1 R2 Paired MateMapped Singletons MateMappedDiffChr" > ${myrepo}/myresults/${mypop}.flagstats.txt
+
+for file in ${output}/BWA/${mypop}*sorted.rmdup.bam
+  do
+    f=${file/.sorted.rmdup.bam/}
+    name=`basename ${f}`
+    # the double >> makes it so that it appends it and doesn't just rewrite the file every time
+    echo ${name} >> ${myrepo}/myresults/${mypop}.names.txt
+    # NR is the number of rows, row 6 through 12 have the meaningful results in them
+    samtools flagstat ${file} | awk 'NR>=6&&NR<=12 {print $1}' | column -x
+  done >> ${myrepo}/myresults/${mypop}.flagstats.txt
+
+# calculate the depth of coverage from our bam files
+for file in ${output}/BWA/${mypop}*sorted.rmdup.bam
+  do
+    samtools depth ${file} | awk '{sum+=$3} END {print sum/NR}'
+  done >> ${myrepo}/myresults/${mypop}.coverage.txt
+```
+
 - We’ll also use the `awk` tool to help format the output.
 
 We’ll use the samtools `flagstat` command to get read counts after mapping, and the depth command to get perhaps the most important statistic in read mapping: the depth of coverage, or how many reads cover each mapped position, on average.
@@ -731,6 +884,7 @@ While that’s running, we can take a look at one of our alignment files (sam or
 ```
 samtools tview /data/project_data/RS_ExomeSeq/mapping/BWA/AB_05.sorted.rmdup.bam /data/project_data/RS_ExomeSeq/ReferenceGenomes/Pabies1.0-genome_reduced.fa
 ```
+
 
 ## Calling Genotypes
 
@@ -959,9 +1113,9 @@ PCA <- eigen(covmat)
 plot(PCA[,1],PCA[,2])
 ```
 
-# Diversity & Phenotype~Genotype associations
+# **Diversity & Pheno~Geno**
 
-## Learning Objectives for 02/19/20
+## Learning Objectives
   - Appreciate the difference between the unfolded and the folded SFS (which should we use?)
   - Calculate diversity stats for our focal pops (SFS, Num sites, Frequency of SNPs, theta-W, pi, Tajima’s D)
   - Visualize results in R and share to google drive
@@ -1132,7 +1286,7 @@ Bio18 = 10*(Precip of the warmest quarter)
 
 # **Transcriptomics**
 
-## Learning Objectives for 2/26/20
+## Learning Objectives
 - Review Red Spruce ecology and biogeography and the transcriptomics experimental design.
 - Articulate the questions we can address and hypotheses we can test with this experimental design.
 - Understand the general work flow or “pipeline” for processing and analyzing RNAseq data.
@@ -1147,7 +1301,7 @@ Bio18 = 10*(Precip of the warmest quarter)
 
 Red spruce is a montane coniferous tree that inhabits cool moist habitats in the northeast. Occasionally it also less ideal sites that are warmer and drier, particularly driven by microsite differences in aspect and substrate (rocky scree slopes exposed to direct sun). The purpose of this experiment was to sample red spruce genetic variation from sites that were polarized into cool & wet vs. hot and dry based on historic climate (based on Bio18 (precip of warmest quarter) and Bio5 (temp of warmest month), and to assess the gene expression responses of individuals from these habitats in response to experimental treatments of heat and heat+drought.
 
-## Experimental Design:
+## Experimental Design
 
 - Ten maternal families total; sample labels are “POP_FAM”
   - ASC_06, BRU_05, ESC_01, XBM_07, NOR_02, CAM_02, JAY_02, KAN_04, LOL_02, MMF_13
@@ -1200,10 +1354,24 @@ Samples were quantified for RNA concentration and quality on the Bioanalyzer
 Samples >1 ng/ul were sent to Cornell for 3’ tag sequencing
 Library prep followed the LexoGen protocol and sequencing was on 1 lane of a NextSeq500 (1x86 bp reads)
 Samples were demultiplexed and named according to the convention: POP_FAM_TRT_DAY
-What questions can we ask/address with this experimental design, with these data?
 
 
-## Data Processing Pipeline:
+What questions can we ask/address with this experimental design, with these data? How do we translate these questions to models in DESeq2?
+
+1. Do families from different source climates differ for their gene expression?
+
+2. Is there a transcriptome wide response to heat stress? Does this change when the additional stress of drought is added?
+
+3. Is there a significant interaction between source climate and stress treatment, such that families from hot/dry climates have a unique expression response to heat or heat+drought compared to families from cool/wet climates?
+
+4. Which specific genes are involved in the above responses, and do they reveal functional enrichment of particular pathways?
+
+5. Do DE genes or pathways show evidence of positive selection (compare DE genes with popgen signatures of sel’n)?
+
+6. Can we use association mapping to identify eQTL associated with DE responses?
+
+
+## Data Processing Pipeline
 FastQC on raw reads –> Trimmomatic (done!) –> FastQC on cleaned reads
 
 Reference transcriptome:
@@ -1220,7 +1388,7 @@ Downloaded from Congenie.org
 - Choose samples to visualize for quality (FastQC) and to map (Salmon)
 - Ignoring day for the moment, there are 10 PopulationByFamily groups (POP_XX) and three treatment groups (C, H, and D), so 30 groups. If you each take two of these pop by treatment groups to process, we’ll have all the samples covered. cd into the /data/project_data/RS_RNAseq/fastq directory to view the files. Let’s write on the board each of our chosen groups.
 
-## FastQC
+## **FastQC**
 
 - Remember how… Where do you start
 - Clean the reads with Trimmomatic
@@ -1255,24 +1423,121 @@ do
 done 
 ```
 
-
 Run FastQC on the clean reads to confirm improvement
 What do we look for in this second run?
 
 
-## Salmon to quantify transcript abundance
+# **Salmon**
+
+Salmon to quantify transcript abundance. Mapping and counting the reads.
+
+
 First step: Index the reference transcriptome. This only needs to be done once and has been done already, but here’s the code:
 ```
 cd /data/project_data/RS_RNAseq/ReferenceTrancriptome/
 salmon index -t Pabies1.0-all-cds.fna.gz -i Pabies_cds_index --decoys decoys.txt -k 31
 ```
+
+Note that the `-k` flag sets the minimum acceptable length for a valid match between query (read) and the reference. This is a parameter that the creators of Salmon suggest can be made “slightly smaller” if the mapping rate is lower than expected. We may want to explore reducing `-k`.
+
+
 Second step: Start quantification! Let’s see if we can write a for loop together to start the mapping based on the Salmon tutorial
 ```
 salmon quant -i transcripts_index -l <LIBTYPE> -r reads.fq --validateMappings -o transcripts_quant
 ```
-Now to import the `quant.sf` files from their respective directories into R & DESeq2…
 
-Here’s a tutorial by the creators of the two programs, Salmon and DESeq2. I’m having trouble installing “tximportData” in R. It seems it’s not compatible with the latest version of R that I’m working in on my machine or our class server… Let’s troubleshoot!
+The descriptions of all of the options can be found on the [Salmon github page](https://salmon.readthedocs.io/en/latest/salmon.html#description-of-important-options) and by using the command `salmon quant -h`.
+
+## `salmon.sh`
+
+[`salmon.sh`](https://raw.githubusercontent.com/tsoleary/eco_genomics/master/myscripts/salmon.sh)
+
+```bash
+#! /bin/bash/
+
+# run salmon to do the mapping and the counting of the cleanreads
+
+# salmon quant -i transcripts_index -l <LIBTYPE> -r reads.fq --validateMappings -o transcripts_quant
+
+cd /data/project_data/RS_RNASeq/fastq/cleanreads/
+
+for file in CAM_02_H_*.cl.fq
+
+do
+
+  salmon quant \
+  -i /data/project_data/RS_RNASeq/ReferenceTranscriptome/Pabies_cds_index \
+  -l A \
+  -r ${file} \
+  --validateMappings \
+  -p 1 \
+  --seqBias \
+  -o /data/project_data/RS_RNASeq/salmon/allmapping/${file}
+
+done
+```
+
+## Explore mapping rate
+
+For each sample mapped, you now have a directory with several output files including a log of the run. In that log, the mapping rate (% of reads mapped with sufficient quality) is reported. We can view the contents of the file using cat. We can also use grep (i.e., regular expressions) to pull out the mapping rate for all the samples. Though there’s probably a more elegant solution, here is one:
+
+```
+grep -r --include \*.log -e 'Mapping rate'
+```
+
+How could we save this output?
+
+What is our mapping rate? Is this good/enough? What factors could affect mapping rate?
+
+We ended up using the the index file called `Pabies_cds_index`, which contains all of the coding sequences for _P. abies_, not just the high confidence coding sequences. This improved the percent mapping from ~ 4% to ~ 25%.
+
+## R import!
+
+
+### Combine individual `quant.sf` files 
+
+Combine individual `quant.sf` files from their respective directories into a counts data matrix with all 76 samples in one table
+
+To do this, we’ll use the `R` package `tximport` on our class server. Here’s a `tximport` [tutorial](https://bioconductor.org/packages/release/bioc/vignettes/tximport/inst/doc/tximport.html#salmon) by the creators of the two programs, Salmon and DESeq2. Unless we decide to use multiple rounds of mapping (changing references, etc), only one person needs to make this compiled matrix. 
+
+Here’s an example of how it can be done. First start `R` on the server by typing capital `R` and enter. Exciting! Right? Load the libraries we need (already installed).
+
+```r
+library(tximportData)
+library(tximport)
+
+#locate the directory containing the files. 
+dir <- "/data/project_data/RS_RNASeq/salmon/"
+list.files(dir)
+
+# read in table with sample ids
+samples <- read.table("/data/project_data/RS_RNASeq/salmon/RS_samples.txt", header=TRUE)
+
+# now point to quant files
+all_files <- file.path(dir, samples$sample, "quant.sf")
+names(all_files) <- samples$sample
+
+# what would be used if linked transcripts to genes
+#txi <- tximport(files, type = "salmon", tx2gene = tx2gene)
+# to be able to run without tx2gene
+txi <- tximport(all_files, type = "salmon", txOut=TRUE)  
+names(txi)
+
+head(txi$counts)
+
+countsMatrix <- txi$counts
+dim(countsMatrix)
+#[1] 66069    76
+
+# To write out
+write.table(countsMatrix, file = "RS_countsMatrix.txt", col.names = T, row.names = T, quote = F)
+```
+
+## Move counts data matrix to local
+
+Move this counts data matrix to your individual machines using your perferred `ftp` (`fetch`, `Winscp`, `scp`). Also move the `RS_samples.txt` file to your machine. This file is a table that associates each of our samples with their conditions (climate, treatment, day, population).
+
+Note that in the code above, we are using the counts data that are not normalized to length because we are working with 3’ RNAseq data. This is informed by a cautionary note from the creators on working with 3’ tagged RNA-seq: “If you have 3’ tagged RNA-seq data, then correcting the counts for gene length will induce a bias in your analysis, because the counts do not have length bias. Instead of using the default full-transcript-length pipeline, we recommend to use the original counts, e.g. `txi$counts` as a counts matrix, e.g. providing to DESeqDataSetFromMatrix or to the `edgeR` or `limma` functions without calculating an offset and without using countsFromAbundance.”
 
 Important considerations: How was this transcriptome assembled? Should we collapse transcripts to genes?
 
@@ -1288,28 +1553,25 @@ Let’s get R set up for for Transcriptomics, data import and visualization!
 Here is a list of some of the libraries we will need:
 
 ```r
-library(tximportData)
-library(tximport)
+setwd("~/github/2020_Ecological_Genomics")
+
 library(DESeq2)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(scales)
 library(ggpubr)
-library(readr)
+library(wesanderson)
+
+
+countsTable <- read.table("RS_countsMatrix.txt", header=TRUE, row.names=1)
+
+conds <- read.delim("RS_samples.txt", header=TRUE, stringsAsFactors = TRUE, row.names=1, colClasses=c('factor', 'factor', 'factor', 'factor'))
+
+dds <- DESeqDataSetFromMatrix(countData = countsTableRound, colData = conds, design = ~ day + climate + treatment)
 ```
 
-To install DESeq2:
-```r
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
 
-BiocManager::install("DESeq2")
-```
-To install tximport and tximportData:
-```r
-BiocManager::install("tximport")
-BiocManager::install("tximportData")
-```
 
-For the other packages, you can probably use Tools -> Install Packages in RStudio
+
+
