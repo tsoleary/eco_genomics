@@ -11,8 +11,8 @@ do
   salmon quant \
   -i /data/project_data/RS_RNASeq/ReferenceTranscriptome/Pabies_cds_index \
   -l A \
-  -r ${file} \
+  -r /data/project_data/RS_RNASeq/fastq/cleanreads/${file} \
   --validateMappings \
-  -o /data/project_data/RS_RNASeq/salmon/cleanedreads
+  -o /data/project_data/RS_RNASeq/salmon/cleanedreads/${file}
 
 done
