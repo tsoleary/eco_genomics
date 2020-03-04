@@ -15,6 +15,8 @@ do
   -l A \
   -r ${file} \
   --validateMappings \
-  -o /data/project_data/RS_RNASeq/salmon/cleanedreads/${file}
+  -p 1 \
+  --seqBias \
+  -o /data/project_data/RS_RNASeq/salmon/allmapping/${file}
 
 done
