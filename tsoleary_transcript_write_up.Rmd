@@ -1,0 +1,113 @@
+---
+title: Transcriptomics of _Picea rubens_
+author: \emph{Thomas O'Leary}
+output:
+  pdf_document:
+#    latex_engine: xelatex
+    keep_tex: true
+header-includes:
+  - \usepackage[cmintegrals,cmbraces]{newtxmath}
+  - \usepackage{ebgaramond}
+  - \usepackage[T1]{fontenc}
+  - \usepackage{graphicx}
+  - \usepackage{float}
+  - \usepackage{wrapfig}
+  - \usepackage[font={footnotesize}]{caption}
+  # - \usepackage{fancyhdr}
+  # - \pagestyle{fancy}
+  # - \fancyhead[RO,RE]{O'Leary}
+bibliography: tso_refs.bib
+csl: mla.csl
+fontsize: 12pt
+geometry: "left=1cm,right=1cm,top=1cm,bottom=1cm"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+require(tidyverse)
+require(kableExtra)
+require(DESeq2)
+require(scales)
+require(ggpubr)
+require(wesanderson)
+require(vsn)
+require(pheatmap)
+
+# Set your working directory
+setwd(here::here("myresults/transcript_counts"))
+
+
+
+```
+
+# Background
+
+### Transcriptomic multiple stressors experimental design
+
+Some _Picea rubens_ individuals, a red spruce that thrives in cool and moist climates, are increasingly experiencing periods of environmental stress, including excessive heat and drought conditions in some of the areas in its range. [CITATION??] This may be due to microclimate differences, such as increased sun exposure and drier soil. But may also be due to 
+
+
+
+
+The purose of this study is to decribe the transcriptomic response of _P. rubens_ under these environmental stressors.
+
+
+### Sample collection, library preparation, and sequencing
+
+At each collection time point during the course of the experiment, RNA was extracted from whole seedlings (_i.e._ root, stem, and needle tissue). After extraction, RNA quantity and quality was assessed on a Bioanalyzer. 
+
+Samples (RNA concentration > 1 ng/$\mu$L) were sent to Cornell for library preparation and sequencing. Library preparation followed the Lexogen QuantSeq 3’ mRNA-Seq protocols. The samples were sequenced in 86 bp reads on a NextSeq500.
+	
+# Bioinformatics Pipeline
+
+The quality of the raw reads were accessed using FastQC v$0.11.3$ [@andrews2012]. To remove low quality sequence data the raw fastq files were trimmed using Trimmomatic v$0.33$ [@Bolger2014] and the cleaned reads were vizualized again with FastQC. The cleaned reads were mapped to a reduced verion of the Norway spruce _Picea abies_ reference genome [@Nystedt2013] using bwa v$0.7.12-r1039$ [@Li2009]. The ref genome was used because...
+
+
+
+
+ calculated and visualized in R v$3.6.1$ [@rcore] using ggplot2 and dplyr v$1.2.1$ [@tidyverse].
+
+# Results
+
+```{r, fig.width = 3, fig.height = 2, fig.align = "left"}
+# seq_stat %>%
+#   mutate(depth = signif(depth,3),
+#          Num.reads = formatC(seq_stat$Num.reads, big.mark = ","),
+#          Paired = formatC(seq_stat$Paired, big.mark = ",")) %>%
+#   select(ind, depth, Num.reads, Paired) %>%
+#   rename(Individual = ind,
+#          `Sequencing depth` = depth,
+#          `Number of reads` = Num.reads,
+#          `Paired reads` = Paired) %>%
+  kable("latex", booktabs = T,
+        align = c('l', 'c', 'c', 'c'),
+        caption = "CAPTION") %>%
+  kable_styling(font_size = 10)
+```
+
+```{r, fig.width = 5, fig.height = 2, fig.cap = "CAPTION")}
+
+
+
+cowplot::plot_grid(p1, p2, nrow = 1, labels = "AUTO", label_size = 10)
+```
+
+The mapping rates...
+
+The number of DEGs...
+
+The experimental model ...
+
+Which DEGs...
+
+# Conclusion
+
+The conservation of _Picea rubens_ along the eastern United States...
+
+Future directions for this study must involve...
+
+\pagebreak
+
+# References [^1]
+
+[^1]: This does not exactly follow the MLA citation example you gave, but it was the best `.csl` I could find in time.
