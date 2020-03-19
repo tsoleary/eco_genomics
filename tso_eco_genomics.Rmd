@@ -1545,7 +1545,7 @@ Cautionary note from the creators on working with 3’ tagged RNA-seq: “If you
 
 To do this: The rownames of the sampleTable RS_samples need to align with the colnames of txi$counts, that is the sample names need to be row names in the sample/factor table and need to be the column names of the data matrix (with rows as genes and columns as samples).
 
-```
+```r
 dds <- DESeqDataSetFromTximport(txi, sampleTable)
 ```
 
@@ -1571,6 +1571,213 @@ conds <- read.delim("RS_samples.txt", header=TRUE, stringsAsFactors = TRUE, row.
 dds <- DESeqDataSetFromMatrix(countData = countsTableRound, colData = conds, design = ~ day + climate + treatment)
 ```
 
+# **DESeq2 in R**
+
+## Objectives 
+- Recap on Mapping of 3’ RNA-seq data to transcriptome and assembly of data matrix
+- Import data matrix and sample information into R and DESeq2
+- Normalize, visualize and analyze expression data using DESeq2.
+
+## Troubleshooting mapping rate
+Recall that two weeks ago you all wrote for loops to map your set of cleaned fastq files to the reference transcriptome. We discovered that we had low mapping rates, ~2%! We did some troubleshooting in class. We further hypothesized that many of our reads were not mapping because the reference we had selected included only the coding region. In working with 3’ RNAseq data, much of our sequencing effort is likely to be in the 3’ UTR (untranslated region). 
+
+- We concatenated the reference sequences for the coding (“cds”) and the 3’ UTR (“2kb downstream”) for each gene. 
+- We then mapped to this new reference using salmon (as you had done before). 
+- Our mapping rate improved dramatically, ranging from 40-70% of reads mapping across samples, mean of 52%.
+
+## Assembling counts matrix
+
+As described in the last tutorial, after all samples have been mapped to the refenence, the next step is to assemble the counts matrix using tximport in R on the server to be able to move from read mapping with Salmon to differential gene expression (DGE) analysis with DESeq2. See previous tutorial for code to assemble counts matrix.
+
+## Import counts matrix and metadata
+Now we will work in R on our individual machines, each of us working with the complete data set (n=76, not just a subset of samples).
+
+
+```{r}
+# Transcriptomics in R
+
+# Set your working directory
+setwd(here::here("myresults/transcript_counts"))
+
+# Packages 
+library(DESeq2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+library(ggpubr)
+library(wesanderson)
+library(vsn)
+library(pheatmap)
+
+# Import data ------------------------------------------------------------------
+countsTable <- read.table("RS_cds2kb_countsMatrix.txt", 
+                          header=TRUE, 
+                          row.names=1)
+# head(countsTable)
+# dim(countsTable)
+# Need to round because DESeq wants only integers
+countsTableRound <- round(countsTable)
+# head(countsTableRound)
+```
+
+```{r}
+# Set your working directory
+setwd(here::here("myresults/transcript_counts"))
+
+# Import the samples description table 
+# links each sample to factors of the experimental design
+# Need the colClasses otherwise imports "day" as numeric which DESeq doesn't do
+conds <- read.delim("RS_samples.txt", 
+                    header = TRUE, 
+                    stringsAsFactors = TRUE, 
+                    row.names = 1, 
+                    colClasses = c('factor', 'factor', 'factor', 'factor'))
+head(conds)
+dim(conds)
+```
+
+## Summary statistics and visualization
+
+```{r, eval = TRUE}
+# Read summary statistics and visualization ------------------------------------
+# colSums(countsTableRound)
+# mean(colSums(countsTableRound))
+# bar plot to vizualize the sum of reads
+barplot(colSums(countsTableRound), 
+        las = 3, 
+        cex.names = 0.5,
+        names.arg = substring(colnames(countsTableRound), 1, 13))
+abline(h = mean(colSums(countsTableRound)), col = "blue", lwd = 2)
+
+# # Average number of counts per gene
+# rowSums(countsTableRound)
+# apply(countsTableRound, 2, mean)
+```
+
+```{r, message = FALSE}
+# Create a DESeq object --------------------------------------------------------
+# define the experimental design here with the tilde
+
+dds <- DESeqDataSetFromMatrix(countData = countsTableRound,
+                              colData = conds,
+                              design = ~ climate + day + treatment)
+
+# Filter out genes with few reads
+# 76 was chosen to create an average of 1 read per sample
+dds <- dds[rowSums(counts(dds)) > 76]
+
+# Run the DESeq model to test for differential gene expression -----------------
+# DESeq does these three things all in this function
+# 1) estimate size factors (per sample) 
+# 2) estimate dispersion (per gene)
+# 3) run negative binomial glm
+dds <- DESeq(dds)
+
+# List the results you've generated
+resultsNames(dds)
+```
+
+## Specific contrasts
+
+```{r}
+# Order and list and summarize results from specific contrasts -----------------
+# Set your adjusted p-value cutoff
+# Can make summary tables of the number of genes differentially expressed 
+# up/down-regulated) for each contrast
+
+res_treatCD <- results(dds, contrast = c("treatment", "C", "D"), alpha = 0.05)
+res_treatCD <- res_treatCD[order(res_treatCD$padj), ]
+# summary(res_treatCD)
+```
+
+## MA Plot
+
+```{r}
+# Data visualization -----------------------------------------------------------
+# MA plot
+ggmaplot(res_treatCD, 
+         main = expression("Hot & Dry" %->% "Control"),
+         fdr = 0.01, fc = 0, size = 1,
+         palette = c("#B31B21", "#1465AC", "#A6A6A680"),
+         legend = "top", 
+         top = 0,
+         # genenames = as.vector(res_treatCD$gene),
+         # select.top.method = "padj",
+         # font.label = c("bold", 11), 
+         # label.rectangle = TRUE,
+         font.legend = "bold",
+         font.main = "bold",
+         ggtheme = ggplot2::theme_classic()) + 
+  theme(legend.text = element_text(size = 12))
+```
+
+## PCA
+
+```{r}
+# PCA
+vsd <- vst(dds, blind = FALSE, nsub = 10000)
+data <- plotPCA(vsd, 
+                ntop = 10000,
+                intgroup = c("climate", "treatment", "day"), 
+                returnData = TRUE)
+percentVar <- round(100 * attr(data, "percentVar"))
+
+# reordering the factors
+data$treatment <- factor(data$treatment, 
+                         levels = c("C", "H", "D"), 
+                         labels = c("C", "H", "D"))
+data$day <- factor(data$day, 
+                   levels = c("0", "5", "10"), 
+                   labels = c("0","5","10"))
+
+ggplot(data, aes(PC1, PC2, color = climate, shape=treatment)) +
+  geom_point(size = 4, alpha = 0.85) +
+  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+  ylab(paste0("PC2: ", percentVar[2], "% variance")) +
+  theme_minimal()
+
+
+ggplot(data) +
+  geom_histogram(aes(x = PC1, fill = day), 
+                 bins = 20, color = "grey50", position = "dodge") +
+  theme_classic()
+  
+```
+
+## Specific gene counts
+
+```{r}
+# Counts of specific top gene! 
+# important validatition that the normalization, model is working
+d <- plotCounts(dds, 
+                gene = "MA_10426407g0030", 
+                intgroup = (c("treatment","climate", "day")), 
+                returnData = TRUE)
+
+ggplot(d, aes(x = treatment, 
+                   y = count, 
+                   shape = climate, 
+                   color = day)) + 
+  geom_jitter(width = 0.3, size = 3) +
+  scale_x_discrete(limits = c("C", "H", "D")) +
+  theme_classic() + 
+  theme(text = element_text(size = 20), 
+        panel.grid.major = element_line(colour = "grey"))
+```
+
+## Heatmap
+
+```{r}
+# Heatmap of top 20 genes sorted by pvalue
+topgenes <- head(rownames(res_treatCD), 20)
+mat <- assay(vsd)[topgenes, ]
+mat <- mat - rowMeans(mat)
+df <- as.data.frame(colData(dds)[, c("treatment", "climate", "day")])
+pheatmap(mat, 
+         annotation_col = df, 
+         show_colnames = FALSE)
+```
 
 
 
