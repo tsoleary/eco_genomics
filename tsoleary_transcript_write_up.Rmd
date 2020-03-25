@@ -34,22 +34,19 @@ require(vsn)
 require(pheatmap)
 
 # Set your working directory
-setwd(here::here("myresults/transcript_counts"))
-
-
-
+# setwd(here::here("myresults/transcript_counts"))
+# source(here::here("load_transcript_data.R"))
 ```
 
 # Background
 
 ### Transcriptomic multiple stressors experimental design
 
-Some _Picea rubens_ individuals, a red spruce that thrives in cool and moist climates, are increasingly experiencing periods of environmental stress, including excessive heat and drought conditions in some of the areas in its range. [CITATION??] This may be due to microclimate differences, such as increased sun exposure and drier soil. But may also be due to 
+Some _Picea rubens_ individuals, a red spruce that thrives in cool and moist climates, are increasingly experiencing periods of environmental stress, including excessive heat and drought conditions in some of the areas in its range [CITATION??]. This may be due to microclimate differences, such as increased sun exposure and drier soil, but may also be due to larger scale changes in regional climate [CITATION???]. Ten maternal families from two different source climates (hot and dry climate or cool and wet climate) were used. The source climate was determined based on historical climate data on the amount of precipitation in the warmest quarter and the temperature during the hottest month. Individuals from these maternal families were exposed to three experimental treatments: a control, heat stress, and combined heat and drought stress. Each of these treatments included a 16:8 light to dark photoperiod, with variable day and night time temperatures. The control treatment involved 
+
+The purose of this study is to decribe the transcriptomic response of _P. rubens_ under temperature and drought stress
 
 
-
-
-The purose of this study is to decribe the transcriptomic response of _P. rubens_ under these environmental stressors.
 
 
 ### Sample collection, library preparation, and sequencing
@@ -60,37 +57,23 @@ Samples (RNA concentration > 1 ng/$\mu$L) were sent to Cornell for library prepa
 	
 # Bioinformatics Pipeline
 
-The quality of the raw reads were accessed using FastQC v$0.11.3$ [@andrews2012]. To remove low quality sequence data the raw fastq files were trimmed using Trimmomatic v$0.33$ [@Bolger2014] and the cleaned reads were vizualized again with FastQC. The cleaned reads were mapped to a reduced verion of the Norway spruce _Picea abies_ reference genome [@Nystedt2013] using bwa v$0.7.12-r1039$ [@Li2009]. The ref genome was used because...
+The quality of the raw reads were accessed using FastQC v$0.11.3$ [@andrews2012]. Low quality sequence data was trimmed from the raw reads using Trimmomatic v$0.33$ [@Bolger2014] and the cleaned reads were vizualized again with FastQC. Those cleaned reads were then mapped to a Norway spruce, _Picea abies_, reference transcriptome [CONGENIE>ORG CITATION] using salmon v$1.1.0$ [@Patro2017]. The reference transcriptome included all coding sequence as well as two kilobases downstream to account for the 3' tag sequencing technique.
 
-
-
-
- calculated and visualized in R v$3.6.1$ [@rcore] using ggplot2 and dplyr v$1.2.1$ [@tidyverse].
+Count files were imported into R v$3.6.1$ [@rcore] with the package tximport v$1.12.3$ [@tximport]. Transcripts with less than one transcript per sample were pre-filtered from the analysis. Differential gene expression was called and an FDR of 0.05 using DESeq2 v$1.24.0$ [@Love2014]. Further analysis and visualization was done using the packages ggplot2 and dplyr v$1.2.1$ [@tidyverse].
 
 # Results
 
 ```{r, fig.width = 3, fig.height = 2, fig.align = "left"}
-# seq_stat %>%
-#   mutate(depth = signif(depth,3),
-#          Num.reads = formatC(seq_stat$Num.reads, big.mark = ","),
-#          Paired = formatC(seq_stat$Paired, big.mark = ",")) %>%
-#   select(ind, depth, Num.reads, Paired) %>%
-#   rename(Individual = ind,
-#          `Sequencing depth` = depth,
-#          `Number of reads` = Num.reads,
-#          `Paired reads` = Paired) %>%
-  kable("latex", booktabs = T,
-        align = c('l', 'c', 'c', 'c'),
-        caption = "CAPTION") %>%
-  kable_styling(font_size = 10)
+  # kable("latex", booktabs = T,
+  #       align = c('l', 'c', 'c', 'c'),
+  #       caption = "CAPTION") %>%
+  # kable_styling(font_size = 10)
 ```
 
-```{r, fig.width = 5, fig.height = 2, fig.cap = "CAPTION")}
-
-
-
-cowplot::plot_grid(p1, p2, nrow = 1, labels = "AUTO", label_size = 10)
-```
+# ```{r, fig.width = 5, fig.height = 2, fig.cap = "CAPTION")}
+# 
+# # cowplot::plot_grid(p1, p2, nrow = 1, labels = "AUTO", label_size = 10)
+# ```
 
 The mapping rates...
 
