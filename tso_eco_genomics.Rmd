@@ -1780,5 +1780,133 @@ pheatmap(mat,
 ```
 
 
+# **Epigenetics**
 
+## Learning objectives
+- Background on the copepod selection experimental design
+- Think about the hypotheses we can address with this experiment
+- Cover how bisulfite sequencing data differs from regular data and not to panic when you see your fastqc output
+- Begin mapping using Bismark
+
+## Copepod selection experiment
+
+_Acartia tonsa_ is a calanoid copepod that has a world wide distribution. 
+It inhabits estuaries and coastal waters and it typically the most abundant zooplankton present. Because of their huge population sizes and global distribution, they play an important role in ocean biogeochemical cycling and ecosystem functioning. For example, they’re an important food base for many fishes. Given their broad distribution in dynamic habitats (estuaries), they can tolerate and live in a broad range of salinities, freshwater to seawater, and temperatures, among other stressors.
+
+We know that the world is rapidly changing due to human activities and it is important to understand how species will respond to these changes. We were interested in understanding how A. tonsa could respond to stressful environments that will likely be caused by climate change. Can they adapt to rapid changes in temperature and acidity? How might epigenetic responses interact with adaptation to enable resilience?
+
+_A. tonsa_ is a great system to ask these questions for a number of reasons. First, their generation time is only ~10-20 days and they’re tiny! Only 1-2 mm. This means we can easily execute multi-generational studies with thousands of individuals. Second, because they can tolerate such variable environments, they should have lots of plasticity to respond to environmental fluctuations. Finally, their large population sizes mean that genetic diversity should be high, giving them high adaptive potential. This means that if any species can respond to rapid environmental change, it is likely _A. tonsa_.
+
+## Experimental design
+
+We collected A. tonsa from the wild, common gardened them for three generations, then split them into four treatments with four replicates each and about 3,000-5,000 individuals per replicate. We left them to evolve in these conditions for 25 generations.
+
+Samples were collected at generation F0 and F25 to quantify methylation frequencies using reduced representation bisulfite sequencing (RRBS). Below are the sample ID’s
+
+| Sample_ID | Treatment                          | treatment_abbrev | generation | sample_rep |
+|-----------|------------------------------------|------------------|------------|------------|
+| AA_F00_1  | Control: ambient temp, ambient CO2 | AA               | F00        | 1          |
+| AA_F00_2  | Control: ambient temp, ambient CO2 | AA               | F00        | 2          |
+| AA_F00_3  | Control: ambient temp, ambient CO2 | AA               | F00        | 3          |
+| AA_F00_4  | Control: ambient temp, ambient CO2 | AA               | F00        | 4          |
+| AA_F25_1  | Control: ambient temp, ambient CO2 | AA               | F25        | 1          |
+| AA_F25_2  | Control: ambient temp, ambient CO2 | AA               | F25        | 2          |
+| AA_F25_3  | Control: ambient temp, ambient CO2 | AA               | F25        | 3          |
+| AA_F25_4  | Control: ambient temp, ambient CO2 | AA               | F25        | 4          |
+| AH_F25_1  | ambient temp, high CO2             | AH               | F25        | 1          |
+| AH_F25_2  | ambient temp, high CO2             | AH               | F25        | 2          |
+| AH_F25_3  | ambient temp, high CO2             | AH               | F25        | 3          |
+| AH_F25_4  | ambient temp, high CO2             | AH               | F25        | 4          |
+| HA_F25_1  | high temp, ambient CO2             | HA               | F25        | 1          |
+| HA_F25_2  | high temp, ambient CO2             | HA               | F25        | 2          |
+| HA_F25_3  | high temp, ambient CO2             | HA               | F25        | 3          |
+| HA_F25_4  | high temp, ambient CO2             | HA               | F25        | 4          |
+| HH_F25_1  | high temp, high CO2                | HH               | F25        | 1          |
+| HH_F25_2  | high temp, high CO2                | HH               | F25        | 2          |
+| HH_F25_3  | high temp, high CO2                | HH               | F25        | 3          |
+| HH_F25_4  | high temp, high CO2                | HH               | F25        | 4          |
+
+
+## RRBS
+
+Reduced representation bisulfite sequencing. Focuses on CpG parts of the genome. Similar restriction enzyme process to RAD sequencing.
+
+Following the adapter ligation, we bisulfite convert all unmethylated C’s to T’s.
+
+Before starting we also spiked in a small amount of DNA from E. coli that we know wasn’t methylated. Using this, we can calculate downstream how efficient our bisulfite conversion was.
+
+## Hypotheses and questions
+
+
+## Pipeline
+
+- Visualize, clean, visualize
+    - You won’t have to do this step
+  - Visualize quality of raw data with fastqc
+  - Clean raw data with Trimmomatic
+  - Visualize quality of cleaned data with fastqc
+- Align to Acartia tonsa reference genome (Bismark)
+- Align lambda DNA to check for conversion efficiency (Done for you)
+- Extract methylation calls
+- Process and filter calls
+- Summary figures (PCA, clustering, etc)
+- Test for differential methylation (Methylkit)
+
+## Bisulfite sequence data visualization
+
+Take a look at the fastqc files:
+
+- [Forward read before trimming](https://pespenilab.github.io/Ecological-Genomics/Epigenetics_AA_F00_1_1_fastqc-PRE_TRIM.html)
+- [Reverse read before trimming](https://pespenilab.github.io/Ecological-Genomics/Epigenetics_AA_F00_1_2_fastqc-PRE_TRIM.html)
+- [Forward read after trimming](https://pespenilab.github.io/Ecological-Genomics/Epigenetics_AA_F00_1_1_fastqc-POST_TRIM.html)
+- [Reverse read after trimming](https://pespenilab.github.io/Ecological-Genomics/Epigenetics_AA_F00_1_2_fastqc-POST_TRIM.html)
+
+What do you notice that is different from fastqc that you’ve seen previously?
+
+- The base content is different, because all the non-methylated cytosines have been converted to thymines, so there is very low cytosine content and higher thymine content than expected. Although, it is the base complement for the reverse read.
+
+Why do we see these differences?
+
+- Due to the bisulfite sequencing replacement
+
+## Align with Bismark
+
+Why is this different from typical DNA alignment?
+
+- Two separate alignments for the forward and the reverse genome, because of the bisulfite sequencing replacement
+- You are also generally less likely to get unique alignments because there are only three bases, so there is less spave to be unique.
+
+What do we need to do to the genome?
+
+- The genome needs to be converted from C to T and the complement for reverse reads due to the bisufite sequencing
+
+Sample assignments for mapping:
+
+| Person      | Sample   |
+|-------------|----------|
+| Bertrand B  | AA_F00_1 |
+| Erika B     | AA_F00_2 |
+| Kerria B    | AA_F00_3 |
+| Ben C       | AA_F00_4 |
+| Brendan     | AA_F25_1 |
+| Chege H.    | AA_F25_2 |
+| Alison H.   | AA_F25_3 |
+| Sandra N.   | AA_F25_4 |
+| Thomas O.   | AH_F25_1 |
+| Csenge P.   | AH_F25_2 |
+| Zoe P.      | AH_F25_3 |
+| Anoob P.    | AH_F25_4 |
+| Shervin R.  | HA_F25_1 |
+| Jorge R.    | HA_F25_2 |
+| Lily S.     | HA_F25_3 |
+| Baxter W.   | HA_F25_4 |
+| Katelynn W. | HH_F25_1 |
+
+
+## Extract methylation calls and look for bias
+
+Mapping report from Bismark
+
+- [All methylation sites called](https://pespenilab.github.io/Ecological-Genomics/Epigenetics_AA_F00_2_1_bismark_bt2_PE_report-ALL_SITES.html)
+- [Removing bias](https://pespenilab.github.io/Ecological-Genomics/Epigenetics_AA_F00_2_1_bismark_bt2_PE_report-IGNORE_BIAS.html)
 
