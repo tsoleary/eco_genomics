@@ -7,6 +7,7 @@ setwd(here::here("myresults/transcript_counts"))
 library(DESeq2)
 library(dplyr)
 library(tidyr)
+library(tibble)
 library(ggplot2)
 library(scales)
 library(ggpubr)
@@ -32,8 +33,14 @@ conds <- read.delim("RS_samples.txt",
                     stringsAsFactors = TRUE, 
                     row.names = 1, 
                     colClasses = c('factor', 'factor', 'factor', 'factor'))
-head(conds)
-dim(conds)
+conds_10 <- conds %>%
+  rownames_to_column("sample") %>%
+  filter(day == "10")
+
+counts_10 <- countsTableRound %>%
+  rownames_to_column("gene") %>%
+  select(c("gene", conds_10$sample)) %>%
+  column_to_rownames("gene")
 
 
 # Read summary statistics and visualization ------------------------------------
