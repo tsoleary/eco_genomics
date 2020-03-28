@@ -1,5 +1,5 @@
 ---
-title: Transcriptomics of _Picea rubens_
+title: Transcriptomic response of two climatically distinct populations of _Picea rubens_ under heat and drought stress
 author: \emph{Thomas O'Leary}
 output:
   pdf_document:
@@ -13,17 +13,17 @@ header-includes:
   - \usepackage{float}
   - \usepackage{wrapfig}
   - \usepackage[font={footnotesize}]{caption}
-  # - \usepackage{fancyhdr}
-  # - \pagestyle{fancy}
-  # - \fancyhead[RO,RE]{O'Leary}
 bibliography: tso_refs.bib
 csl: mla.csl
-fontsize: 12pt
+fontsize: 11pt
 geometry: "left=1cm,right=1cm,top=1cm,bottom=1cm"
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+# don't make the log files for the VennDiagram package
+futile.logger::flog.threshold(futile.logger::ERROR, name = "VennDiagramLogger")
+
 require(tidyverse)
 require(kableExtra)
 require(DESeq2)
@@ -32,65 +32,236 @@ require(ggpubr)
 require(wesanderson)
 require(vsn)
 require(pheatmap)
+require(VennDiagram)
 
-# Set your working directory
-# setwd(here::here("myresults/transcript_counts"))
-# source(here::here("load_transcript_data.R"))
+# Load all the data and do the DESeq in another script
+#source(here::here("myscripts/load_transcript_data.R"))
 ```
 
 # Background
 
 ### Transcriptomic multiple stressors experimental design
 
-Some _Picea rubens_ individuals, a red spruce that thrives in cool and moist climates, are increasingly experiencing periods of environmental stress, including excessive heat and drought conditions in some of the areas in its range [CITATION??]. This may be due to microclimate differences, such as increased sun exposure and drier soil, but may also be due to larger scale changes in regional climate [CITATION???]. Ten maternal families from two different source climates (hot and dry climate or cool and wet climate) were used. The source climate was determined based on historical climate data on the amount of precipitation in the warmest quarter and the temperature during the hottest month. Individuals from these maternal families were exposed to three experimental treatments: a control, heat stress, and combined heat and drought stress. Each of these treatments included a 16:8 light to dark photoperiod, with variable day and night time temperatures. The control treatment involved 
-
-The purose of this study is to decribe the transcriptomic response of _P. rubens_ under temperature and drought stress
-
-
+Indivduals of _Picea rubens_, a red spruce that thrives in cool and moist climates, are increasingly experiencing periods of environmental stress, including excessive heat and drought in some of the areas in its range [@Ribbons2014]. This may be due to microclimate differences, such as increased sun exposure and drier soil, but may also be due to larger scale changes in regional climate [@Dumais2016]. Maternal families from two different source climates, Hot & Dry (N = $5$) or Cool & Wet (N = $5$)) were tested [^1]. Individuals from these families were exposed to three experimental treatments: a control, heat stress, and combined heat and drought stress. Each treatment included a $16$:$8$ hour light to dark photoperiod, with variable day and night time temperatures for a period of ten days. The control involved alternating temperatures of $23$°C and $17$°C. Temperatures were increased by $50$% to $35$°C and $26$°C in the heat treatments. Individuals in the heat and drought treatment were additionally withheld water for the duration. The main aim of this study was to decribe the transcriptomic response of _P. rubens_ under temperature and drought stress and note differences between indivduals from different source climates, potentially identifying candidate genes of functional consequence in response to environmental stress. For this write up, I will narrow my focus to the individuals sampled at day ten.
 
 
 ### Sample collection, library preparation, and sequencing
 
-At each collection time point during the course of the experiment, RNA was extracted from whole seedlings (_i.e._ root, stem, and needle tissue). After extraction, RNA quantity and quality was assessed on a Bioanalyzer. 
-
-Samples (RNA concentration > 1 ng/$\mu$L) were sent to Cornell for library preparation and sequencing. Library preparation followed the Lexogen QuantSeq 3’ mRNA-Seq protocols. The samples were sequenced in 86 bp reads on a NextSeq500.
+Individuals from each group were germinated and raised to seedlings for ten weeks in common garden conditions, then transfered to their respective growth chambers and left under control condidtions for two weeks before the experimental treatments were engaged. At each collection time point, day zero, five, and ten, RNA was extracted from whole seedlings (_i.e._ root, stem, and needle tissue). After extraction, RNA quantity and quality was assessed on a Bioanalyzer. Samples (RNA concentration > 1 ng/$\mu$L) were sent to Cornell for library preparation and sequencing. Library preparation followed the Lexogen QuantSeq 3’ mRNA-Seq protocols and they were sequenced in 86 bp reads on a NextSeq500.
 	
 # Bioinformatics Pipeline
 
-The quality of the raw reads were accessed using FastQC v$0.11.3$ [@andrews2012]. Low quality sequence data was trimmed from the raw reads using Trimmomatic v$0.33$ [@Bolger2014] and the cleaned reads were vizualized again with FastQC. Those cleaned reads were then mapped to a Norway spruce, _Picea abies_, reference transcriptome [CONGENIE>ORG CITATION] using salmon v$1.1.0$ [@Patro2017]. The reference transcriptome included all coding sequence as well as two kilobases downstream to account for the 3' tag sequencing technique.
+The quality of the raw reads were accessed using FastQC v$0.11.3$ [@andrews2012]. Low quality sequence was trimmed from the raw reads using Trimmomatic v$0.33$ [@Bolger2014] and the cleaned reads were vizualized again with FastQC. Those cleaned reads were then mapped using Salmon v$1.1.0$ [@Patro2017] to a Norway spruce, _Picea abies_, reference transcriptome ([Congenie.org](ftp://plantgenie.org/Data/ConGenIE/Picea_abies/v1.0/FASTA/GenePrediction/)), which included all coding sequence and two kilobases downstream to account for the 3' tag sequencing technique. Transcript count matrices were imported into R v$3.6.1$ [@rcore] with the package tximport v$1.12.3$ [@tximport]. Genes with an average of less than one transcript per sample were pre-filtered from the analysis [^2]. Differential gene expression was called and an FDR of $0.05$ using DESeq2 v$1.24.0$ [@Love2014]. Further analysis and visualization was done using the packages ggplot2 and dplyr v$1.2.1$ [@tidyverse].
 
-Count files were imported into R v$3.6.1$ [@rcore] with the package tximport v$1.12.3$ [@tximport]. Transcripts with less than one transcript per sample were pre-filtered from the analysis. Differential gene expression was called and an FDR of 0.05 using DESeq2 v$1.24.0$ [@Love2014]. Further analysis and visualization was done using the packages ggplot2 and dplyr v$1.2.1$ [@tidyverse].
+[^1]: The source climate was determined based on historical climate data (_e.g._ precipitation in the warmest quarter and the temperature of the hottest month). 
+
+[^2]: Although DESeq2 uses its own independent filtering to reduce the amount of genes with low counts, this pre-filtering was done to speed up the analysis and ensure that genes with very low transcript counts, and likely high-noise, were not included in results.
 
 # Results
+Salmon mapped the transcript sequencing reads to the reference with a mean mapping rate of $52$% (minimum $30$%; maximum $71$%) [^3]. Adding two kilobases downstream to the coding sequence, dramatically improved the mapping rates over only including the coding sequence, because of the 3' tag sequencing method that was used. There was a mean of $2.7$ million reads mapped per sample (range: $1.0$ million -- $4.4$ million). Principal component analysis of **all** expressed genes shows relatively overlapping clusters of samples based on treatment condition for the first two principal components, with hardly any separation based on source climate (Fig. 1 **A**) [^4].
 
-```{r, fig.width = 3, fig.height = 2, fig.align = "left"}
-  # kable("latex", booktabs = T,
-  #       align = c('l', 'c', 'c', 'c'),
-  #       caption = "CAPTION") %>%
-  # kable_styling(font_size = 10)
+[^3]: These mapping rates are not atypically low for a non-model organism using a reference sequence from a closely related species.
+
+[^4]: I tried the PCA with subsets of the most variable genes (as the default for `plotPCA()` allows). This did seem to qualitatively change the clusters -- the fewer genes included, the more Heat and Heat & Drought cluster together away from the control.
+
+
+```{r, fig.width = 6, fig.height = 2.5, fig.cap = paste0("\\textbf{(A)} Principal component analysis of all expressed genes. \\textbf{(B)} Normalized transcript counts of the gene MA_$129323g0010$.")}
+# p1 <- ggplot(pc_data, aes(PC1, PC2, color = treatment, shape = climate)) +
+#         geom_point(size = 2, alpha = 0.85) +
+#         xlab(paste0("PC1 (", percentVar[1], "%)")) +
+#         ylab(paste0("PC2 (", percentVar[2], "%)")) +
+#         labs(title = "Principal Component Analysis") +
+#         scale_color_manual(name = "Treatment",
+#                            values = c("grey50", "coral", "darkred"),
+#                            labels = c("Control", "Heat", "Heat & Drought")) +
+#         scale_shape_manual(name = "Climate",
+#                            values = c(19, 17),
+#                            labels = c("Hot & Dry", "Cold & Wet")) +
+#         theme_minimal(base_size = 12) +
+#         guides(shape = guide_legend(override.aes = list(size = 2)),
+#                color = guide_legend(override.aes = list(size = 2))) +
+#         theme(legend.position = c(0.2, 0.7),
+#               legend.title = element_text(size = 10),
+#               legend.text = element_text(size = 10))#,
+#               #legend.background = element_rect(linetype = 1, size = 0.5, color = 1))
+# 
+# d <- plotCounts(dds, 
+#                 gene = "MA_129323g0010", 
+#                 intgroup = (c("treatment","climate", "day")), 
+#                 returnData = TRUE)
+# 
+# p2 <- ggplot(d, aes(x = treatment,
+#                     y = count,
+#                     fill = climate)) +
+#         geom_jitter(width = 0.2, size = 3, alpha = 0.7,
+#                     pch = 21, color = "grey50") +
+#         scale_x_discrete(limits = c("C", "H", "D"),
+#                          labels = c("Control", "Hot", "Hot & Dry")) +
+#         labs(title = "MA_129323g0010",
+#              y = "Normalized Counts",
+#              x = "") +
+#         scale_fill_manual(name = "Climate",
+#                            values = c("darkred", "skyblue"),
+#                            labels = c("Hot & Dry", "Cold & Wet")) +
+#         theme_classic(base_size = 14) +
+#         theme(legend.position = c(0.8, 0.9),
+#               legend.background = element_rect(linetype = 1, size = 0.5, color = 1))
+
+p1 <- cowplot::ggdraw() + 
+  cowplot::draw_image(here::here("myresults/transcript_counts/plots/pca.png"))
+p2 <- cowplot::ggdraw() +
+  cowplot::draw_image(here::here("myresults/transcript_counts/plots/count_plot.png"))
+
+cowplot::plot_grid(p1, p2, nrow = 1, labels = "AUTO")
 ```
 
-# ```{r, fig.width = 5, fig.height = 2, fig.cap = "CAPTION")}
-# 
-# # cowplot::plot_grid(p1, p2, nrow = 1, labels = "AUTO", label_size = 10)
-# ```
 
-The mapping rates...
+```{r, include = FALSE}
+# make venn diagram plots ------------------------------------------------------
+setwd(here::here("myresults/transcript_counts/plots"))
+venn.diagram(x = list(HD_D_up = rownames(subset(res_HD_D, padj < 0.05 & 
+                                                  log2FoldChange > 0)), 
+                      CW_D_up = rownames(subset(res_CW_D, padj < 0.05 &
+                                                  log2FoldChange > 0))),
+     category.names = c("Hot & Dry", "Cool & Wet"),
+     imagetype = "png",
+     filename = "venn_heat_drought_up.png",
+     fill = c("darkred", "skyblue"), 
+     alpha = 0.5,
+     label.col = "white", 
+     fontfamily = "serif", 
+     fontface = "bold",
+     cat.cex = 3,
+     cat.dist = .05,
+     margin = 0,
+     cex = 3,
+     cat.pos = c(0, 0),
+     cat.col = c("darkred", "skyblue"), 
+     cat.fontfamily = "serif",
+     cat.fontface = "bold")
 
-The number of DEGs...
+venn.diagram(x = list(HD_D_down = rownames(subset(res_HD_D, padj < 0.05 & 
+                                                  log2FoldChange < 0)),
+                      CW_D_down = rownames(subset(res_CW_D, padj < 0.05 & 
+                                                  log2FoldChange < 0))),
+     category.names = c("Hot & Dry", "Cool & Wet"),
+     imagetype = "png",
+     filename = "venn_heat_drought_down.png",
+     fill = c("darkred", "skyblue"), 
+     alpha = 0.5,
+     label.col = "white", 
+     fontfamily = "serif", 
+     fontface = "bold",
+     cat.cex = 3,
+     cat.dist = .05,
+     margin = 0,
+     cex = 3,
+     cat.pos = c(0, 0),
+     cat.col = c("darkred", "skyblue"), 
+     cat.fontfamily = "serif",
+     cat.fontface = "bold")
 
-The experimental model ...
+venn.diagram(x = list(HD_H_up = rownames(subset(res_HD_H, padj < 0.05 & 
+                                                  log2FoldChange > 0)), 
+                      CW_H_up = rownames(subset(res_CW_H, padj < 0.05 &
+                                                  log2FoldChange > 0))),
+     category.names = c("Hot & Dry", "Cool & Wet"),
+     imagetype = "png",
+     filename = "venn_heat_up.png",
+     fill = c("darkred", "skyblue"), 
+     alpha = 0.5,
+     label.col = "white", 
+     fontfamily = "serif", 
+     fontface = "bold",
+     cat.cex = 3,
+     cat.dist = .2,
+     margin = 0.75,
+     cex = 2,
+     cat.pos = c(0, 120),
+     cat.col = c("darkred", "skyblue"), 
+     cat.fontfamily = "serif",
+     cat.fontface = "bold")
 
-Which DEGs...
+venn.diagram(x = list(HD_H_down = rownames(subset(res_HD_H, padj < 0.05 & 
+                                                  log2FoldChange < 0)),
+                      CW_H_down = rownames(subset(res_CW_H, padj < 0.05 & 
+                                                  log2FoldChange < 0))),
+     category.names = c("Hot & Dry", "Cool & Wet"),
+     imagetype = "png",
+     filename = "venn_heat_down.png",
+     fill = c("darkred", "skyblue"), 
+     alpha = 0.5,
+     label.col = "white", 
+     fontfamily = "serif", 
+     fontface = "bold",
+     cat.cex = 3,
+     cat.dist = .1,
+     margin = 0.75,
+     cex = 3,
+     cat.pos = c(0, 180),
+     cat.col = c("darkred", "skyblue"), 
+     cat.fontfamily = "serif",
+     cat.fontface = "bold")
+```
+
+
+```{r, fig.width = 3, fig.height=3}
+# Plotting VennDiagrams --------------------------------------------------------
+p1 <- cowplot::ggdraw() + 
+  cowplot::draw_image(here::here("myresults/transcript_counts/plots/venn_heat_up.png"))
+p2 <- cowplot::ggdraw() +
+  cowplot::draw_image(here::here("myresults/transcript_counts/plots/venn_heat_drought_up.png"))
+p3 <- cowplot::ggdraw() + 
+  cowplot::draw_image(here::here("myresults/transcript_counts/plots/venn_heat_down.png"))
+p4 <- cowplot::ggdraw() +
+  cowplot::draw_image(here::here("myresults/transcript_counts/plots/venn_heat_drought_down.png"))
+
+
+p_left <- cowplot::plot_grid(p1, p3, nrow = 2, labels = c("A", "B"))  
+t_left <- cowplot::ggdraw() +
+  cowplot::draw_label("Heat", size = 12, fontface = "bold")
+left <- cowplot::plot_grid(t_left, p_left, nrow = 2, rel_heights = c(.1, .9))
+
+p_right <- cowplot::plot_grid(p2, p4, nrow = 2, labels = c("C", "D"))  
+t_right <- cowplot::ggdraw() +
+  cowplot::draw_label("Heat & Drought", size = 12, fontface = "bold")
+right <- cowplot::plot_grid(t_right, p_right, nrow = 2, rel_heights = c(.1, .9))
+
+up_reg <- cowplot::ggdraw() +
+  cowplot::draw_label("Up", size = 8, fontface = "bold")
+
+down_reg <- cowplot::ggdraw() +
+  cowplot::draw_label("Down", size = 8, fontface = "bold")
+
+regs <- cowplot::plot_grid(up_reg, down_reg, nrow = 2) 
+
+plots <- cowplot::plot_grid(left, right, nrow = 1) 
+
+p <- cowplot::plot_grid(regs, plots, nrow = 1, rel_widths = c(.1, .9)) 
+
+cowplot::save_plot("fig_2_venn.png", p, base_width = 5, base_height = 5)
+```
+
+\begin{wrapfigure}{R}{.4\textwidth}
+  \begin{center}
+    \includegraphics[width=.4\textwidth]{fig_2_venn.png}
+  \caption{Venn diagram of genes that are up-regulated \textbf{(A)} and down-regulated \textbf{(A)} under heat stress, and genes that are differentially up-regulated \textbf{(C)} and down-regulated \textbf{(D)} in responsed to combined heat and drought stress (FDR < 0.05).}
+\end{center}
+\end{wrapfigure}
+
+When comparing the two source climates, across all three treatments, there was only one differentially expressed gene, MA_$129323g0010$ (uncharacterized protein function), which was down-regulated in the Hot & Dry source climate when compared to the Cool & Wet source climate (Fig 2 **B**; L2FC = $-20.64$; FDR = $0.04$). Additionally, there were no genes found to have an interaction between the two factors of climate and treatment. However, there were more genes differenitally expressed when comparing the stress treatments to the control. In heat stress, there were 18 up-reulated genes and 2 down-regulated. In the case where water was also withheld, the number of differentially expressed genes increased dramatically, with 776 genes up-regulated and 585 down-regulated on day ten in response to heat and drought stress, when compared with the day ten controls. 
+
+Together these results would seem to suggest that the transcriptomic response of _P. rubens_ is largely driven by the environmental conditions and that their demographic background (source climate) contributes little to any differenital expression. However, after collapsing treatment and source climate factors and comparing among source climates each stress treatment to its own control, and interesting pattern of differential expression emerges between source climates (Fig. 2). There are many more differentially expressed genes in Hot & Dry source climate individuals than in the Cool & Wet group. One of the genes differentially expressed in response to heat and drought only in the Hot & Dry source climate is MA_$135205g0010$ (L2FC = $4.13$, FDR = $1.7$x$10^{-9}$), a gene which produces a 70 kDa peptidyl-prolyl isomerase.
 
 # Conclusion
 
-The conservation of _Picea rubens_ along the eastern United States...
+Vitally important to the conservation of _Picea rubens_ along the eastern United States is understanding the ability of different populations to respond to environmental challenge. These preliminary results may suggest that individuals from Hot & Dry climates have a larger transcriptomic response to heat and drought stress than individuals from Cool & Wet climates, although the effect of this transriptomic response on the whole organism phenotype remains unexplored.
 
-Future directions for this study must involve...
+Future directions with this data set should involve exploring how the transcriptomic response changes over the course of the treatment and diving into the physiology of the specific candidate genes. Overrepresentation analysis on the differentially expressed gene sets may reveal functional categories that are enriched in the plastically responding genes and potentially identify pathways invovled in the greater responding Hot & Dry source climates. Additionally, further experimentation could explore the same familes under these stressful conditions for a longer period of time and making phenotypic measurements (_e.g._ growth, budburst) and performing a genome-wide association of the maternal tree lines. Incorporating these two data sets, would potentially allow insight into the genomic architure underlying this possible signal of source climate differentiation.
+
 
 \pagebreak
 
-# References [^1]
+# References [^5]
 
-[^1]: This does not exactly follow the MLA citation example you gave, but it was the best `.csl` I could find in time.
+[^5]: General musings that I want to get down while I am thinking about them. It is probably worth talking to someone about this: I wonder what is the real difference between these two DESeq design methods (_i.e._ **(i)** exp ~ climate + treatment + climate:treatment, and **(ii)** exp ~ group, where group is the collapsed together climate and treatment factors). I guess I get conceptually how they are different, but it seems to me that upon analysis of the data these two approaches produce somewhat competing ideas of what is going on with these samples. The first says that there is only one gene different between the two source climates (Fig. 1 **B**). And the second seems to suggest that there is really quite a bit of difference in plastic response to stress between the two source climates (Fig. 2). So is the first approach testing for DE in source climate regardless of treatment, and then treatment regardless of climate, and then the interactions? It seems to me like collapsing the factors gets at the questions we are asking more? Because collapsing the factors allows you to ask more pairwise questions (_e.g._ What are the DEGs under Heat & Drought in the Hot & Dry source climate samples, compared to _their_ control? And does that differ from the DEGs identified in the Cool & Wet group under the same stressors?). It seems like comparing each stress group to its own control is a better approach. Maybe the first experimental design is doing that under the hood, but I don't think so? I don't know. Just a bit confused the more I think about it... Took a walk. I guess if you were to run the exact same experiment, but measure some sort of macro-phenotype (_e.g._ trunk diameter) then you would do a two-way ANOVA on the two factors, climate and treatment, which is probably the equivalent of ~ climate + treatment + climate:treatment design. So I guess what I am doing in exp ~ group is more like doing a bunch of pairwise t-tests, which is maybe not the best approach and may lead to false positives if you don't correct the p-value for multiple comparisons like in Tukey's ad hoc. So are all those hundreds of genes that are identified really just false-positives? Food for thought. Munch munch. Maybe a more strict FDR would be appropriate. I would be interested to hear what you think? From a few Stackoverflow answers, it seems like Michael Love is a big fan of collapsing the factors and simplifying the design, but now I don't know what I think about it now.
