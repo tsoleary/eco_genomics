@@ -108,7 +108,8 @@ ggplot(p.df, aes(x = group, y = methylation, color = group)) +
 clusterSamples(meth, dist = "correlation", method = "ward.D", plot = TRUE)
 
 # PCA
-PCASamples()
+PCASamples(meth, screeplot = TRUE)
+PCASamples(meth, screeplot = FALSE)
 
 
 # Find differentially methylated sites between two groups ----------------------
@@ -135,9 +136,10 @@ myDiff <- getMethylDiff(myDiff, qvalue = 0.05, difference = 10)
 hist(getData(myDiff)$meth.diff)
 
 # Hyper-methylated bases
+hyper=getMethylDiff(myDiff,difference=10,qvalue=0.05,type="hyper")
 
 # Hypo-methylated bases
-
+hypo=getMethylDiff(myDiff,difference=10,qvalue=0.05,type="hypo")
 
 # Plots of differentially methylated groups ------------------------------------
 # Heatmaps -----
@@ -163,7 +165,20 @@ pheatmap(pm.sig, show_rownames = FALSE)
 
 # Methylation of specific snps -------------------------------------------------
 
+df.out
+df.plot <- df.out[,c(1,5:12)] %>% pivot_longer(-snp, values_to = "methylation")
+df.plot$group <- substr(df.plot$name,1,2)
+head(df.plot)
+
 # convert data frame to long form
+df.plot %>% 
+  filter(snp=="LS049205.1:248") %>% 
+  ggplot(., aes(x=group, y=methylation, color=group, fill=group)) +
+  stat_summary(fun.data = "mean_se", size = 2) +
+  geom_jitter(width = 0.1, size=3, pch=21, color="black")
 
 # write bed file for intersection with genome annotation
+write.table(file = here::here("myresults/epigenetics/diffmeth.bed"),
+            data.frame(chr= df.out$chr, start = df.out$start, end = df.out$end),
+            row.names=FALSE, col.names=FALSE, quote=FALSE, sep="\t")
 
