@@ -1,0 +1,101 @@
+---
+title: Epigenetics responses to heat and CO$_{2}$ selection in the copepod _Acartia tonsa_
+author: \emph{Thomas O'Leary}
+#date: \emph{February 25, 2020}
+output:
+  pdf_document:
+header-includes:
+  - \usepackage[cmintegrals,cmbraces]{newtxmath}
+  - \usepackage{ebgaramond}
+  - \usepackage[T1]{fontenc}
+  - \usepackage{graphicx}
+  - \usepackage{float}
+  - \usepackage{wrapfig}
+  - \usepackage[font={footnotesize}]{caption}
+bibliography: tso_refs.bib
+csl: mla.csl
+fontsize: 12pt
+geometry: "left=1cm,right=1cm,top=1cm,bottom=1cm"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+require(tidyverse)
+require(kableExtra)
+
+# site frequency spectrum data -------------------------------------------------
+setwd(here::here("myresults/ANGSD"))
+
+
+```
+
+# Background
+
+### _Acartia tonsa_ Ecology
+
+A worldwide distribution and a huge population size make the copepod, _Acartia tonsa_, 
+
+
+The ultimate aims of this study are to (i) describe the population structure and genetic diversiy of _P. rubens_, (ii) identify loci that show signs of positive selection and (iii) map the genetic basis of these adaptive phenotypes. 
+
+In this write up, I will only begin to address the first aim in the context of one population (BFA), with five sequenced individuals, using a few genetic diversity metrics including nucleotide diversity ($\pi$), Wattserson's estimator ($\theta$), and Tajima's $D$ [@Nei1979; @Watterson1975; @Tajima1989].
+
+
+### Selection experiment, sample collection, library preparation, and sequencing
+
+Whole genomic DNA was extracted from needle tissue that was collected from a total of 340 mother _P. rubens_ in 65 populations, of which 110 trees were from 23 edge populations. 80,000 120 bp probes were designed for exome capture based on multiple developmental and tissue type transcriptomes from a related white spruce _Picea glauca_ [@Rigault2011;@Yeaman2014]. Approximately 95% of the probes were designed within exomic regions with the remaining 5% in intergenic regions, covering a total of 38,570 unigenes. The probes were blasted against the _P. glauca_ reference genome to ensure at least 90 bp of 85% identity. 250 ng to 1 $\mu$g of genomic DNA was mechanically sheared to an average length of 400 bp, exome fragments were enriched using the designed probes, and following barcode adaptation, the libraries were pooled and paired-end 150 bp sequenced on an Illumina HiSeq X.
+	
+# Bioinformatics Pipeline
+
+The quality of the raw reads were accessed using FastQC v$0.11.7$ [@andrews2012] and low quality sequence data was trimmed using Trimmomatic v$0.33$ [@Bolger2014]. The cleaned reads were vizualized again with FastQC and then mapped to the _A. tonsa_ reference genome with Bismark v$0.22.1$ [@Krueger2011]. 
+
+A reduced _P. abies_ reference genome was used because there is no available _P. rubens_ genome and the exome capture technique meant that only a small fraction of the genome near the designed probes would be sequenced.
+
+
+methylKit v$1.13.1$ [@Akalin2012].
+
+The sequence aligned reads (sam files) were then converted to binary (bam) and the PCR duplicates were removed and files were sorted using samtools v$1.4$ and sambamba v$0.7.1$ [@Tarasov2015;@Li2009a]. The effects of the low sequencing depth were compensated by estimating genotype likelihoods using ANGSD v$0.931-14$-gb9c8ddd [@Korneliussen2014]. 
+
+
+were calculated and visualized in R v$3.6.1$ [@rcore] using ggplot2 and dplyr v$1.2.1$ [@tidyverse].
+
+# Results
+
+```{r}
+# results
+```
+
+The mapping rate was highly variable across groups ()
+
+
+
+The sequencing statistics indicate that among the five individuals in the BFA population, the mean per site sequence depth was 
+and the mean number of mapped reads was 
+
+The average percentage of paired reads was
+
+The percent of single nucleotide polymorphisms across the geneome is 
+
+. The mean of Tajima's D was calculated to be
+
+# Conclusion
+
+The conservation of _Picea rubens_ along the eastern United States may depend on identifying vulnerable populations and their potential genetic resources in an effort to maintain genetic diverity, conserve, and restore the species. 
+
+A quick look at the site frequency spectrum in Figure 1: A indicates a loss of rare alleles, with the rare dimorphic alleles being less frequent than other polymorphic alleles.
+
+
+Although these numbers seem to 
+
+
+Future directions for this study must involve: 
+
+Incorporating phenotypic data, 
+
+Identifying loci 
+
+
+
+\pagebreak
+
+# References
