@@ -1,0 +1,94 @@
+LS042748.1	7742	7742	LS042748.1	2784	10218	+	TRINITY_DN149056_c6_g2_i2	path1	Q91V01 B1B362 O35131 Q8BNH6	Lysophospholipid acyltransferase 5	1-acylglycerophosphocholine O-acyltransferase;1-acylglycerophosphoethanolamine O-acyltransferase;1-acylglycerophosphoserine O-acyltransferase;Lysophosphatidylcholine acyltransferase;Lysophosphatidylcholine acyltransferase 3;Lysophosphatidylethanolamine acyltransferase;Lysophosphatidylserine acyltransferase;Membrane-bound O-acyltransferase domain-containing protein 5;	 PF03062;	 GO:0005789;GO:0016021;GO:0047184;GO:0008654;GO:0097006;	  C:endoplasmic reticulum membrane; C:integral component of membrane;	  F:1-acylglycerophosphocholine O-acyltransferase activity;	  P:phospholipid biosynthetic process; P:regulation of plasma lipoprotein particle levels;	0
+LS042748.1	7742	7742	LS042748.1	2787	10218	+	TRINITY_DN149056_c6_g5_i1	path1	Q91V01 B1B362 O35131 Q8BNH6	Lysophospholipid acyltransferase 5	1-acylglycerophosphocholine O-acyltransferase;1-acylglycerophosphoethanolamine O-acyltransferase;1-acylglycerophosphoserine O-acyltransferase;Lysophosphatidylcholine acyltransferase;Lysophosphatidylcholine acyltransferase 3;Lysophosphatidylethanolamine acyltransferase;Lysophosphatidylserine acyltransferase;Membrane-bound O-acyltransferase domain-containing protein 5;	 PF03062;	 GO:0005789;GO:0016021;GO:0047184;GO:0008654;GO:0097006;	  C:endoplasmic reticulum membrane; C:integral component of membrane;	  F:1-acylglycerophosphocholine O-acyltransferase activity;	  P:phospholipid biosynthetic process; P:regulation of plasma lipoprotein particle levels;	0
+LS043541.1	2223	2223	LS043541.1	1	2600	+	TRINITY_DN151196_c4_g1_i1	path1	Q87040	Pro-Pol polyprotein	Pr125Pol;	 PF17921;PF00075;PF17919;PF00665;PF00078;PF18103;PF03539;	 GO:0030430;GO:0042025;GO:0019012;GO:0004190;GO:0003887;GO:0046872;GO:0003723;GO:0003964;GO:0004523;GO:0015074;GO:0006310;GO:0075713;GO:0046718;GO:0044826;GO:0075732;	  C:host cell cytoplasm; C:host cell nucleus; C:virion;	  F:aspartic-type endopeptidase activity; F:DNA-directed DNA polymerase activity; F:metal ion binding; F:RNA binding; F:RNA-directed DNA polymerase activity; F:RNA-DNA hybrid ribonuclease activity;	  P:DNA integration; P:DNA recombination; P:establishment of integrated proviral latency; P:viral entry into host cell; P:viral genome integration into host DNA; P:viral penetration into host nucleus;	0
+LS043710.1	571	571	LS043710.1	97	4406	-	TRINITY_DN151507_c5_g1_i5	path2	Q9HDB9	Endogenous retrovirus group K member 5 Gag polyprotein	HERV-K(II) Gag protein;HERV-K_3q12.3 provirus ancestral Gag polyprotein;	 PF02337;PF00607;PF00098;	 GO:0005886;GO:0003676;GO:0005198;GO:0008270;GO:0016032;	  C:plasma membrane;	  F:nucleic acid binding; F:structural molecule activity; F:zinc ion binding;	  P:viral process;	0
+LS046185.1	8259	8259	LS046185.1	153	34212	-	TRINITY_DN127095_c1_g1_i1	path1	O73798	Insulin-like growth factor 1 receptor		 PF00757;PF07714;PF01030;	 GO:0005887;GO:0005524;GO:0043560;GO:0005520;GO:0005010;GO:0046872;GO:0043548;GO:0004713;GO:0048009;GO:0007275;GO:0001556;GO:0046777;GO:0051262;	  C:integral component of plasma membrane;	  F:ATP binding; F:insulin receptor substrate binding; F:insulin-like growth factor binding; F:insulin-like growth factor-activated receptor activity; F:metal ion binding; F:phosphatidylinositol 3-kinase binding; F:protein tyrosine kinase activity;	  P:insulin-like growth factor receptor signaling pathway; P:multicellular organism development; P:oocyte maturation; P:protein autophosphorylation; P:protein tetramerization;	0
+LS049748.1	4514	4514	LS049748.1	4375	11065	+	TRINITY_DN149693_c1_g1_i1	path2	O55092	STE20-like serine/threonine-protein kinase	STE20-related serine/threonine-protein kinase;	 PF00069;PF12474;	 GO:0031252;GO:0005737;GO:0048471;GO:0005524;GO:0042803;GO:0004674;GO:0006915;GO:0046777;GO:0030334;GO:0051893;	  C:cell leading edge; C:cytoplasm; C:perinuclear region of cytoplasm;	  F:ATP binding; F:protein homodimerization activity; F:protein serine/threonine kinase activity;	  P:apoptotic process; P:protein autophosphorylation; P:regulation of cell migration; P:regulation of focal adhesion assembly;	0
+LS051669.1	9015	9015	LS051669.1	5747	9965	-	TRINITY_DN140632_c0_g4_i1	path1	Q95SX7	Probable RNA-directed DNA polymerase from transposon BS	Reverse transcriptase;	 PF14529;PF00078;	 GO:0003964;GO:0006313;	 	  F:RNA-directed DNA polymerase activity;	  P:transposition, DNA-mediated;	0
+LS051669.1	9015	9015	LS051669.1	5747	9965	-	TRINITY_DN140632_c0_g4_i2	path1	Q95SX7	Probable RNA-directed DNA polymerase from transposon BS	Reverse transcriptase;	 PF14529;PF00078;	 GO:0003964;GO:0006313;	 	  F:RNA-directed DNA polymerase activity;	  P:transposition, DNA-mediated;	0
+LS051669.1	9015	9015	LS051669.1	7908	9965	-	TRINITY_DN140632_c0_g4_i3	path1	Q95SX7	Probable RNA-directed DNA polymerase from transposon BS	Reverse transcriptase;	 PF14529;PF00078;	 GO:0003964;GO:0006313;	 	  F:RNA-directed DNA polymerase activity;	  P:transposition, DNA-mediated;	0
+LS051734.1	5459	5459	LS051734.1	5203	5739	+	TRINITY_DN139938_c2_g6_i1	path2	O30931	Deoxyuridine 5'-triphosphate nucleotidohydrolase {ECO:0000255|HAMAP-Rule:MF_00116}	dUTP pyrophosphatase {ECO:0000255|HAMAP-Rule:MF_00116};	 PF00692;	 GO:0004170;GO:0000287;GO:0006226;GO:0046081;	 	  F:dUTP diphosphatase activity; F:magnesium ion binding;	  P:dUMP biosynthetic process; P:dUTP catabolic process;	0
+LS055310.1	71	71	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS056368.1	228	228	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS058076.1	184	184	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS062329.1	6106	6106	LS062329.1	7474	7575	+	TRINITY_DN146344_c7_g5_i1	path1	Q0P5D3	G1/S-specific cyclin-D2		 PF02984;PF00134;	 GO:0097129;GO:0000307;GO:0005737;GO:0016020;GO:0005634;GO:0016538;GO:0019901;GO:0008344;GO:0051301;GO:0071481;GO:0007616;GO:0044772;GO:1900087;GO:0006468;GO:0000079;	  C:cyclin D2-CDK4 complex; C:cyclin-dependent protein kinase holoenzyme complex; C:cytoplasm; C:membrane; C:nucleus;	  F:cyclin-dependent protein serine/threonine kinase regulator activity; F:protein kinase binding;	  P:adult locomotory behavior; P:cell division; P:cellular response to X-ray; P:long-term memory; P:mitotic cell cycle phase transition; P:positive regulation of G1/S transition of mitotic cell cycle; P:protein phosphorylation; P:regulation of cyclin-dependent protein serine/threonine kinase activity;	1368
+LS062329.1	6106	6106	LS062329.1	7474	7575	+	TRINITY_DN146344_c7_g5_i2	path1	Q0P5D3	G1/S-specific cyclin-D2		 PF02984;PF00134;	 GO:0097129;GO:0000307;GO:0005737;GO:0016020;GO:0005634;GO:0016538;GO:0019901;GO:0008344;GO:0051301;GO:0071481;GO:0007616;GO:0044772;GO:1900087;GO:0006468;GO:0000079;	  C:cyclin D2-CDK4 complex; C:cyclin-dependent protein kinase holoenzyme complex; C:cytoplasm; C:membrane; C:nucleus;	  F:cyclin-dependent protein serine/threonine kinase regulator activity; F:protein kinase binding;	  P:adult locomotory behavior; P:cell division; P:cellular response to X-ray; P:long-term memory; P:mitotic cell cycle phase transition; P:positive regulation of G1/S transition of mitotic cell cycle; P:protein phosphorylation; P:regulation of cyclin-dependent protein serine/threonine kinase activity;	1368
+LS062329.1	6147	6147	LS062329.1	7474	7575	+	TRINITY_DN146344_c7_g5_i1	path1	Q0P5D3	G1/S-specific cyclin-D2		 PF02984;PF00134;	 GO:0097129;GO:0000307;GO:0005737;GO:0016020;GO:0005634;GO:0016538;GO:0019901;GO:0008344;GO:0051301;GO:0071481;GO:0007616;GO:0044772;GO:1900087;GO:0006468;GO:0000079;	  C:cyclin D2-CDK4 complex; C:cyclin-dependent protein kinase holoenzyme complex; C:cytoplasm; C:membrane; C:nucleus;	  F:cyclin-dependent protein serine/threonine kinase regulator activity; F:protein kinase binding;	  P:adult locomotory behavior; P:cell division; P:cellular response to X-ray; P:long-term memory; P:mitotic cell cycle phase transition; P:positive regulation of G1/S transition of mitotic cell cycle; P:protein phosphorylation; P:regulation of cyclin-dependent protein serine/threonine kinase activity;	1327
+LS062329.1	6147	6147	LS062329.1	7474	7575	+	TRINITY_DN146344_c7_g5_i2	path1	Q0P5D3	G1/S-specific cyclin-D2		 PF02984;PF00134;	 GO:0097129;GO:0000307;GO:0005737;GO:0016020;GO:0005634;GO:0016538;GO:0019901;GO:0008344;GO:0051301;GO:0071481;GO:0007616;GO:0044772;GO:1900087;GO:0006468;GO:0000079;	  C:cyclin D2-CDK4 complex; C:cyclin-dependent protein kinase holoenzyme complex; C:cytoplasm; C:membrane; C:nucleus;	  F:cyclin-dependent protein serine/threonine kinase regulator activity; F:protein kinase binding;	  P:adult locomotory behavior; P:cell division; P:cellular response to X-ray; P:long-term memory; P:mitotic cell cycle phase transition; P:positive regulation of G1/S transition of mitotic cell cycle; P:protein phosphorylation; P:regulation of cyclin-dependent protein serine/threonine kinase activity;	1327
+LS064520.1	7213	7213	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS064920.1	4017	4017	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS064920.1	4018	4018	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS068114.1	6322	6322	LS068114.1	6142	6654	+	TRINITY_DN139938_c2_g6_i1	path1	O30931	Deoxyuridine 5'-triphosphate nucleotidohydrolase {ECO:0000255|HAMAP-Rule:MF_00116}	dUTP pyrophosphatase {ECO:0000255|HAMAP-Rule:MF_00116};	 PF00692;	 GO:0004170;GO:0000287;GO:0006226;GO:0046081;	 	  F:dUTP diphosphatase activity; F:magnesium ion binding;	  P:dUMP biosynthetic process; P:dUTP catabolic process;	0
+LS070286.1	6277	6277	LS070286.1	1274	4646	+	TRINITY_DN141879_c0_g2_i6	path2	O97972	Indolethylamine N-methyltransferase	Aromatic alkylamine N-methyltransferase;Thioether S-methyltransferase;	 PF01234;	 GO:0005829;GO:0030748;GO:0102707;GO:0004790;GO:0009308;GO:0032259;GO:0009636;	  C:cytosol;	  F:amine N-methyltransferase activity; F:S-adenosyl-L-methionine:beta-alanine N-methyltransferase activity; F:thioether S-methyltransferase activity;	  P:amine metabolic process; P:methylation; P:response to toxic substance;	-1631
+LS070286.1	6277	6277	LS070286.1	1283	4646	+	TRINITY_DN141879_c0_g2_i1	path1	O97972	Indolethylamine N-methyltransferase	Aromatic alkylamine N-methyltransferase;Thioether S-methyltransferase;	 PF01234;	 GO:0005829;GO:0030748;GO:0102707;GO:0004790;GO:0009308;GO:0032259;GO:0009636;	  C:cytosol;	  F:amine N-methyltransferase activity; F:S-adenosyl-L-methionine:beta-alanine N-methyltransferase activity; F:thioether S-methyltransferase activity;	  P:amine metabolic process; P:methylation; P:response to toxic substance;	-1631
+LS070286.1	6280	6280	LS070286.1	1274	4646	+	TRINITY_DN141879_c0_g2_i6	path2	O97972	Indolethylamine N-methyltransferase	Aromatic alkylamine N-methyltransferase;Thioether S-methyltransferase;	 PF01234;	 GO:0005829;GO:0030748;GO:0102707;GO:0004790;GO:0009308;GO:0032259;GO:0009636;	  C:cytosol;	  F:amine N-methyltransferase activity; F:S-adenosyl-L-methionine:beta-alanine N-methyltransferase activity; F:thioether S-methyltransferase activity;	  P:amine metabolic process; P:methylation; P:response to toxic substance;	-1634
+LS070286.1	6280	6280	LS070286.1	1283	4646	+	TRINITY_DN141879_c0_g2_i1	path1	O97972	Indolethylamine N-methyltransferase	Aromatic alkylamine N-methyltransferase;Thioether S-methyltransferase;	 PF01234;	 GO:0005829;GO:0030748;GO:0102707;GO:0004790;GO:0009308;GO:0032259;GO:0009636;	  C:cytosol;	  F:amine N-methyltransferase activity; F:S-adenosyl-L-methionine:beta-alanine N-methyltransferase activity; F:thioether S-methyltransferase activity;	  P:amine metabolic process; P:methylation; P:response to toxic substance;	-1634
+LS075862.1	65	65	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS082036.1	4666	4666	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS082036.1	4896	4896	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS091612.1	430	430	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS106615.1	2104	2104	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS108711.1	492	492	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS108711.1	666	666	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS109311.1	448	448	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS109311.1	449	449	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS109311.1	456	456	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS109311.1	457	457	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS109311.1	466	466	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS109311.1	467	467	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS138960.1	1421	1421	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS138960.1	1936	1936	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS138960.1	2683	2683	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS143812.1	50	50	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS148351.1	2003	2003	LS148351.1	1454	2001	-	TRINITY_DN134606_c1_g3_i4	path4	P04323	Retrovirus-related Pol polyprotein from transposon 17.6		 PF17921;PF17917;PF00078;	 GO:0004190;GO:0004519;GO:0003676;GO:0003964;GO:0015074;	 	  F:aspartic-type endopeptidase activity; F:endonuclease activity; F:nucleic acid binding; F:RNA-directed DNA polymerase activity;	  P:DNA integration;	-2
+LS156187.1	2187	2187	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS156187.1	2192	2192	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS156187.1	2194	2194	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS156187.1	2203	2203	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS156187.1	2204	2204	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS156187.1	2371	2371	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS166448.1	985	985	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS166742.1	369	369	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS175657.1	327	327	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS175657.1	336	336	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS186826.1	68	68	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS190825.1	1484	1484	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS194438.1	77	77	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS196635.1	188	188	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS197389.1	867	867	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS203364.1	253	253	LS203364.1	606	1576	+	TRINITY_DN140043_c0_g4_i1	path1	Q8I7P9	Retrovirus-related Pol polyprotein from transposon opus		 PF17921;PF17917;PF00665;PF00078;	 GO:0005634;GO:0004519;GO:0003676;GO:0008233;GO:0003964;GO:0015074;GO:0006313;	  C:nucleus;	  F:endonuclease activity; F:nucleic acid binding; F:peptidase activity; F:RNA-directed DNA polymerase activity;	  P:DNA integration; P:transposition, DNA-mediated;	353
+LS216243.1	1374	1374	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS219679.1	194	194	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS226718.1	959	959	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS226718.1	1014	1014	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS226733.1	658	658	LS226733.1	88	1189	-	TRINITY_DN132541_c0_g1_i3	path1	B9L823	Deoxyuridine 5'-triphosphate nucleotidohydrolase {ECO:0000255|HAMAP-Rule:MF_00116}	dUTP pyrophosphatase {ECO:0000255|HAMAP-Rule:MF_00116};	 PF00692;	 GO:0004170;GO:0000287;GO:0006226;GO:0046081;	 	  F:dUTP diphosphatase activity; F:magnesium ion binding;	  P:dUMP biosynthetic process; P:dUTP catabolic process;	0
+LS226733.1	658	658	LS226733.1	458	1131	-	TRINITY_DN132541_c0_g1_i2	path1	Q9J5G5	Deoxyuridine 5'-triphosphate nucleotidohydrolase	dUTP pyrophosphatase;	 PF00692;	 GO:0004170;GO:0000287;GO:0006226;GO:0046081;	 	  F:dUTP diphosphatase activity; F:magnesium ion binding;	  P:dUMP biosynthetic process; P:dUTP catabolic process;	0
+LS231127.1	1543	1543	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS231976.1	467	467	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS231976.1	474	474	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS232179.1	598	598	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS239438.1	1057	1057	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS240607.1	71	71	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS241916.1	1021	1021	LS241916.1	674	1203	+	TRINITY_DN135397_c1_g1_i5	path1	A4FUB7	Gypsy retrotransposon integrase-like protein 1		 PF17921;	 GO:0003676;GO:0015074;	 	  F:nucleic acid binding;	  P:DNA integration;	0
+LS243346.1	778	778	LS243346.1	783	1352	+	TRINITY_DN135397_c1_g1_i3	path1	A4FUB7	Gypsy retrotransposon integrase-like protein 1		 PF17921;	 GO:0003676;GO:0015074;	 	  F:nucleic acid binding;	  P:DNA integration;	5
+LS243346.1	781	781	LS243346.1	783	1352	+	TRINITY_DN135397_c1_g1_i3	path1	A4FUB7	Gypsy retrotransposon integrase-like protein 1		 PF17921;	 GO:0003676;GO:0015074;	 	  F:nucleic acid binding;	  P:DNA integration;	2
+LS244160.1	273	273	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS255237.1	1275	1275	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS279743.1	1105	1105	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS279852.1	203	203	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS283678.1	900	900	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS290113.1	1093	1093	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS291054.1	731	731	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS294040.1	224	224	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS311600.1	407	407	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS315617.1	700	700	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS316650.1	231	231	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS320205.1	231	231	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS320226.1	957	957	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS335360.1	374	374	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS338923.1	718	718	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS338923.1	719	719	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS338923.1	735	735	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS348101.1	994	994	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS351877.1	271	271	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
+LS359373.1	273	273	.	-1	-1	.	.	.	.	.	.	.	.	.	.	.	-1
