@@ -1,7 +1,6 @@
 ---
-title: Epigenetics responses to heat and CO$_{2}$ selection in the copepod _Acartia tonsa_
+title: Epigenetics responses to excess heat and CO$_{2}$ selection in the copepod _Acartia tonsa_
 author: \emph{Thomas O'Leary}
-#date: \emph{February 25, 2020}
 output:
   pdf_document:
 header-includes:
@@ -23,76 +22,98 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 require(tidyverse)
 require(kableExtra)
 
-# site frequency spectrum data -------------------------------------------------
-setwd(here::here("myresults/ANGSD"))
-
-
+# Load the epigenetic data -----------------------------------------------------
+source(here::here("myscripts/load_epigenetics.R"))
 ```
 
 # Background
 
-### _Acartia tonsa_ Ecology
+### _Acartia tonsa_ introduction
 
-A worldwide distribution and a huge population size make the copepod, _Acartia tonsa_, 
-
-
-The ultimate aims of this study are to (i) describe the population structure and genetic diversiy of _P. rubens_, (ii) identify loci that show signs of positive selection and (iii) map the genetic basis of these adaptive phenotypes. 
-
-In this write up, I will only begin to address the first aim in the context of one population (BFA), with five sequenced individuals, using a few genetic diversity metrics including nucleotide diversity ($\pi$), Wattserson's estimator ($\theta$), and Tajima's $D$ [@Nei1979; @Watterson1975; @Tajima1989].
-
+A world wide distribution and a huge population size make the copepod, _Acartia tonsa_, a particularly interesting species to study in relation to epigenetic changes in response to the environment. _A. tonsa_ lives and thrives in a broad range of habitats, including large variation in temperature, salinity, and pH [@Chen2011]. There large population size and ecological importance maekt ehaeljsfkjoie In this experiment, natural collections of _A. tonsa_ were subjected to 25 generations of selection under heat and carbon dioxide stress. Methylation of the genome was quantified before and after experimental treatment. Here, I will limit my focus to the effect of heat stress and combined heat and carbon dioxide stress on _Acartia tonsa_. The aims of this study are to (i) describe the epigenetic response to heat stress and (ii) how the additional stressor of carbon dioxide affects that response, and (iii) to identify the genes associated with the loci that are differentially methylated.
 
 ### Selection experiment, sample collection, library preparation, and sequencing
 
-Whole genomic DNA was extracted from needle tissue that was collected from a total of 340 mother _P. rubens_ in 65 populations, of which 110 trees were from 23 edge populations. 80,000 120 bp probes were designed for exome capture based on multiple developmental and tissue type transcriptomes from a related white spruce _Picea glauca_ [@Rigault2011;@Yeaman2014]. Approximately 95% of the probes were designed within exomic regions with the remaining 5% in intergenic regions, covering a total of 38,570 unigenes. The probes were blasted against the _P. glauca_ reference genome to ensure at least 90 bp of 85% identity. 250 ng to 1 $\mu$g of genomic DNA was mechanically sheared to an average length of 400 bp, exome fragments were enriched using the designed probes, and following barcode adaptation, the libraries were pooled and paired-end 150 bp sequenced on an Illumina HiSeq X.
+Natural collections of _Acartia tonsa_ were kept in a common garden for three generations, before being split for 25 generations in four separate treatment groups: (i) a control with ambient temperature and ambient CO$_{2}$ levels, (ii) a high temperture treatment with ambient CO$_{2}$ levels, (iii) a high CO$_{2}$ treatment with ambient temperature and, (iv) a combined high temperature and high CO$_{2}$ treatment [^treat]. There were four replicates of each treatment, with approximately 3,000--5,000 individuals per replicate. Whole genomic \textsc{DNA} was extracted from pools of individuals [^ind] and collected at generation zero (_i.e._ after three generations of common garden conditions) and generation 25. Reduced representation bisulfite sequencing (RRBS) library preparation was used to quantify methlyation frequencies, where all unmethylated cytosines are converted to thymines. The samples were 150 bp sequenced on an Illumina [^seq].
+
+[^treat]: Absolute or relative temperature or CO$_{2}$ levels in each treatment not stated.
+[^ind]: Not sure what the approximate number of individuals pooled for each extraction
+[^seq]: Exact type of Illumina machine unknown (_e.g._ HiSeq X).
+
 	
 # Bioinformatics Pipeline
 
-The quality of the raw reads were accessed using FastQC v$0.11.7$ [@andrews2012] and low quality sequence data was trimmed using Trimmomatic v$0.33$ [@Bolger2014]. The cleaned reads were vizualized again with FastQC and then mapped to the _A. tonsa_ reference genome with Bismark v$0.22.1$ [@Krueger2011]. 
+The quality of the raw reads were accessed using FastQC v$0.11.7$ [@andrews2012] and low quality sequence data was trimmed using Trimmomatic v$0.33$ [@Bolger2014]. The cleaned reads were vizualized again with FastQC and then mapped to the _A. tonsa_ reference genome [^ref_gen] with Bismark v$0.22.1$ [@Krueger2011]. The reference genome needed to be modified from its original version to reflect the RRBS treatment into two versions: one with the cytosines converted to thymines for the forward reads (Read 1) and the other with guanines converted to adenines for the reverse reads (Read 2). Differential methylation was called at and false discovery rate of $0.05$ and a minimum relative fold-change of $10$% [^sig] using the package methylKit v$1.13.1$ [@Akalin2012]  R v$3.6.1$ [@rcore]. The methylation data was pre-filtered to include only loci that had at least 20 reads and to exculed loci in the highest $2.5$% of per base read coverage[^filt]. Other analysis and visualization was carried out in R using ggplot2 and dplyr v$1.2.1$ [@tidyverse].
 
-A reduced _P. abies_ reference genome was used because there is no available _P. rubens_ genome and the exome capture technique meant that only a small fraction of the genome near the designed probes would be sequenced.
+[^ref_gen]: Unknown _Acartia tonsa_ reference genome. 
+
+[^sig]: We required a minimum relative fold-change of $10$% for differential methylation in order to exclude statistically significant but minor relative fold-changes that may have little-to-no biological significance.
+
+[^filt]: The pre-filtering was done to ensure that there was enough data to allow for an accurate estimate of the percent methylation (low-end limit) and remove data that might be the product of procedural sequencing error (high-end limit).
+
+```{r, fig.width = 8, fig.height = 3, fig.cap = paste0("\\textbf{(A)} Mean per site methylation rate (%) across all sites included in the analysis. \\textbf{(B)} Frequency histogram of the percent difference in methylation of only the differenitally methylated loci (DML) for each treatment, Heat (Pink) and Heat & CO$_2$ (Dark Red), compared to the control.")}
+p1 <- ggplot(pm, aes(x = Group, y = avg_meth, fill = Group)) +
+  stat_summary(color = "grey50", fun.data = "mean_se") +
+  geom_jitter(width = 0.1, size = 3, pch = 21, alpha = 0.8) + 
+  ylab("Global methylation rate (%)") +
+  xlab("Treatment") +
+  ylim(c(35, 42)) +
+  scale_fill_manual(values = c("grey50", "pink", "darkred")) +
+  scale_x_discrete(limits = c("AA", "HA", "HH"),
+                   labels = c("Control", 
+                              "Heat", 
+                              expression("Heat & CO"[2]))) +
+  theme_classic() +
+  theme(legend.position = "none")
 
 
-methylKit v$1.13.1$ [@Akalin2012].
+p2 <- ggplot(hist.plot, aes(x = meth.diff, fill = Treatment)) +
+  geom_histogram(position = "dodge", color = "grey50", bins = 20) +
+  geom_vline(xintercept = 0) +
+  labs(x = "Methylation difference to control",
+       y = "Frequency") + 
+  theme_classic() + 
+  scale_fill_manual(values = c("pink", "darkred"),
+                    labels = c("Heat", expression("Heat & CO"[2]))) +
+  theme(legend.position = c(0.2, 0.85), 
+        legend.background = element_rect(linetype = 1, color = 1),
+        legend.text.align = 0)
 
-The sequence aligned reads (sam files) were then converted to binary (bam) and the PCR duplicates were removed and files were sorted using samtools v$1.4$ and sambamba v$0.7.1$ [@Tarasov2015;@Li2009a]. The effects of the low sequencing depth were compensated by estimating genotype likelihoods using ANGSD v$0.931-14$-gb9c8ddd [@Korneliussen2014]. 
+# p3 <- HA_ind_plot %>% 
+#   filter(snp == "LS043685.1:10221") %>%
+#   ggplot(aes(x = Group, y = methylation, fill = Group)) +
+#   stat_summary(color = "grey50", fun.data = "mean_se") +
+#   geom_jitter(width = 0.1, size = 3, pch = 21, alpha = 0.8) + 
+#   ylab("Methylation (%)") +
+#   xlab("Treatment") +
+#   scale_fill_manual(values = c("grey50", "pink")) +
+#   scale_x_discrete(limits = c("AA", "HA"),
+#                    labels = c("Control", 
+#                               "Heat")) +
+#   theme_classic() +
+#   theme(legend.position = "none")
+
+cowplot::plot_grid(p1, p2, nrow = 1, labels = "AUTO", rel_widths = c(1, 1.5))
+```
 
 
-were calculated and visualized in R v$3.6.1$ [@rcore] using ggplot2 and dplyr v$1.2.1$ [@tidyverse].
 
 # Results
 
-```{r}
-# results
-```
 
-The mapping rate was highly variable across groups ()
+The average mapping rate across all samples was $45.2$%, with averages for the subset of groups I analyzed of $43.2$%, $33.9$%, and $31.0$% for the generation 25 control, high temperature only, and combined high temperature and high carbon dioxide groups respectively. The global methylation rate was not drastically different between the three treatment groups after 25 generations, with a mean per site methylation rate of all three groups between $38$% and $39$% (Fig. 1 **A**). However, there were still individual loci that showed differential methylation between the experimental treatments and the control. We identified 105 differentially methylated loci (DML) in response to heat stress, with 84 hypermethylated loci and 21 hypomethylated loci (Fig. 1 **B**). Under combined heat stress and excess CO$_2$, 121 DML were idenified, with 66 of those hypermethylated loci and 55 hypomethylated loci (Fig. 1 **B**). There was no overlap between the lists of DML. Those DML mapped to 9 unique differentially methylated genes (DMGs) for the heat stress and 13 DMGs for combined the heat and CO$_2$ stress, of which 5 DMGs were overlapping between the groups. 
 
 
-
-The sequencing statistics indicate that among the five individuals in the BFA population, the mean per site sequence depth was 
-and the mean number of mapped reads was 
-
-The average percentage of paired reads was
-
-The percent of single nucleotide polymorphisms across the geneome is 
-
-. The mean of Tajima's D was calculated to be
 
 # Conclusion
 
-The conservation of _Picea rubens_ along the eastern United States may depend on identifying vulnerable populations and their potential genetic resources in an effort to maintain genetic diverity, conserve, and restore the species. 
-
-A quick look at the site frequency spectrum in Figure 1: A indicates a loss of rare alleles, with the rare dimorphic alleles being less frequent than other polymorphic alleles.
+The number of identified loci 
 
 
-Although these numbers seem to 
 
+It should be noted that here we identify DMGs only with respect to the pairwise comparisons of high temperature and combined high temperature and high CO$_2$ to the control treatment. This approach does not include the full model of treatments and time points. Pairwise comparisons used in this way, ignoring the full experimental design, may lead to an increase in false positives, so care must be taken when interpreting the lists of DML. Futher complicating this analysis is the fact that this data was taken from pooled individuals and all tissue types, creating greater noise in the data and potentially masking important individual and tissue type epigenetic variation, a drawback of the study system. Future directions must involve incorporating transcriptomic and genomic sequencing data with this epigenetic data. Despite finding several DMGs, it is not know how that may or may not affect the expression of a gene without the corresponding transcriptomic data set. Along the same lines, the epigenetic and transcriptomic data together do not tell the full story either. Adaptive allele frequency changes in regulatory and coding regions may result in differential gene expression.
 
-Future directions for this study must involve: 
-
-Incorporating phenotypic data, 
-
-Identifying loci 
+To understand if their really has been adaptive change in these experimental pools of _A. tonsa_, you must measure certain fitness related phenotpyes, like survival, fecundity, and growth. And do a reciprocal transplant to see if the control pools fair worse under those same environmental stressors.
 
 
 
