@@ -6,7 +6,6 @@
 
 library(methylKit)
 library(tidyverse)
-library(ggplot2)
 library(pheatmap)
 
 # Read in the raw methylation calls with methylkit -----------------------------
@@ -181,4 +180,16 @@ df.plot %>%
 write.table(file = here::here("myresults/epigenetics/diffmeth.bed"),
             data.frame(chr= df.out$chr, start = df.out$start, end = df.out$end),
             row.names=FALSE, col.names=FALSE, quote=FALSE, sep="\t")
+
+
+# Read the table back into R 
+hits <- read_delim(here::here("myresults/epigenetics/hits.bed"), 
+                   delim = "\t", 
+                   col_names = c("SNP", "Start", "Stop", "ScaffoldName", 
+                                 "FromPosition", "ToPosition",  
+                                 "Sense", "TranscriptName", "TranscriptPath",  
+                                 "GeneAccession", "GeneName", "GeneAltNames",  
+                                 "GenePfam", "GeneGo", "CellularComponent", 
+                                 "MolecularFunction", "BiologicalProcess",
+                                 "PositionFromGene"))
 
