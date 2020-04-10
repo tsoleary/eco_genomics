@@ -245,3 +245,7 @@ HA_dmg <- hits_HA %>%
 HH_dmg <- hits_HH %>%
   filter(GeneName != ".") %>%
   distinct(GeneName, .keep_all = TRUE)
+
+shared_dmg <- intersect(HA_dmg$GeneName, HH_dmg$GeneName)
+
+shared_dmg_bp <- intersect(HA_dmg$BiologicalProcess, HH_dmg$BiologicalProcess)
