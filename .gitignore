@@ -6,3 +6,4 @@
 *.Rproj
 myresults/ANGSD/*
 myresults/epigenetics/*
+myresults/gwas_env/*
