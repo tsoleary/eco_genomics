@@ -153,20 +153,21 @@ dds <- DESeq(dds)
 # List the results you've generated
 resultsNames(dds)
 
-res_CW_D_5_0 <- results(dds, 
-                        contrast = c("group", "CW_D_5", "CW_D_0"), 
-                        alpha = 0.05)
+# CW_D_5 did not have three or more reps
+# res_CW_D_5_0 <- results(dds, 
+#                         contrast = c("group", "CW_D_5", "CW_D_0"), 
+#                         alpha = 0.05)
 res_CW_D_10_0 <- results(dds, 
                          contrast = c("group", "CW_D_10", "CW_D_0"), 
                          alpha = 0.05)
 
 
-summary(res_CW_D_5_0)
+# summary(res_CW_D_5_0)
 summary(res_CW_D_10_0)
 
 
 setwd(here::here("myresults/gwas_env"))
 saveRDS(dds, "p_rubens_CW_D_0_dds.rds")
-saveRDS(res_CW_D_5_0, "p_rubens_res_CW_D_5_0.rds")
+# saveRDS(res_CW_D_5_0, "p_rubens_res_CW_D_5_0.rds")
 saveRDS(res_CW_D_10_0, "p_rubens_res_CW_D_10_0.rds")
 
