@@ -1,0 +1,44 @@
+---
+title: Exploratory _Picea rubens_ transcriptomics figures and analysis
+author: "TS O'Leary"
+output:
+  rmarkdown::html_document:
+    theme: lumen
+    number_sections: true
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+# Stop log files for the VennDiagram package
+futile.logger::flog.threshold(futile.logger::ERROR, name = "VennDiagramLogger")
+
+# Load packages
+require(tidyverse)
+require(ggpubr)
+
+# source the functions and load the data
+source(here::here("myscripts/load_transcript_gwas_env_grp.R"))
+```
+
+# Bunch of random MA plots
+
+```{r}
+ma_plot_objs <- objects()[str_which(objects(), "res")]
+
+for (i in seq_along(ma_plot_objs)) {
+  p <- ggmaplot(get(ma_plot_objs[i]), main = ma_plot_objs[i],
+         fdr = 0.05, fc = 0, size = 1,
+         palette = c("#B31B21", "#1465AC", "#A6A6A680"),
+         legend = "top", top = 0,
+         select.top.method = "padj",
+         font.legend = "bold",
+         font.main = "bold",
+         ggtheme = ggplot2::theme_minimal()) + 
+  theme(legend.text = element_text(size = 12))
+  print(p)
+}
+
+```
+
