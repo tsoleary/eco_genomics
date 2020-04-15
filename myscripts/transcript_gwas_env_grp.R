@@ -112,6 +112,7 @@ summary(res_CW_C_5_0)
 summary(res_CW_C_10_0)
 
 setwd(here::here("myresults/gwas_env"))
+saveRDS(dds, "p_rubens_CW_C_0_dds.rds")
 saveRDS(res_CW_C_5_0, "p_rubens_res_CW_C_5_0.rds")
 saveRDS(res_CW_C_10_0, "p_rubens_res_CW_C_10_0.rds")
 
@@ -138,6 +139,7 @@ summary(res_CW_H_10_0)
 
 
 setwd(here::here("myresults/gwas_env"))
+saveRDS(dds, "p_rubens_CW_H_0_dds.rds")
 saveRDS(res_CW_H_5_0, "p_rubens_res_CW_H_5_0.rds")
 saveRDS(res_CW_H_10_0, "p_rubens_res_CW_H_10_0.rds")
 
@@ -164,6 +166,7 @@ summary(res_CW_D_10_0)
 
 
 setwd(here::here("myresults/gwas_env"))
+saveRDS(dds, "p_rubens_CW_D_0_dds.rds")
 saveRDS(res_CW_D_5_0, "p_rubens_res_CW_D_5_0.rds")
 saveRDS(res_CW_D_10_0, "p_rubens_res_CW_D_10_0.rds")
 
