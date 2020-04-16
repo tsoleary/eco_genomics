@@ -6,6 +6,7 @@
 
 # Packages
 require(tidyverse)
+source(here::here("myscripts/functions.R"))
 
 # List of files to load
 setwd(here::here("myresults/gwas_env"))
@@ -16,3 +17,28 @@ names <- str_replace(str_extract(files, "res.+"), ".rds", "")
 for (i in seq_along(files)) {
   assign(names[i], readRDS(files[i]))
 }
+
+
+# DEG lists --------------------------------------------------------------------
+
+fdr <- 0.05
+
+names <- objects()[str_which(objects(), "res")]
+
+for (i in seq_along(names)) {
+  assign(str_replace(names[i], "res", "deg"), 
+         extract_deg(get(names[i]), fdr = fdr))
+}
+
+
+intersect(deg_5_0[["all"]], deg_10_0[["all"]])
+
+intersect(deg_5_0[["up"]], deg_10_0[["up"]])
+
+intersect(deg_5_0[["down"]], deg_10_0[["down"]])
+
+
+
+
+
+
