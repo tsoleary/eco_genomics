@@ -171,3 +171,32 @@ saveRDS(dds, "p_rubens_CW_D_0_dds.rds")
 # saveRDS(res_CW_D_5_0, "p_rubens_res_CW_D_5_0.rds")
 saveRDS(res_CW_D_10_0, "p_rubens_res_CW_D_10_0.rds")
 
+
+# Run DESeq2 -------------------------------------------------------------------
+dds <- DESeqDataSetFromMatrix(countData = counts,
+                              colData = metadata,
+                              design = ~ climate)
+
+# # Set the group to be compared against
+dds$group <- relevel(dds$day, ref = "CW")
+
+# Filter out genes with few reads
+dds <- dds[rowSums(counts(dds)) > 76]
+
+# Run DESeq
+dds <- DESeq(dds)
+setwd(here::here("myresults/gwas_env"))
+saveRDS(dds, "p_rubens_clim_only_dds.rds")
+
+# List the results you've generated
+resultsNames(dds)
+
+res_climate_only <- results(dds, contrast = c("climate", "HD", "CW"), alpha = 0.05)
+
+# Summary stats
+summary(res_climate_only)
+
+setwd(here::here("myresults/gwas_env"))
+saveRDS(res_climate_only, "p_rubens_res_climate_only.rds")
+
+
