@@ -42,3 +42,20 @@ for (i in seq_along(ma_plot_objs)) {
 
 ```
 
+
+
+
+```{r}
+setwd(here::here("myresults/gwas_env"))
+
+pabiesGO <- read_delim("Pabies1.0-gene_go_concat.txt", delim = "\t") 
+
+num_regs <- max(stringr::str_count(pabiesGO$GO, pattern = ",") + 1)
+
+pabiesGO %>%
+  separate(GO, into = paste("GO", 1:num_regs, sep = "_"), sep = ",") %>%
+  pivot_longer(contains("GO_"), names_to = "lab", values_to = "GO",
+               values_drop_na = TRUE)
+  
+  
+```
