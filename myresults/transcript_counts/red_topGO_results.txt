@@ -1,0 +1,108 @@
+GO.ID	Term	Annotated	Significant	Expected	elimKS
+GO:0006094	gluconeogenesis	113	10	2.93	0.00068
+GO:0009068	aspartate family amino acid catabolic pr...	20	4	0.52	0.00154
+GO:0010498	proteasomal protein catabolic process	128	10	3.32	0.00178
+GO:0055046	microgametogenesis	12	3	0.31	0.00318
+GO:1901566	organonitrogen compound biosynthetic pro...	1306	49	33.84	0.00431
+GO:0034655	nucleobase-containing compound catabolic...	195	12	5.05	0.00477
+GO:0016052	carbohydrate catabolic process	257	14	6.66	0.00700
+GO:0045454	cell redox homeostasis	30	4	0.78	0.00710
+GO:0010604	positive regulation of macromolecule met...	232	13	6.01	0.00735
+GO:0051173	positive regulation of nitrogen compound...	242	13	6.27	0.01028
+GO:0072525	pyridine-containing compound biosyntheti...	143	9	3.71	0.01199
+GO:0046939	nucleotide phosphorylation	144	9	3.73	0.01251
+GO:0010557	positive regulation of macromolecule bio...	195	11	5.05	0.01258
+GO:0009141	nucleoside triphosphate metabolic proces...	196	11	5.08	0.01303
+GO:0010628	positive regulation of gene expression	196	11	5.08	0.01303
+GO:0019538	protein metabolic process	2054	73	53.23	0.01350
+GO:0006413	translational initiation	55	5	1.43	0.01361
+GO:0009891	positive regulation of biosynthetic proc...	251	13	6.5	0.01364
+GO:0031325	positive regulation of cellular metaboli...	252	13	6.53	0.01406
+GO:0032101	regulation of response to external stimu...	21	3	0.54	0.01619
+GO:0008652	cellular amino acid biosynthetic process	285	14	7.39	0.01633
+GO:0044267	cellular protein metabolic process	1859	67	48.17	0.01691
+GO:0031328	positive regulation of cellular biosynth...	204	11	5.29	0.01711
+GO:0071396	cellular response to lipid	259	13	6.71	0.01729
+GO:0009142	nucleoside triphosphate biosynthetic pro...	178	10	4.61	0.01740
+GO:0006520	cellular amino acid metabolic process	460	23	11.92	0.01760
+GO:0019752	carboxylic acid metabolic process	1244	47	32.24	0.01775
+GO:0002238	response to molecule of fungal origin	22	3	0.57	0.01840
+GO:0048522	positive regulation of cellular process	439	19	11.38	0.01967
+GO:0009185	ribonucleoside diphosphate metabolic pro...	132	8	3.42	0.02132
+GO:0009179	purine ribonucleoside diphosphate metabo...	132	8	3.42	0.02132
+GO:0009135	purine nucleoside diphosphate metabolic ...	132	8	3.42	0.02132
+GO:0046031	ADP metabolic process	132	8	3.42	0.02132
+GO:0042866	pyruvate biosynthetic process	132	8	3.42	0.02132
+GO:0006757	ATP generation from ADP	132	8	3.42	0.02132
+GO:0006096	glycolytic process	132	8	3.42	0.02132
+GO:1903508	positive regulation of nucleic acid-temp...	184	10	4.77	0.02140
+GO:0045893	positive regulation of transcription, DN...	184	10	4.77	0.02140
+GO:0051254	positive regulation of RNA metabolic pro...	184	10	4.77	0.02140
+GO:0045935	positive regulation of nucleobase-contai...	184	10	4.77	0.02140
+GO:0006457	protein folding	184	10	4.77	0.02140
+GO:1902680	positive regulation of RNA biosynthetic ...	184	10	4.77	0.02140
+GO:1901607	alpha-amino acid biosynthetic process	211	11	5.47	0.02140
+GO:0022604	regulation of cell morphogenesis	62	5	1.61	0.02191
+GO:0009166	nucleotide catabolic process	133	8	3.45	0.02220
+GO:1901292	nucleoside phosphate catabolic process	133	8	3.45	0.02220
+GO:0043436	oxoacid metabolic process	1298	48	33.64	0.02267
+GO:0006082	organic acid metabolic process	1299	48	33.66	0.02294
+GO:0001558	regulation of cell growth	63	5	1.63	0.02331
+GO:0071367	cellular response to brassinosteroid sti...	43	4	1.11	0.02464
+GO:0071383	cellular response to steroid hormone sti...	43	4	1.11	0.02464
+GO:0009742	brassinosteroid mediated signaling pathw...	43	4	1.11	0.02464
+GO:0048545	response to steroid hormone	43	4	1.11	0.02464
+GO:0043401	steroid hormone mediated signaling pathw...	43	4	1.11	0.02464
+GO:0044238	primary metabolic process	5100	156	132.16	0.02556
+GO:0006165	nucleoside diphosphate phosphorylation	137	8	3.55	0.02596
+GO:0019363	pyridine nucleotide biosynthetic process	137	8	3.55	0.02596
+GO:0019359	nicotinamide nucleotide biosynthetic pro...	137	8	3.55	0.02596
+GO:0009082	branched-chain amino acid biosynthetic p...	10	2	0.26	0.02624
+GO:0009313	oligosaccharide catabolic process	10	2	0.26	0.02624
+GO:0001676	long-chain fatty acid metabolic process	10	2	0.26	0.02624
+GO:0009744	response to sucrose	88	6	2.28	0.02645
+GO:0034285	response to disaccharide	88	6	2.28	0.02645
+GO:0009987	cellular process	7360	208	190.72	0.02680
+GO:0009132	nucleoside diphosphate metabolic process	139	8	3.6	0.02799
+GO:0044260	cellular macromolecule metabolic process	3211	102	83.21	0.02856
+GO:0048638	regulation of developmental growth	194	10	5.03	0.02949
+GO:0009755	hormone-mediated signaling pathway	522	21	13.53	0.02987
+GO:0009087	methionine catabolic process	11	2	0.29	0.03153
+GO:0019458	methionine catabolic process via 2-oxobu...	11	2	0.29	0.03153
+GO:0000098	sulfur amino acid catabolic process	11	2	0.29	0.03153
+GO:0006108	malate metabolic process	11	2	0.29	0.03153
+GO:2001057	reactive nitrogen species metabolic proc...	11	2	0.29	0.03153
+GO:0006996	organelle organization	1254	43	32.5	0.03178
+GO:0002213	defense response to insect	27	3	0.7	0.03180
+GO:0010467	gene expression	1742	57	45.14	0.03193
+GO:0032787	monocarboxylic acid metabolic process	851	31	22.05	0.03264
+GO:0046434	organophosphate catabolic process	144	8	3.73	0.03356
+GO:0009056	catabolic process	1056	52	27.36	0.03469
+GO:0034404	nucleobase-containing small molecule bio...	145	8	3.76	0.03476
+GO:0072329	monocarboxylic acid catabolic process	145	8	3.76	0.03476
+GO:0040008	regulation of growth	200	10	5.18	0.03527
+GO:0009937	regulation of gibberellic acid mediated ...	12	2	0.31	0.03720
+GO:0006402	mRNA catabolic process	49	4	1.27	0.03755
+GO:0022603	regulation of anatomical structure morph...	96	6	2.49	0.03824
+GO:0009161	ribonucleoside monophosphate metabolic p...	203	10	5.26	0.03844
+GO:0007010	cytoskeleton organization	350	15	9.07	0.03867
+GO:0023056	positive regulation of signaling	50	4	1.3	0.04002
+GO:0009967	positive regulation of signal transducti...	50	4	1.3	0.04002
+GO:0023051	regulation of signaling	123	7	3.19	0.04059
+GO:0009966	regulation of signal transduction	123	7	3.19	0.04059
+GO:0009123	nucleoside monophosphate metabolic proce...	205	10	5.31	0.04066
+GO:0006464	cellular protein modification process	1311	44	33.97	0.04089
+GO:0036211	protein modification process	1311	44	33.97	0.04089
+GO:0019321	pentose metabolic process	30	3	0.78	0.04173
+GO:0009064	glutamine family amino acid metabolic pr...	30	3	0.78	0.04173
+GO:0010646	regulation of cell communication	124	7	3.21	0.04212
+GO:0010647	positive regulation of cell communicatio...	51	4	1.32	0.04257
+GO:0009084	glutamine family amino acid biosynthetic...	13	2	0.34	0.04323
+GO:0006401	RNA catabolic process	52	4	1.35	0.04522
+GO:0006813	potassium ion transport	31	3	0.8	0.04534
+GO:0045333	cellular respiration	53	4	1.37	0.04795
+GO:0009057	macromolecule catabolic process	406	22	10.52	0.04887
+GO:0006357	regulation of transcription by RNA polym...	14	2	0.36	0.04959
+GO:0018904	ether metabolic process	14	2	0.36	0.04959
+GO:0006662	glycerol ether metabolic process	14	2	0.36	0.04959
+GO:0009408	response to heat	156	8	4.04	0.04988
